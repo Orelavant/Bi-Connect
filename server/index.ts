@@ -1,7 +1,4 @@
-import express from "express";
 import { buildSchema } from "type-graphql";
-import cookieParser from "cookie-parser";
-import { ApolloServer } from "apollo-server-express";
 import {
 	ApolloServerPluginLandingPageGraphQLPlayground,
 	ApolloServerPluginLandingPageProductionDefault,
@@ -13,20 +10,19 @@ import { verifyJWT } from "./utils/jwt";
 import { Context } from "./types/context";
 import { User } from "./schema/user.schema";
 dotenv.config();
+import { createExpressApp, createApolloServer } from "./build";
 
 const init = async () => {
+	// make express app
+	const app = createExpressApp();
+
 	// build schema
 	const schema = await buildSchema({
 		resolvers,
 		// authChecker,
 	});
 
-	// initialize express
-	const app = express();
-	app.use(cookieParser());
-
-	// create apollo server
-	const server = new ApolloServer({
+	const apolloConfig = {
 		introspection: true,
 		schema,
 		context: (ctx: Context) => {
@@ -44,19 +40,16 @@ const init = async () => {
 				? ApolloServerPluginLandingPageProductionDefault()
 				: ApolloServerPluginLandingPageGraphQLPlayground(),
 		],
-	});
+	};
 
-	// start server
-	await server.start();
-
-	// apply middleware
-	server.applyMiddleware({ app });
-
-	// expose on port
 	const port = process.env.PORT || 3001;
+
+	const server = await createApolloServer<Context>(app, apolloConfig);
+	// expose on port
 	app.listen({ port }, () => {
 		console.log(`app is listening on port ${port}`);
 	});
+
 	// connect to db
 	await connectToMongo();
 };

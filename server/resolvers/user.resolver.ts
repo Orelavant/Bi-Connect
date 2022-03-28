@@ -1,5 +1,12 @@
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
-import { CreateUserInput, LoginInput, User } from "../schema/user.schema";
+import {
+	CreateUserInput,
+	UserIdInput,
+	GetUsersInput,
+	LoginInput,
+	UpdateUserInput,
+} from "../inputs/user.inputs";
+import { User } from "../schema/user.schema";
 import UserService from "../service/user.service";
 import { Context } from "../types/context";
 
@@ -14,13 +21,46 @@ export default class UserResolver {
 		return this.userService.createUser(input);
 	}
 
-	@Mutation(() => String)
-	login(@Arg("input") input: LoginInput, @Ctx() context: Context) {
-		return this.userService.login(input, context);
+	@Mutation(() => User, { nullable: true })
+	updateUser(
+		@Arg("userDetails") userDetails: UserIdInput,
+		@Arg("input") input: UpdateUserInput
+	) {
+		return this.userService.updateUser(userDetails, input);
 	}
+
+	// @Mutation(() => String)
+	// login(@Arg("input") input: LoginInput, @Ctx() context: Context) {
+	// 	return this.userService.login(input, context);
+	// }
 
 	@Query(() => User, { nullable: true })
 	me(@Ctx() context: Context) {
 		return context.user;
+	}
+
+	@Query(() => User, { nullable: true })
+	getUser(@Arg("input") input: UserIdInput) {
+		return this.userService.getUser(input);
+	}
+
+	@Query(() => [User!]!)
+	getUsers(@Arg("input") input: GetUsersInput) {
+		return this.userService.getUsers(input);
+	}
+
+	@Mutation(() => User, { nullable: true })
+	removeUser(@Arg("input") input: UserIdInput) {
+		return this.userService.removeUser(input);
+	}
+
+	@Mutation(() => User, { nullable: true })
+	restoreUser(@Arg("input") input: UserIdInput) {
+		return this.userService.restoreUser(input);
+	}
+
+	@Query(() => User, { nullable: true })
+	deleteUser(@Arg("input") input: UserIdInput) {
+		return this.userService.deleteUser(input);
 	}
 }
