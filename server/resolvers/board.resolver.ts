@@ -15,7 +15,7 @@ export default class BoardResolver {
 		this.boardService = new BoardService();
 	}
 
-	@Query(() => Board, { nullable: true })
+	@Query(() => Board)
 	getBoard(@Arg("input") input: BoardIdInput) {
 		return this.boardService.getBoard(input);
 	}
@@ -33,7 +33,7 @@ export default class BoardResolver {
 		return this.boardService.createBoard(creatorDetails, input);
 	}
 
-	@Mutation(() => Board, { nullable: true })
+	@Mutation(() => Board)
 	updateBoard(
 		@Arg("boardDetails") boardDetails: BoardIdInput,
 		@Arg("input") input: UpdateBoardInput
@@ -41,7 +41,17 @@ export default class BoardResolver {
 		return this.boardService.updateBoard(boardDetails, input);
 	}
 
-	@Mutation(() => Board, { nullable: true })
+	@Mutation(() => Board)
+	removeBoard(@Arg("input") boardDetails: BoardIdInput) {
+		return this.boardService.removeBoard(boardDetails);
+	}
+
+	@Mutation(() => Board)
+	restoreBoard(@Arg("input") boardDetails: BoardIdInput) {
+		return this.boardService.restoreBoard(boardDetails);
+	}
+
+	@Mutation(() => Board)
 	deleteBoard(@Arg("input") input: BoardIdInput) {
 		return this.boardService.deleteBoard(input);
 	}

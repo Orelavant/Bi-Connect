@@ -1,7 +1,6 @@
 import { prop, Ref } from "@typegoose/typegoose";
-import { IsEmail, MinLength } from "class-validator";
+import { IsEmail, MinLength, ValidateIf } from "class-validator";
 import { Field, InputType, Int } from "type-graphql";
-import { User } from "../schema/user.schema";
 import { ListFilterInput } from "./base.inputs";
 
 @InputType()
@@ -13,6 +12,9 @@ export class GetBoardInput {
 
 @InputType()
 export class CreateBoardInput {
+	@MinLength(1, {
+		message: "Name may not be empty",
+	})
 	@Field(() => String)
 	@prop({ required: true })
 	name: string;
@@ -32,56 +34,56 @@ export class CreateBoardInput {
 
 @InputType()
 export class UpdateBoardInput {
+	@MinLength(1, {
+		message: "Name may not be empty",
+	})
+	@ValidateIf((_, val) => val != null)
 	@Field(() => String, { nullable: true })
-	@prop({ required: false })
+	@prop()
 	name?: string;
 
 	@Field(() => String, { nullable: true })
-	@prop({ required: false })
+	@prop()
 	description?: string;
-
-	@Field(() => String, { nullable: true })
-	@prop({ required: false })
-	picture?: string;
-
-	@Field(() => String, { nullable: true })
-	@prop({ required: false })
-	banner?: string;
 }
 
 @InputType()
 export class BoardsFilterInput extends ListFilterInput {
 	@Field(() => String, { nullable: true })
-	@prop({ required: false })
+	@prop()
 	nameStartsWith?: string;
 
 	@Field(() => String, { nullable: true })
-	@prop({ required: false })
+	@prop()
 	nameEndsWith?: string;
 
 	@Field(() => String, { nullable: true })
-	@prop({ required: false })
+	@prop()
 	nameContains?: string;
 
 	@Field(() => String, { nullable: true })
-	@prop({ required: false })
+	@prop()
 	descriptionStartsWith?: string;
 
 	@Field(() => String, { nullable: true })
-	@prop({ required: false })
+	@prop()
 	descriptionEndsWith?: string;
 
 	@Field(() => String, { nullable: true })
-	@prop({ required: false })
+	@prop()
 	descriptionContains?: string;
 
 	@Field(() => Int, { nullable: true })
-	@prop({ required: false })
+	@prop()
 	usersCountLte?: number;
 
 	@Field(() => Int, { nullable: true })
-	@prop({ required: false })
+	@prop()
 	usersCountGte?: number;
+
+	@Field(() => Boolean, { nullable: true })
+	@prop()
+	isRemoved?: boolean;
 }
 
 @InputType()

@@ -1,5 +1,11 @@
 import { prop, Ref } from "@typegoose/typegoose";
-import { IsEmail, MinLength, MaxLength, Min } from "class-validator";
+import {
+	IsEmail,
+	MinLength,
+	MaxLength,
+	Min,
+	ValidateIf,
+} from "class-validator";
 import { InputType, Field, Int } from "type-graphql";
 import { ListFilterInput } from "./base.inputs";
 
@@ -26,12 +32,13 @@ export class CommentIdInput {
 
 @InputType()
 export class UpdateCommentInput {
-	@Field(() => String)
 	@MinLength(1, {
 		message: "Comment content must be at least 1 character long",
 	})
+	@ValidateIf((_, val) => val != null)
+	@Field(() => String, { nullable: true })
 	@prop()
-	content: String;
+	content?: String;
 }
 
 @InputType()

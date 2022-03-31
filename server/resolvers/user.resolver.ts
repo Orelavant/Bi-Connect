@@ -21,7 +21,7 @@ export default class UserResolver {
 		return this.userService.createUser(input);
 	}
 
-	@Mutation(() => User, { nullable: true })
+	@Mutation(() => User)
 	updateUser(
 		@Arg("userDetails") userDetails: UserIdInput,
 		@Arg("input") input: UpdateUserInput
@@ -34,12 +34,12 @@ export default class UserResolver {
 	// 	return this.userService.login(input, context);
 	// }
 
-	@Query(() => User, { nullable: true })
+	@Query(() => User)
 	me(@Ctx() context: Context) {
 		return context.user;
 	}
 
-	@Query(() => User, { nullable: true })
+	@Query(() => User)
 	getUser(@Arg("input") input: UserIdInput) {
 		return this.userService.getUser(input);
 	}
@@ -49,17 +49,17 @@ export default class UserResolver {
 		return this.userService.getUsers(input);
 	}
 
-	@Mutation(() => User, { nullable: true })
+	@Mutation(() => User)
 	removeUser(@Arg("input") input: UserIdInput) {
 		return this.userService.removeUser(input);
 	}
 
-	@Mutation(() => User, { nullable: true })
+	@Mutation(() => User)
 	restoreUser(@Arg("input") input: UserIdInput) {
 		return this.userService.restoreUser(input);
 	}
 
-	@Query(() => User, { nullable: true })
+	@Query(() => User)
 	deleteUser(@Arg("input") input: UserIdInput) {
 		return this.userService.deleteUser(input);
 	}

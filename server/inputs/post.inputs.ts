@@ -1,12 +1,12 @@
-import { prop, Ref } from "@typegoose/typegoose";
-import { IsEmail, MinLength, MaxLength, Min } from "class-validator";
+import { prop } from "@typegoose/typegoose";
+import { MinLength, Min, ValidateIf } from "class-validator";
 import { InputType, Field, Int } from "type-graphql";
 import { ListFilterInput } from "./base.inputs";
 
 @InputType()
 export class CreatePostInput {
 	@Field(() => String, { nullable: true })
-	@prop({ required: false })
+	@prop()
 	title?: string;
 
 	@MinLength(1, {
@@ -30,22 +30,13 @@ export class UpdatePostInput {
 	@prop()
 	title?: String;
 
-	@Field(() => String)
 	@MinLength(1, {
-		message: "Post content must be at least 1 character long",
+		message: "Post content may not be empty",
 	})
+	@ValidateIf((_, val) => val != null)
+	@Field(() => String, { nullable: true })
 	@prop()
-	content: String;
-
-	@Min(0)
-	@Field(() => Int)
-	@prop({ default: 0 })
-	likes: number;
-
-	@Min(0)
-	@Field(() => Int)
-	@prop({ default: 0 })
-	dislikes: number;
+	content?: String;
 }
 
 @InputType()

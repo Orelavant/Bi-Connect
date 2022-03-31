@@ -16,7 +16,7 @@ export default class PostResolver {
 		this.postService = new PostService();
 	}
 
-	@Query(() => Post, { nullable: true })
+	@Query(() => Post)
 	getPost(@Arg("input") input: PostIdInput) {
 		return this.postService.getPost(input);
 	}
@@ -35,7 +35,7 @@ export default class PostResolver {
 		return this.postService.createPost(creatorDetails, boardDetails, input);
 	}
 
-	@Mutation(() => Post, { nullable: true })
+	@Mutation(() => Post)
 	updatePost(
 		@Arg("postDetails") postDetails: PostIdInput,
 		@Arg("input") input: UpdatePostInput
@@ -43,17 +43,17 @@ export default class PostResolver {
 		return this.postService.updatePost(postDetails, input);
 	}
 
-	@Mutation(() => Post, { nullable: true })
+	@Mutation(() => Post)
 	removePost(@Arg("input") input: PostIdInput) {
 		return this.postService.removePost(input);
 	}
 
-	@Mutation(() => Post, { nullable: true })
+	@Mutation(() => Post)
 	restorePost(@Arg("input") input: PostIdInput) {
 		return this.postService.restorePost(input);
 	}
 
-	@Mutation(() => Post, { nullable: true })
+	@Mutation(() => Post)
 	deletePost(@Arg("input") input: PostIdInput) {
 		return this.postService.deletePost(input);
 	}

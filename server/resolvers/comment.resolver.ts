@@ -18,7 +18,7 @@ export default class CommentResolver {
 		this.commentService = new CommentService();
 	}
 
-	@Query(() => Comment, { nullable: true })
+	@Query(() => Comment)
 	getComment(@Arg("input") input: CommentIdInput) {
 		return this.commentService.getComment(input);
 	}
@@ -31,19 +31,17 @@ export default class CommentResolver {
 	@Mutation(() => Comment)
 	createComment(
 		@Arg("creatorDetails") creatorDetails: UserIdInput,
-		@Arg("boardDetails") boardDetails: BoardIdInput,
 		@Arg("postDetails") postDetails: PostIdInput,
 		@Arg("input") input: CreateCommentInput
 	) {
 		return this.commentService.createComment(
 			creatorDetails,
-			boardDetails,
 			postDetails,
 			input
 		);
 	}
 
-	@Mutation(() => Comment, { nullable: true })
+	@Mutation(() => Comment)
 	updateComment(
 		@Arg("commentDetails") commentDetails: CommentIdInput,
 		@Arg("input") input: UpdateCommentInput
@@ -51,17 +49,17 @@ export default class CommentResolver {
 		return this.commentService.updateComment(commentDetails, input);
 	}
 
-	@Mutation(() => Comment, { nullable: true })
+	@Mutation(() => Comment)
 	removeComment(@Arg("input") input: CommentIdInput) {
 		return this.commentService.removeComment(input);
 	}
 
-	@Mutation(() => Comment, { nullable: true })
+	@Mutation(() => Comment)
 	restoreComment(@Arg("input") input: CommentIdInput) {
 		return this.commentService.restoreComment(input);
 	}
 
-	@Mutation(() => Comment, { nullable: true })
+	@Mutation(() => Comment)
 	deleteComment(@Arg("input") input: CommentIdInput) {
 		return this.commentService.deleteComment(input);
 	}

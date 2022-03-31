@@ -1,15 +1,37 @@
-import { getModelForClass, pre, prop, index, Ref } from "@typegoose/typegoose";
-import { IsEmail, MaxLength, Min, MinLength } from "class-validator";
-import { Field, InputType, Int, ObjectType } from "type-graphql";
+import { pre, prop } from "@typegoose/typegoose";
+import { Field, ObjectType } from "type-graphql";
 import bcrypt from "bcrypt";
-import { Board } from "./board.schema";
 import { Post } from "./post.schema";
-import { Comment } from "./comment.schema";
 import { Timestamp } from "./base.schema";
+import { ApolloError } from "apollo-server-errors";
+import { UserModel } from "./models";
 
-// @Field is for graphql
-// @prop is for gooses
-
+@pre<User>(
+	["deleteOne", "deleteMany", "findOneAndDelete"],
+	async function (next) {
+		// CASCADE on user comments, liked comments and disliked comments
+		const filter = this.getFilter();
+		try {
+			const usersToBeDeleted = await UserModel.find(filter, {
+				name: 1,
+			}).lean();
+			const usersToBeDeletedUserNames = usersToBeDeleted.map(
+				({ username }) => username
+			);
+			await UserModel.updateMany(null, {
+				followedBoardsNames: {
+					$pullAll: boardsToBeDeletedNames,
+				},
+			}).lean();
+			await PostModel.deleteMany(null, {
+				boardName: { $in: boardsToBeDeletedNames },
+			}).lean();
+		} catch {
+			throw new ApolloError("db error cascading delete on users' comments");
+		}
+		next();
+	}
+)
 @pre<User>("save", async function (next) {
 	if (this.isModified("password")) {
 		const salt = await bcrypt.genSalt(10);
@@ -18,7 +40,6 @@ import { Timestamp } from "./base.schema";
 	}
 	next();
 })
-@index({ email: 1 })
 @ObjectType()
 export class User extends Timestamp {
 	@Field(() => String)
@@ -32,37 +53,33 @@ export class User extends Timestamp {
 	@prop({ required: true, unique: true })
 	email: string;
 
-	@Field(() => [Board!]!)
-	@prop({ default: [], ref: () => Board })
-	followedBoards: Ref<Board>[];
+	@Field(() => [String!]!)
+	@prop({ default: [], type: String })
+	followedBoardsNames: string[];
 
-	@Field(() => [Board!]!)
-	@prop({ default: [], ref: () => Board })
-	moderatorBoards: Ref<Board>[];
+	@Field(() => [String!]!)
+	@prop({ default: [], type: String })
+	postsIds: string[];
 
-	@Field(() => [Post!]!)
-	@prop({ default: [], ref: () => Post })
-	posts: Ref<Post>[];
+	@Field(() => [String!]!)
+	@prop({ default: [], type: String })
+	likedPostsIds: string[];
 
-	@Field(() => [Post!]!)
-	@prop({ default: [], ref: () => Post })
-	likedPosts: Ref<Post>[];
+	@Field(() => [String!]!)
+	@prop({ default: [], type: String })
+	dislikedPostsIds: string[];
 
-	@Field(() => [Post!]!)
-	@prop({ default: [], ref: () => Post })
-	dislikedPosts: Ref<Post>[];
+	@Field(() => [String!]!)
+	@prop({ default: [], type: String })
+	commentsIds: string[];
 
-	@Field(() => [Comment!]!)
-	@prop({ default: [], ref: () => Comment })
-	comments: Ref<Comment>[];
+	@Field(() => [String!]!)
+	@prop({ default: [], type: String })
+	likedCommentsIds: string[];
 
-	@Field(() => [Comment!]!)
-	@prop({ default: [], ref: () => Comment })
-	likedComments: Ref<Comment>[];
-
-	@Field(() => [Comment!]!)
-	@prop({ default: [], ref: () => Comment })
-	dislikedComments: Ref<Comment>[];
+	@Field(() => [String!]!)
+	@prop({ default: [], type: String })
+	dislikedCommentsIds: string[];
 
 	@prop({ required: true })
 	password: string;

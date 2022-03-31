@@ -1,5 +1,5 @@
 import { ApolloError } from "apollo-server-errors";
-import { UserModel } from "../schema/models";
+import { CommentModel, PostModel, UserModel } from "../schema/models";
 import { Context } from "../types/context";
 import bcrypt from "bcrypt";
 import { signJWT } from "../utils/jwt";
@@ -11,6 +11,8 @@ import {
 	UpdateUserInput,
 	GetUsersInput,
 } from "../inputs/user.inputs";
+import { types } from "@typegoose/typegoose";
+import { User } from "../schema/user.schema";
 dotenv.config();
 
 export default class UserService {
@@ -21,16 +23,32 @@ export default class UserService {
 				"Sign up email must belong to haverford or bryn mawr"
 			);
 		}
-		const userWithUsername = await UserModel.findOne({ username }).lean();
-		if (userWithUsername) {
-			throw new ApolloError("User with username already exists");
+		try {
+			const userWithUsername = await UserModel.findOne({ username }).lean();
+			if (userWithUsername) {
+				throw new ApolloError("User with username already exists");
+			}
+		} catch {
+			throw new ApolloError(
+				"Error checking for existing user with username or user with username already exists"
+			);
 		}
-		const userWithEmail = await UserModel.findOne({ email }).lean();
-		if (userWithEmail) {
-			throw new ApolloError("User with email already exists");
+		try {
+			const userWithEmail = await UserModel.findOne({ email }).lean();
+			if (userWithEmail) {
+				throw new ApolloError("User with email already exists");
+			}
+		} catch {
+			throw new ApolloError(
+				"Error checking for user with email or user with email already exists"
+			);
 		}
-		const user = await UserModel.create(input);
-		return user;
+		try {
+			const user = await UserModel.create(input);
+			return user;
+		} catch {
+			throw new ApolloError("db error");
+		}
 	}
 
 	// async login(input: LoginInput, context: Context) {
@@ -69,18 +87,26 @@ export default class UserService {
 		if (Object.keys(userDetails).length === 0) {
 			throw new ApolloError("User details not provided");
 		}
-		const updatedUser = await UserModel.findOneAndUpdate(userDetails, input, {
-			new: true,
-		});
-		return updatedUser;
+		try {
+			const updatedUser = await UserModel.findOneAndUpdate(userDetails, input, {
+				new: true,
+			}).lean();
+			return updatedUser;
+		} catch {
+			throw new ApolloError("User does not exists or db error");
+		}
 	}
 
 	async getUser(input: UserIdInput) {
 		if (Object.keys(input).length === 0) {
 			throw new ApolloError("User details not provided");
 		}
-		const user = await UserModel.findOne(input);
-		return user;
+		try {
+			const user = await UserModel.findOne(input).lean();
+			return user;
+		} catch {
+			throw new ApolloError("User does not exist or db error");
+		}
 	}
 
 	async getUsers(input: GetUsersInput) {
@@ -130,54 +156,101 @@ export default class UserService {
 				},
 			].filter(Boolean),
 		};
-		const users = await UserModel.find(filterQuery)
-			.sort({ username: 1 })
-			.skip(offset)
-			.limit(limit);
-		return users;
+		try {
+			const users = await UserModel.find(filterQuery)
+				.sort({ username: 1 })
+				.skip(offset)
+				.limit(limit)
+				.lean();
+			return users;
+		} catch {
+			throw new ApolloError("Error finding users mathing query");
+		}
 	}
 
 	async verifyUser(input: UserIdInput) {
 		if (Object.keys(input).length === 0) {
 			throw new ApolloError("User details not provided");
 		}
-		const user = await UserModel.findOneAndUpdate(
-			input,
-			{ verified: true },
-			{ new: true }
-		);
-		return user;
+		try {
+			const user = await UserModel.findOneAndUpdate(
+				input,
+				{ verified: true },
+				{ new: true }
+			).lean();
+			return user;
+		} catch {
+			throw new ApolloError("User does not exist or db error");
+		}
 	}
 
 	async removeUser(input: UserIdInput) {
 		if (Object.keys(input).length === 0) {
 			throw new ApolloError("User details not provided");
 		}
-		const user = await UserModel.findOneAndUpdate(
-			input,
-			{ removed: true },
-			{ new: true }
-		);
-		return user;
+		try {
+			const user = await UserModel.findOneAndUpdate(
+				input,
+				{ removed: true },
+				{ new: true }
+			).lean();
+			return user;
+		} catch {
+			throw new ApolloError("User does not exist or db error");
+		}
 	}
 
 	async restoreUser(input: UserIdInput) {
 		if (Object.keys(input).length === 0) {
 			throw new ApolloError("User details not provided");
 		}
-		const user = await UserModel.findOneAndUpdate(
-			input,
-			{ removed: false },
-			{ new: true }
-		);
-		return user;
+		try {
+			const user = await UserModel.findOneAndUpdate(
+				input,
+				{ removed: false },
+				{ new: true }
+			).lean();
+			return user;
+		} catch {
+			throw new ApolloError("User does not exist or db error");
+		}
 	}
 
 	async deleteUser(input: UserIdInput) {
 		if (Object.keys(input).length === 0) {
 			throw new ApolloError("User details not provided");
 		}
-		const user = await UserModel.deleteOne(input);
+		let user: types.DocumentType<User>;
+		try {
+			user = await UserModel.findOneAndDelete(input).lean();
+		} catch {
+			throw new ApolloError("User does not exist or db error");
+		}
+		// CASCADE ON COMMENTS AND POSTS
+		try {
+			await CommentModel.updateMany(
+				{
+					_id: {
+						$in: user.commentsIds,
+					},
+				},
+				{ removed: true }
+			).lean();
+		} catch {
+			throw new ApolloError("db error on cascade removing user comments");
+		}
+		try {
+			await PostModel.updateMany(
+				{
+					_id: {
+						$in: user.postsIds,
+					},
+				},
+				{ removed: true }
+			).lean();
+		} catch {
+			throw new ApolloError("db error on cascade removing user posts");
+		}
 		return user;
 	}
 }

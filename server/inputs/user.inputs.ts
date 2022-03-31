@@ -1,5 +1,5 @@
-import { prop, Ref } from "@typegoose/typegoose";
-import { IsEmail, MinLength, MaxLength, Min } from "class-validator";
+import { prop } from "@typegoose/typegoose";
+import { IsEmail, MinLength, MaxLength } from "class-validator";
 import { InputType, Field } from "type-graphql";
 import { ListFilterInput } from "./base.inputs";
 
@@ -25,20 +25,19 @@ export class CreateUserInput {
 @InputType()
 export class UserIdInput {
 	@Field(() => String, { nullable: true })
-	@prop({ required: false })
+	@prop()
 	username?: string;
 
 	@IsEmail()
 	@Field(() => String, { nullable: true })
-	@prop({ required: false })
+	@prop()
 	email?: string;
 }
 
 @InputType()
 export class LoginInput {
-	@IsEmail()
 	@Field(() => String)
-	email: string;
+	username: string;
 
 	@Field(() => String)
 	password: string;
@@ -47,50 +46,50 @@ export class LoginInput {
 @InputType()
 export class UpdateUserInput {
 	@Field(() => String, { nullable: true })
-	@prop({ required: false })
+	@prop()
 	username?: string;
 
 	@Field(() => String, { nullable: true })
-	@prop({ required: false })
+	@prop()
 	password?: string;
 
 	@Field(() => String, { nullable: true })
-	@prop({ required: false })
+	@prop()
 	picture?: string;
 }
 
 @InputType()
 export class UsersFilterInput extends ListFilterInput {
 	@Field(() => String, { nullable: true })
-	@prop({ required: false })
+	@prop()
 	usernameStartsWith?: string;
 
 	@Field(() => String, { nullable: true })
-	@prop({ required: false })
+	@prop()
 	usernameEndsWith?: string;
 
 	@Field(() => String, { nullable: true })
-	@prop({ required: false })
+	@prop()
 	usernameContains?: string;
 
 	@Field(() => String, { nullable: true })
-	@prop({ required: false })
+	@prop()
 	emailStartsWith?: string;
 
 	@Field(() => String, { nullable: true })
-	@prop({ required: false })
+	@prop()
 	emailEndsWith?: string;
 
 	@Field(() => String, { nullable: true })
-	@prop({ required: false })
+	@prop()
 	emailContains?: string;
 
 	@Field(() => Boolean, { nullable: true })
-	@prop({ required: false })
+	@prop()
 	isVerified?: boolean;
 
 	@Field(() => Boolean, { nullable: true })
-	@prop({ required: false })
+	@prop()
 	isRemoved?: boolean;
 }
 
