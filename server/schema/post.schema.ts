@@ -2,8 +2,7 @@ import { Field, Int, ObjectType } from "type-graphql";
 import { prop, index, Ref, pre } from "@typegoose/typegoose";
 import { Min, MinLength } from "class-validator";
 import { Timestamp } from "./base.schema";
-import { CommentModel, PostModel, UserModel } from "./models";
-import { ApolloError } from "apollo-server-errors";
+import { postPreDelete } from "../hooks/pre/post.pre";
 
 @pre<Post>(
 	["deleteOne", "deleteMany", "findOneAndDelete"],
@@ -11,30 +10,9 @@ import { ApolloError } from "apollo-server-errors";
 		// CASCADE on user posts and post's comments
 		const filter = this.getFilter();
 		try {
-			const postsToBeDeleted = await PostModel.find(filter, {
-				_id: 1,
-			}).lean();
-			const postsToBeDeletedIds = postsToBeDeleted.map(({ _id }) => _id);
-			await UserModel.updateMany(null, {
-				postsIds: {
-					$pullAll: postsToBeDeletedIds,
-				},
-				likedPostsIds: {
-					$pullAll: postsToBeDeletedIds,
-				},
-				dislikedPostsIds: {
-					$pullAll: postsToBeDeletedIds,
-				},
-			}).lean();
-			await CommentModel.deleteMany(null, {
-				postId: {
-					$in: postsToBeDeletedIds,
-				},
-			}).lean();
-		} catch {
-			throw new ApolloError(
-				"db error cascading delete on users' posts and post's comments"
-			);
+			await postPreDelete(filter);
+		} catch (err) {
+			throw err;
 		}
 		next();
 	}

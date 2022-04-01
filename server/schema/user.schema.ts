@@ -1,42 +1,26 @@
 import { pre, prop } from "@typegoose/typegoose";
 import { Field, ObjectType } from "type-graphql";
-import bcrypt from "bcrypt";
-import { Post } from "./post.schema";
 import { Timestamp } from "./base.schema";
-import { ApolloError } from "apollo-server-errors";
-import { UserModel } from "./models";
+import { userPreDelete, userPreSave } from "../hooks/pre/user.pre";
 
 @pre<User>(
 	["deleteOne", "deleteMany", "findOneAndDelete"],
 	async function (next) {
-		// CASCADE on user comments, liked comments and disliked comments
+		// CASCADE on user comments, liked comments and disliked comments, same with posts
 		const filter = this.getFilter();
 		try {
-			const usersToBeDeleted = await UserModel.find(filter, {
-				name: 1,
-			}).lean();
-			const usersToBeDeletedUserNames = usersToBeDeleted.map(
-				({ username }) => username
-			);
-			await UserModel.updateMany(null, {
-				followedBoardsNames: {
-					$pullAll: boardsToBeDeletedNames,
-				},
-			}).lean();
-			await PostModel.deleteMany(null, {
-				boardName: { $in: boardsToBeDeletedNames },
-			}).lean();
-		} catch {
-			throw new ApolloError("db error cascading delete on users' comments");
+			await userPreDelete(filter);
+		} catch (err) {
+			throw err;
 		}
 		next();
 	}
 )
 @pre<User>("save", async function (next) {
-	if (this.isModified("password")) {
-		const salt = await bcrypt.genSalt(10);
-		const hash = await bcrypt.hash(this.password, salt);
-		this.password = hash;
+	try {
+		await userPreSave(this);
+	} catch (err) {
+		throw err;
 	}
 	next();
 })
@@ -95,4 +79,7 @@ export class User extends Timestamp {
 	@Field(() => Boolean)
 	@prop({ default: false })
 	removed: boolean;
+
+	@prop({ default: false })
+	admin: boolean;
 }

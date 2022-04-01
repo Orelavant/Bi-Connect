@@ -9,6 +9,7 @@ import {
 	CommentIdInput,
 	UpdateCommentInput,
 	GetCommentsInput,
+	CommentsIdsInput,
 } from "../inputs/comments.inputs";
 import { PostIdInput } from "../inputs/post.inputs";
 dotenv.config();
@@ -201,7 +202,9 @@ export default class CommentService {
 	async deleteComment(commentDetails: CommentIdInput) {
 		let deletedComment;
 		try {
-			deletedComment = await CommentModel.deleteOne(commentDetails).lean();
+			deletedComment = await CommentModel.findOneAndDelete(
+				commentDetails
+			).lean();
 		} catch {
 			throw new ApolloError("db error deleting comment");
 		}
@@ -219,5 +222,36 @@ export default class CommentService {
 			throw new ApolloError("db error while deleting post from user");
 		}
 		return deletedComment;
+	}
+
+	async deleteComments(commentsDetails: CommentsIdsInput) {
+		let deletedComments;
+		try {
+			deletedComments = await CommentModel.find({
+				_id: { $in: commentsDetails._ids },
+			}).lean();
+			await CommentModel.deleteMany({
+				_id: { $in: commentsDetails._ids },
+			}).lean();
+		} catch {
+			throw new ApolloError("db error deleting comments");
+		}
+		// try {
+		// 	const deletedCommentsCreatorNames = deletedComments.map(
+		// 		({ creatorName }) => creatorName
+		// 	);
+		// 	const deletedCommentsIds = deletedComments.map(({ _id }) => _id);
+		// 	await UserModel.updateMany(
+		// 		{ username: { $in: deletedCommentsCreatorNames } },
+		// 		{
+		// 			$pullAll: {
+		// 				commentsIds: deletedComments._id,
+		// 			},
+		// 		}
+		// 	).lean();
+		// } catch {
+		// 	throw new ApolloError("db error while deleting post from user");
+		// }
+		return deletedComments;
 	}
 }

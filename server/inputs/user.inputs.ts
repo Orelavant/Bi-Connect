@@ -1,5 +1,5 @@
 import { prop } from "@typegoose/typegoose";
-import { IsEmail, MinLength, MaxLength } from "class-validator";
+import { IsEmail, MinLength, MaxLength, isEmail } from "class-validator";
 import { InputType, Field } from "type-graphql";
 import { ListFilterInput } from "./base.inputs";
 
@@ -36,8 +36,9 @@ export class UserIdInput {
 
 @InputType()
 export class LoginInput {
+	@IsEmail()
 	@Field(() => String)
-	username: string;
+	email: string;
 
 	@Field(() => String)
 	password: string;
