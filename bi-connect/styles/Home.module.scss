@@ -1,0 +1,59 @@
+.login-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid;
+}
+
+.email, .password {
+  label, input {
+    display: block;
+    width: 100%;
+  }
+  input {
+    padding: .5em;
+  }
+  label {
+    margin-bottom: .5em;
+  }
+}
+
+.login-button {
+  $background-color: #cfcdca;
+  $text-color: #4383cc;
+  cursor: pointer;
+  color: $text-color;
+  margin-top: 1.5em;
+  padding: .75em .5em;
+  background-color: $background-color;
+  border: 1px solid $text-color;
+  border-radius: .75em;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
+  &:hover {
+    background-color: $text-color;
+    color: #cfcdca;
+  }
+}
+
+.card {
+  height: 40%;
+  width: 20%;
+  border-radius: .75em;
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+  position: absolute;
+  left:50%;
+  top:50%;
+  transform: translate(-50%,-50%);
+  padding: 2em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  & > :not(:last-child) {
+    margin-bottom: 1.5em;
+  }
+  & > * {
+    width: 80%;
+  }
+}
