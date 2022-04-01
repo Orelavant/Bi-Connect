@@ -29,13 +29,18 @@ export default class UserResolver {
 		return this.userService.updateUser(userDetails, input);
 	}
 
-	// @Mutation(() => String)
-	// login(@Arg("input") input: LoginInput, @Ctx() context: Context) {
-	// 	return this.userService.login(input, context);
-	// }
+	@Mutation(() => String)
+	login(@Arg("input") input: LoginInput, @Ctx() context: Context) {
+		return this.userService.login(input, context);
+	}
+
+	@Mutation(() => String)
+	loginAdmin(@Arg("input") input: LoginInput, @Ctx() context: Context) {
+		return this.userService.loginAdmin(input, context);
+	}
 
 	@Query(() => User)
-	me(@Ctx() context: Context) {
+	isLoggedIn(@Ctx() context: Context) {
 		return context.user;
 	}
 

@@ -1,10 +1,8 @@
+import { pre, prop } from "@typegoose/typegoose";
 import { Field, Int, ObjectType } from "type-graphql";
-import { pre, prop, Ref } from "@typegoose/typegoose";
-import { User } from "./user.schema";
 import { Min, MinLength } from "class-validator";
 import { Timestamp } from "./base.schema";
-import { CommentModel, UserModel } from "./models";
-import { ApolloError } from "apollo-server-errors";
+import { commentPreDelete } from "../hooks/pre/comment.pre";
 
 @pre<Comment>(
 	["deleteOne", "deleteMany", "findOneAndDelete"],
@@ -12,23 +10,9 @@ import { ApolloError } from "apollo-server-errors";
 		// CASCADE on user comments, liked comments and disliked comments
 		const filter = this.getFilter();
 		try {
-			const commentsToBeDeleted = await CommentModel.find(filter, {
-				_id: 1,
-			}).lean();
-			const commentsToBeDeletedIds = commentsToBeDeleted.map(({ _id }) => _id);
-			await UserModel.updateMany(null, {
-				commentsIds: {
-					$pullAll: commentsToBeDeletedIds,
-				},
-				likedCommentsIds: {
-					$pullAll: commentsToBeDeletedIds,
-				},
-				dislikedCommentsIds: {
-					$pullAll: commentsToBeDeletedIds,
-				},
-			}).lean();
-		} catch {
-			throw new ApolloError("db error cascading delete on users' comments");
+			await commentPreDelete(filter);
+		} catch (err) {
+			throw err;
 		}
 		next();
 	}
@@ -40,7 +24,7 @@ export class Comment extends Timestamp {
 
 	@Field(() => String)
 	@prop({ required: true })
-	creatorName: String;
+	creatorName: string;
 
 	@Field(() => String)
 	@MinLength(1, {

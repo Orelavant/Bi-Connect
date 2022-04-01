@@ -1,11 +1,5 @@
-import { prop, Ref } from "@typegoose/typegoose";
-import {
-	IsEmail,
-	MinLength,
-	MaxLength,
-	Min,
-	ValidateIf,
-} from "class-validator";
+import { prop } from "@typegoose/typegoose";
+import { MinLength, ValidateIf } from "class-validator";
 import { InputType, Field, Int } from "type-graphql";
 import { ListFilterInput } from "./base.inputs";
 
@@ -28,6 +22,13 @@ export class CommentIdInput {
 	@Field(() => String)
 	@prop({ required: true })
 	_id: string;
+}
+
+@InputType()
+export class CommentsIdsInput {
+	@Field(() => [String!]!)
+	@prop({ required: true, type: String })
+	_ids: string[];
 }
 
 @InputType()
