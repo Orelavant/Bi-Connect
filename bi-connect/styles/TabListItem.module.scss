@@ -5,3 +5,38 @@
 	border-radius: 0.75em;
 	background-color: rgb(216, 235, 241);
 }
+
+.buttons-container {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.view-button-icon,
+.delete-button-icon,
+.soft-delete-button-icon,
+.edit-button-icon {
+	width: 1.5em;
+	height: 1.5em;
+}
+
+.delete-button-icon {
+	color: red;
+}
+
+.soft-delete-button-icon {
+	color: green;
+}
+
+.view-button,
+.edit-button,
+.delete-button,
+.soft-delete-button {
+	border: 1px solid black;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 3em;
+	height: 2em;
+	border-radius: 2vh;
+	cursor: pointer;
+}
