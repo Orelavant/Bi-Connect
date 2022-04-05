@@ -9,6 +9,7 @@ import { Context } from "../types/context";
 import dotenv from "dotenv";
 import {
 	BoardIdInput,
+	BoardsIdsInput,
 	CreateBoardInput,
 	GetBoardsInput,
 	UpdateBoardInput,
@@ -158,63 +159,66 @@ export default class BoardService {
 		}
 	}
 
+	async removeBoards(input: BoardsIdsInput) {
+		try {
+			const restoredBoards = await BoardModel.updateMany(
+				{ name: { $in: input.names } },
+				{ removed: true },
+				{ new: true }
+			);
+			return restoredBoards;
+		} catch {
+			throw new ApolloError("db error removing boards");
+		}
+	}
+
 	async restoreBoard(input: BoardIdInput) {
 		try {
-			const board = await BoardModel.findOneAndUpdate(
+			const restoredBoard = await BoardModel.findOneAndUpdate(
 				input,
 				{ removed: false },
 				{ new: true }
 			);
-			return board;
+			return restoredBoard;
 		} catch {
 			throw new ApolloError("db error restoring board");
 		}
 	}
 
-	async deleteBoard(boardDetails: BoardIdInput) {
-		let deletedBoard: types.DocumentType<Board>;
+	async restoreBoards(input: BoardsIdsInput) {
 		try {
-			deletedBoard = await BoardModel.findOneAndDelete(boardDetails);
+			const restoredBoards = await BoardModel.updateMany(
+				{ name: { $in: input.names } },
+				{ removed: false },
+				{ new: true }
+			);
+			// need to cascade on board posts and comments
+			return restoredBoards;
+		} catch {
+			throw new ApolloError("db error restoring boards");
+		}
+	}
+
+	async deleteBoard(boardDetails: BoardIdInput) {
+		try {
+			const deletedBoard = await BoardModel.findOneAndDelete(boardDetails);
+			return deletedBoard;
 		} catch {
 			throw new ApolloError("db error deleting board");
 		}
-		// CASCADE ON POSTS, COMMENTS AND USERS
-		let boardPosts: types.DocumentType<Post>[];
-		// delete all posts in this board
+	}
+
+	async deleteBoards(boardDetails: BoardsIdsInput) {
 		try {
-			boardPosts = await PostModel.find(
-				{
-					boardName: deletedBoard.name,
-				},
-				{ _id: 1 }
-			).lean();
-			await PostModel.deleteMany({
-				boardName: deletedBoard.name,
+			const deletedBoards = await BoardModel.find({
+				name: { $in: boardDetails.names },
 			});
+			await BoardModel.deleteMany({
+				name: { $in: boardDetails.names },
+			});
+			return deletedBoards;
 		} catch {
-			throw new ApolloError("db error deleting posts in board");
+			throw new ApolloError("db error deleting boards");
 		}
-		// delete all comments in this board
-		try {
-			const boardPostsIds = boardPosts.map(({ _id }) => _id);
-			await CommentModel.deleteMany({
-				_id: {
-					$in: boardPostsIds,
-				},
-			}).lean();
-		} catch {
-			throw new ApolloError("db error deleting comments in posts in board");
-		}
-		try {
-			await UserModel.updateMany(
-				{ followedBoardsNames: [deletedBoard.name] },
-				{ $pull: { followedBoardNames: deletedBoard.name } }
-			).lean();
-		} catch {
-			throw new ApolloError(
-				"db error deleting board from users's followed boards"
-			);
-		}
-		return deletedBoard;
 	}
 }

@@ -4,19 +4,19 @@ import { MinLength } from "class-validator";
 import { Timestamp } from "./base.schema";
 import { boardPreDelete } from "../hooks/pre/board.pre";
 
-@pre<Board>(
-	["deleteOne", "deleteMany", "findOneAndDelete"],
-	async function (next) {
-		const filter = this.getFilter();
-		try {
-			// CASCADE on users and posts
-			await boardPreDelete(filter);
-		} catch (err) {
-			throw err;
-		}
-		next();
-	}
-)
+// @pre<Board>(
+// 	["deleteOne", "deleteMany", "findOneAndDelete"],
+// 	async function (next) {
+// 		const filter = this.getFilter();
+// 		try {
+// 			// CASCADE on users and posts
+// 			await boardPreDelete(filter);
+// 		} catch (err) {
+// 			throw err;
+// 		}
+// 		next();
+// 	}
+// )
 @ObjectType()
 export class Board extends Timestamp {
 	@Field(() => String)
