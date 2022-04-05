@@ -5,6 +5,7 @@ import {
 	CreatePostInput,
 	GetPostsInput,
 	PostIdInput,
+	PostsIdsInput,
 	UpdatePostInput,
 } from "../inputs/post.inputs";
 import { BoardIdInput } from "../inputs/board.inputs";
@@ -172,51 +173,74 @@ export default class PostService {
 
 	async removePost(input: PostIdInput) {
 		try {
-			const post = await PostModel.findByIdAndUpdate(
+			const removedPost = await PostModel.findByIdAndUpdate(
 				input._id,
 				{ removed: true },
 				{ new: true }
 			).lean();
-			return post;
+			return removedPost;
 		} catch {
 			throw new ApolloError("db error removing post");
 		}
 	}
 
+	async removePosts(input: PostsIdsInput) {
+		try {
+			const removedPosts = await PostModel.updateMany(
+				{ _id: { $in: input._ids } },
+				{ removed: true },
+				{ new: true }
+			).lean();
+			return removedPosts;
+		} catch {
+			throw new ApolloError("db error removing posts");
+		}
+	}
+
 	async restorePost(input: PostIdInput) {
 		try {
-			const post = await PostModel.findByIdAndUpdate(
+			const restoredPost = await PostModel.findByIdAndUpdate(
 				input._id,
 				{ removed: false },
 				{ new: true }
 			).lean();
-			return post;
+			return restoredPost;
 		} catch {
 			throw new ApolloError("db error restoring post");
 		}
 	}
 
-	async deletePost(input: PostIdInput) {
-		let deletedPost: types.DocumentType<Post>;
+	async restorePosts(input: PostsIdsInput) {
 		try {
-			deletedPost = await PostModel.findByIdAndDelete(input._id).lean();
+			const restoredPosts = await PostModel.updateMany(
+				{ _id: { $in: input._ids } },
+				{ removed: false },
+				{ new: true }
+			).lean();
+			return restoredPosts;
+		} catch {
+			throw new ApolloError("db error restoring posts");
+		}
+	}
+
+	async deletePost(input: PostIdInput) {
+		try {
+			const deletedPost = await PostModel.findByIdAndDelete(input._id).lean();
+			return deletedPost;
 		} catch {
 			throw new ApolloError("db error deleting post");
 		}
+	}
+
+	async deletePosts(input: PostsIdsInput) {
 		try {
-			// CASCASE ON USER
-			const { creatorName } = deletedPost;
-			await UserModel.findOneAndUpdate(
-				{ username: creatorName },
-				{
-					$pull: {
-						postsIds: deletedPost._id,
-					},
-				}
-			).lean();
+			const deletedPosts = await PostModel.find({ _id: { $in: input._ids } });
+			await PostModel.deleteMany({
+				_id: { $in: input._ids },
+			}).lean();
+			return deletedPosts;
 		} catch {
-			throw new ApolloError("db error while deleting post from user");
+			throw new ApolloError("db error deleting posts");
 		}
-		return deletedPost;
 	}
 }

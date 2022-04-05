@@ -186,16 +186,42 @@ export default class CommentService {
 		}
 	}
 
-	async restoreComment(commentDetails: CommentIdInput) {
+	async removeComments(commentsDetails: CommentsIdsInput) {
 		try {
-			const deletedComment = await CommentModel.findOneAndUpdate(
-				commentDetails,
-				{ removed: false },
+			const deletedComment = await CommentModel.updateMany(
+				{ _id: { $in: commentsDetails._ids } },
+				{ removed: true },
 				{ new: true }
 			).lean();
 			return deletedComment;
 		} catch {
+			throw new ApolloError("db error removing comments");
+		}
+	}
+
+	async restoreComment(commentDetails: CommentIdInput) {
+		try {
+			const restoredComment = await CommentModel.findByIdAndUpdate(
+				commentDetails._id,
+				{ removed: false },
+				{ new: true }
+			).lean();
+			return restoredComment;
+		} catch {
 			throw new ApolloError("db error restoring comment");
+		}
+	}
+
+	async restoreComments(commentsDetails: CommentsIdsInput) {
+		try {
+			const restoredComments = await CommentModel.updateMany(
+				{ _id: { $in: commentsDetails._ids } },
+				{ removed: true },
+				{ new: true }
+			).lean();
+			return restoredComments;
+		} catch {
+			throw new ApolloError("db error restoring comments");
 		}
 	}
 
@@ -225,33 +251,16 @@ export default class CommentService {
 	}
 
 	async deleteComments(commentsDetails: CommentsIdsInput) {
-		let deletedComments;
 		try {
-			deletedComments = await CommentModel.find({
+			const deletedComments = await CommentModel.find({
 				_id: { $in: commentsDetails._ids },
 			}).lean();
 			await CommentModel.deleteMany({
 				_id: { $in: commentsDetails._ids },
 			}).lean();
+			return deletedComments;
 		} catch {
 			throw new ApolloError("db error deleting comments");
 		}
-		// try {
-		// 	const deletedCommentsCreatorNames = deletedComments.map(
-		// 		({ creatorName }) => creatorName
-		// 	);
-		// 	const deletedCommentsIds = deletedComments.map(({ _id }) => _id);
-		// 	await UserModel.updateMany(
-		// 		{ username: { $in: deletedCommentsCreatorNames } },
-		// 		{
-		// 			$pullAll: {
-		// 				commentsIds: deletedComments._id,
-		// 			},
-		// 		}
-		// 	).lean();
-		// } catch {
-		// 	throw new ApolloError("db error while deleting post from user");
-		// }
-		return deletedComments;
 	}
 }

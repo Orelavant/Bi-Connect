@@ -26,12 +26,23 @@ export class CreateUserInput {
 export class UserIdInput {
 	@Field(() => String, { nullable: true })
 	@prop()
-	username?: string;
+	username: string;
 
 	@IsEmail()
 	@Field(() => String, { nullable: true })
 	@prop()
-	email?: string;
+	email: string;
+}
+
+export class UsersIdsInput {
+	@Field(() => [String!], { nullable: true })
+	@prop({ type: String })
+	usernames: string[];
+
+	@IsEmail()
+	@Field(() => [String!], { nullable: true })
+	@prop({ type: String })
+	emails: string[];
 }
 
 @InputType()

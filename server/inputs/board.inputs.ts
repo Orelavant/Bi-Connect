@@ -92,5 +92,13 @@ export class GetBoardsInput extends BoardsFilterInput {}
 @InputType()
 export class BoardIdInput {
 	@Field(() => String)
+	@prop({ required: true })
 	name: string;
+}
+
+@InputType()
+export class BoardsIdsInput {
+	@Field(() => [String!]!)
+	@prop({ required: true, type: String })
+	names: string[];
 }

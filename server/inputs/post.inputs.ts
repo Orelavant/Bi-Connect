@@ -25,6 +25,13 @@ export class PostIdInput {
 }
 
 @InputType()
+export class PostsIdsInput {
+	@Field(() => [String!]!)
+	@prop({ required: true, type: String })
+	_ids: string[];
+}
+
+@InputType()
 export class UpdatePostInput {
 	@Field(() => String, { nullable: true })
 	@prop()

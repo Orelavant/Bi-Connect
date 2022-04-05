@@ -39,9 +39,14 @@ export default class UserResolver {
 		return this.userService.loginAdmin(input, context);
 	}
 
-	@Query(() => User)
+	@Query(() => User, { nullable: true })
 	isLoggedIn(@Ctx() context: Context) {
 		return context.user;
+	}
+
+	@Query(() => User)
+	isAdminLoggedIn(@Ctx() context: Context) {
+		return context.user?.admin || null;
 	}
 
 	@Query(() => User)
