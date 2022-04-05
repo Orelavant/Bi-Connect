@@ -3,19 +3,19 @@ import { Field, ObjectType } from "type-graphql";
 import { Timestamp } from "./base.schema";
 import { userPreDelete, userPreSave } from "../hooks/pre/user.pre";
 
-@pre<User>(
-	["deleteOne", "deleteMany", "findOneAndDelete"],
-	async function (next) {
-		// CASCADE on user comments, liked comments and disliked comments, same with posts
-		const filter = this.getFilter();
-		try {
-			await userPreDelete(filter);
-		} catch (err) {
-			throw err;
-		}
-		next();
-	}
-)
+// @pre<User>(
+// 	["deleteOne", "deleteMany", "findOneAndDelete"],
+// 	async function (next) {
+// 		// CASCADE on user comments, liked comments and disliked comments, same with posts
+// 		const filter = this.getFilter();
+// 		try {
+// 			await userPreDelete(filter);
+// 		} catch (err) {
+// 			throw err;
+// 		}
+// 		next();
+// 	}
+// )
 @pre<User>("save", async function (next) {
 	try {
 		await userPreSave(this);

@@ -4,19 +4,19 @@ import { Min, MinLength } from "class-validator";
 import { Timestamp } from "./base.schema";
 import { commentPreDelete } from "../hooks/pre/comment.pre";
 
-@pre<Comment>(
-	["deleteOne", "deleteMany", "findOneAndDelete"],
-	async function (next) {
-		// CASCADE on user comments, liked comments and disliked comments
-		const filter = this.getFilter();
-		try {
-			await commentPreDelete(filter);
-		} catch (err) {
-			throw err;
-		}
-		next();
-	}
-)
+// @pre<Comment>(
+// 	["deleteOne", "deleteMany", "findOneAndDelete"],
+// 	async function (next) {
+// 		// CASCADE on user comments, liked comments and disliked comments
+// 		const filter = this.getFilter();
+// 		try {
+// 			await commentPreDelete(filter);
+// 		} catch (err) {
+// 			throw err;
+// 		}
+// 		next();
+// 	}
+// )
 @ObjectType()
 export class Comment extends Timestamp {
 	@Field(() => String)

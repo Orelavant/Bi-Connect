@@ -10,6 +10,7 @@ import {
 	UserIdInput,
 	UpdateUserInput,
 	GetUsersInput,
+	UsersIdsInput,
 } from "../inputs/user.inputs";
 import { types } from "@typegoose/typegoose";
 import { User } from "../schema/user.schema";
@@ -70,7 +71,7 @@ export default class UserService {
 		const token = signJWT(user);
 
 		// set cookie
-		context.res.cookie("accessToken", token, {
+		context.res.cookie("biConnectAccessToken", token, {
 			maxAge: 3.154e10, // 1 year
 			httpOnly: true,
 			domain: process.env.DOMAIN || "localhost",
@@ -256,37 +257,69 @@ export default class UserService {
 		if (Object.keys(input).length === 0) {
 			throw new ApolloError("User details not provided");
 		}
-		let user: types.DocumentType<User>;
+		// let user: types.DocumentType<User>;
 		try {
-			user = await UserModel.findOneAndDelete(input).lean();
+			const user = await UserModel.findOneAndDelete(input).lean();
+			return user;
 		} catch {
 			throw new ApolloError("User does not exist or db error");
 		}
 		// CASCADE ON COMMENTS AND POSTS
-		try {
-			await CommentModel.updateMany(
-				{
-					_id: {
-						$in: user.commentsIds,
-					},
-				},
-				{ removed: true }
-			).lean();
-		} catch {
-			throw new ApolloError("db error on cascade removing user comments");
+		// try {
+		// 	await CommentModel.updateMany(
+		// 		{
+		// 			_id: {
+		// 				$in: user.commentsIds,
+		// 			},
+		// 		},
+		// 		{ removed: true }
+		// 	).lean();
+		// } catch {
+		// 	throw new ApolloError("db error on cascade removing user comments");
+		// }
+		// try {
+		// 	await PostModel.updateMany(
+		// 		{
+		// 			_id: {
+		// 				$in: user.postsIds,
+		// 			},
+		// 		},
+		// 		{ removed: true }
+		// 	).lean();
+		// } catch {
+		// 	throw new ApolloError("db error on cascade removing user posts");
+		// }
+		// return user;
+	}
+
+	async deleteUsers(input: UsersIdsInput) {
+		if (Object.keys(input).length === 0) {
+			throw new ApolloError("User details not provided");
 		}
+		const filter = {
+			$or: [
+				{ username: { $in: input.usernames } },
+				{ email: { $in: input.emails } },
+			],
+		};
 		try {
-			await PostModel.updateMany(
-				{
-					_id: {
-						$in: user.postsIds,
-					},
-				},
-				{ removed: true }
-			).lean();
+			const deletedUsers = await UserModel.find(filter).lean();
+			await UserModel.deleteMany(filter).lean();
+			return deletedUsers;
 		} catch {
-			throw new ApolloError("db error on cascade removing user posts");
+			throw new ApolloError("User does not exist or db error");
 		}
-		return user;
+	}
+
+	async getUserComments(input: UserIdInput) {
+		if (Object.keys(input).length === 0) {
+			throw new ApolloError("User details not provided");
+		}
+	}
+
+	async getUserPosts(input: UserIdInput) {
+		if (Object.keys(input).length === 0) {
+			throw new ApolloError("User details not provided");
+		}
 	}
 }
