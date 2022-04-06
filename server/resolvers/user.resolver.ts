@@ -44,7 +44,7 @@ export default class UserResolver {
 		return context.user;
 	}
 
-	@Query(() => User, { nullable: true })
+	@Query(() => User)
 	isAdminLoggedIn(@Ctx() context: Context) {
 		return context.user?.admin || null;
 	}

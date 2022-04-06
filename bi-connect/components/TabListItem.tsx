@@ -7,10 +7,10 @@ import {
 } from "react-icons/md";
 interface TabListItemProps {
 	children: React.ReactNode;
-	onClickDelete?: () => void;
-	onClickEdit?: () => void;
-	onClickView?: () => void;
-	onClickSoftDelete?: () => void;
+	onClickDelete: () => void;
+	onClickEdit: () => void;
+	onClickView: () => void;
+	onClickSoftDelete: () => void;
 }
 
 const TabListItem = ({ children }: TabListItemProps) => {

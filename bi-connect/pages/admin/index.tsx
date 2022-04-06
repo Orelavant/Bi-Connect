@@ -1,54 +1,35 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import Image from "next/image";
+import React, { useState } from "react";
 import styles from "../../styles/Home.module.scss";
+import MyButton from "../../components/myButton";
 import Tab from "../../components/Tab";
 import UserTabListItem from "../../components/UserTabListItem";
 import BoardTabListItem from "../../components/BoardTabListItem";
-import { useRouter } from "next/router";
-import useGetBoards from "../../hooks/useGetBoards";
-import useGetUsers from "../../hooks/useGetUsers";
-import { useGetBoardsQuery, useGetUsersQuery } from "../../generated/graphql";
-
-const endpoint = "http://localhost:3001/graphql";
 
 const Home: NextPage = () => {
-	const {
-		data: boardData,
-		isLoading: boardIsLoading,
-		isError: boardIsError,
-		isSuccess: boardIsSuccess,
-	} = useGetBoardsQuery(
-		{
-			endpoint,
-			fetchParams: {
-				headers: {
-					Accept: "application/json",
-					"Content-Type": "application/json",
-				},
-			},
-		},
-		{ input: {} }
-	);
-	// useGetBoards({});
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
 
-	const {
-		data: userData,
-		isLoading: userIsLoading,
-		isError: userIsError,
-		isSuccess: userIsSuccess,
-	} = useGetUsersQuery(
-		{
-			endpoint,
-			fetchParams: {
-				headers: {
-					Accept: "application/json",
-					"Content-Type": "application/json",
-				},
-			},
-		},
-		{ input: {} }
-	);
-	// useGetUsers({});
+	const handleEmailInputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		let input: string = e.target.value;
+		setEmail(input);
+	};
+
+	const handlePasswordInputOnChange = (
+		e: React.ChangeEvent<HTMLInputElement>
+	) => {
+		let input: string = e.target.value;
+		setPassword(input);
+	};
+
+	const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+		console.log(email);
+		console.log(password);
+		//TODO
+		//API call
+	};
 
 	return (
 		<div className={styles.container}>
@@ -60,29 +41,26 @@ const Home: NextPage = () => {
 			<Tab
 				tabs={{
 					Users: {
-						data: !userIsLoading && userIsSuccess ? userData.getUsers : null,
-						// data: [
-						// 	{ username: "ichang1", email: "ichang1@haverford.edu" },
-						// 	{ username: "jhan1", email: "jhan1@brynmawr.edu" },
-						// ],
+						data: [
+							{ username: "ichang1", email: "ichang1@haverford.edu" },
+							{ username: "jhan1", email: "jhan1@brynmawr.edu" },
+						],
 						renderComponent: UserTabListItem,
 						createButtonOnClick: () => {
 							console.log("creating user");
 						},
 					},
 					Boards: {
-						data:
-							!boardIsLoading && boardIsSuccess ? boardData.getBoards : null,
-						// data: [
-						// 	{
-						// 		boardname: "Bi-Co Confession",
-						// 		boardDescription: "This is a page for confessions.",
-						// 	},
-						// 	{
-						// 		boardname: "Bi-Co Badminton",
-						// 		boardDescription: "This is a page for badminton club.",
-						// 	},
-						// ],
+						data: [
+							{
+								boardname: "Bi-Co Confession",
+								boardDescription: "This is a page for confessions.",
+							},
+							{
+								boardname: "Bi-Co Badminton",
+								boardDescription: "This is a page for badminton club.",
+							},
+						],
 						renderComponent: BoardTabListItem,
 						createButtonOnClick: () => {
 							console.log("creating board");

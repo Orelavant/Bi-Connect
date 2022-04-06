@@ -101,69 +101,66 @@ export default class CommentService {
 			limit,
 			offset,
 		} = input;
-		const andFilter = [
-			contentStartsWith && {
-				conent: new RegExp(`^${contentStartsWith}`, "i"),
-			},
-			contentEndsWith && {
-				content: new RegExp(`${contentEndsWith}$`, "i"),
-			},
-			contentContains && {
-				content: new RegExp(`^.*${contentContains}.*$`, "i"),
-			},
-			creatorNameStartsWith && {
-				user: {
-					username: new RegExp(`^${creatorNameStartsWith}`, "i"),
+		const filterQuery = {
+			$and: [
+				contentStartsWith && {
+					conent: new RegExp(`^${contentStartsWith}`, "i"),
 				},
-			},
-			creatorNameEndsWith && {
-				user: {
-					username: new RegExp(`${creatorNameEndsWith}$`, "i"),
+				contentEndsWith && {
+					content: new RegExp(`${contentEndsWith}$`, "i"),
 				},
-			},
-			creatorNameContains && {
-				user: {
-					username: new RegExp(`^.*${creatorNameContains}.*$`, "i"),
+				contentContains && {
+					content: new RegExp(`^.*${contentContains}.*$`, "i"),
 				},
-			},
-			likesLte != null && {
-				likes: {
-					$lte: likesLte,
+				creatorNameStartsWith && {
+					user: {
+						username: new RegExp(`^${creatorNameStartsWith}`, "i"),
+					},
 				},
-			},
-			likesGte != null && {
-				likes: {
-					$gte: likesGte,
+				creatorNameEndsWith && {
+					user: {
+						username: new RegExp(`${creatorNameEndsWith}$`, "i"),
+					},
 				},
-			},
-			dislikesLte != null && {
-				dislikes: {
-					$lte: dislikesLte,
+				creatorNameContains && {
+					user: {
+						username: new RegExp(`^.*${creatorNameContains}.*$`, "i"),
+					},
 				},
-			},
-			dislikesGte != null && {
-				dislikes: {
-					$gte: dislikesGte,
+				likesLte != null && {
+					likes: {
+						$lte: likesLte,
+					},
 				},
-			},
-			createdAtBefore && {
-				createdAt: { $lte: createdAtBefore },
-			},
-			createdAtAfter && {
-				createdAt: { $gte: createdAtAfter },
-			},
-			updatedAtBefore && {
-				updatedAt: { $lte: updatedAtBefore },
-			},
-			updatedAtAfter && {
-				updatedAt: { $gte: updatedAtAfter },
-			},
-		].filter(Boolean);
-		const filterQuery = andFilter.length
-			? {
-					$and: andFilter,
-			  }
-			: {};
+				likesGte != null && {
+					likes: {
+						$gte: likesGte,
+					},
+				},
+				dislikesLte != null && {
+					dislikes: {
+						$lte: dislikesLte,
+					},
+				},
+				dislikesGte != null && {
+					dislikes: {
+						$gte: dislikesGte,
+					},
+				},
+				createdAtBefore && {
+					createdAt: { $lte: createdAtBefore },
+				},
+				createdAtAfter && {
+					createdAt: { $gte: createdAtAfter },
+				},
+				updatedAtBefore && {
+					updatedAt: { $lte: updatedAtBefore },
+				},
+				updatedAtAfter && {
+					updatedAt: { $gte: updatedAtAfter },
+				},
+			].filter(Boolean),
+		};
 		try {
 			const comments = await CommentModel.find(filterQuery)
 				.sort({ updatedAt: -1 })

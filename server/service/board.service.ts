@@ -91,52 +91,49 @@ export default class BoardService {
 			limit,
 			offset,
 		} = input;
-		const andFilters = [
-			nameStartsWith && {
-				name: new RegExp(`^${nameStartsWith}`, "i"),
-			},
-			nameEndsWith && {
-				name: new RegExp(`${nameEndsWith}$`, "i"),
-			},
-			nameContains && { name: new RegExp(`^.*${nameContains}.*$`, "i") },
-			descriptionStartsWith && {
-				description: new RegExp(`^${descriptionStartsWith}`, "i"),
-			},
-			descriptionEndsWith && {
-				description: new RegExp(`${descriptionEndsWith}$`, "i"),
-			},
-			descriptionContains && {
-				description: new RegExp(`^.*${descriptionContains}.*$`, "i"),
-			},
-			usersCountLte != null && {
-				usersCountLte: {
-					$lte: usersCountLte,
+		const filterQuery = {
+			$and: [
+				nameStartsWith && {
+					name: new RegExp(`^${nameStartsWith}`, "i"),
 				},
-			},
-			usersCountGte != null && {
-				usersCountGte: {
-					$gte: usersCountGte,
+				nameEndsWith && {
+					name: new RegExp(`${nameEndsWith}$`, "i"),
 				},
-			},
-			isRemoved != null && { removed: isRemoved },
-			createdAtBefore && {
-				createdAt: { $lte: createdAtBefore },
-			},
-			createdAtAfter && {
-				createdAt: { $gte: createdAtAfter },
-			},
-			updatedAtBefore && {
-				updatedAt: { $lte: updatedAtBefore },
-			},
-			updatedAtAfter && {
-				updatedAt: { $gte: updatedAtAfter },
-			},
-		].filter(Boolean);
-		const filterQuery = andFilters.length
-			? {
-					$and: andFilters,
-			  }
-			: {};
+				nameContains && { name: new RegExp(`^.*${nameContains}.*$`, "i") },
+				descriptionStartsWith && {
+					description: new RegExp(`^${descriptionStartsWith}`, "i"),
+				},
+				descriptionEndsWith && {
+					description: new RegExp(`${descriptionEndsWith}$`, "i"),
+				},
+				descriptionContains && {
+					description: new RegExp(`^.*${descriptionContains}.*$`, "i"),
+				},
+				usersCountLte != null && {
+					usersCountLte: {
+						$lte: usersCountLte,
+					},
+				},
+				usersCountGte != null && {
+					usersCountGte: {
+						$gte: usersCountGte,
+					},
+				},
+				isRemoved != null && { removed: isRemoved },
+				createdAtBefore && {
+					createdAt: { $lte: createdAtBefore },
+				},
+				createdAtAfter && {
+					createdAt: { $gte: createdAtAfter },
+				},
+				updatedAtBefore && {
+					updatedAt: { $lte: updatedAtBefore },
+				},
+				updatedAtAfter && {
+					updatedAt: { $gte: updatedAtAfter },
+				},
+			].filter(Boolean),
+		};
 		try {
 			const boards = await BoardModel.find(filterQuery)
 				.sort({ name: 1 })
