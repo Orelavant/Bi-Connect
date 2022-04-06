@@ -1,4 +1,4 @@
-import { useQuery, useMutation, UseQueryOptions, UseMutationOptions } from 'react-query';
+import { useMutation, useQuery, UseMutationOptions, UseQueryOptions } from 'react-query';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -421,6 +421,14 @@ export type UserIdInput = {
   username?: InputMaybe<Scalars['String']>;
 };
 
+export type CreateBoardMutationVariables = Exact<{
+  input: CreateBoardInput;
+  creatorDetails: UserIdInput;
+}>;
+
+
+export type CreateBoardMutation = { __typename?: 'Mutation', createBoard: { __typename?: 'Board', name: string, description: string } };
+
 export type GetBoardsQueryVariables = Exact<{
   input: GetBoardsInput;
 }>;
@@ -457,6 +465,26 @@ export type GetUsersQueryVariables = Exact<{
 export type GetUsersQuery = { __typename?: 'Query', getUsers: Array<{ __typename?: 'User', username: string, email: string }> };
 
 
+export const CreateBoardDocument = `
+    mutation createBoard($input: CreateBoardInput!, $creatorDetails: UserIdInput!) {
+  createBoard(input: $input, creatorDetails: $creatorDetails) {
+    name
+    description
+  }
+}
+    `;
+export const useCreateBoardMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      options?: UseMutationOptions<CreateBoardMutation, TError, CreateBoardMutationVariables, TContext>
+    ) =>
+    useMutation<CreateBoardMutation, TError, CreateBoardMutationVariables, TContext>(
+      ['createBoard'],
+      (variables?: CreateBoardMutationVariables) => fetcher<CreateBoardMutation, CreateBoardMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, CreateBoardDocument, variables)(),
+      options
+    );
 export const GetBoardsDocument = `
     query getBoards($input: GetBoardsInput!) {
   getBoards(input: $input) {
