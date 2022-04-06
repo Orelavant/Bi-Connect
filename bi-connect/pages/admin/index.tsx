@@ -1,15 +1,15 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
 import styles from "../../styles/Home.module.scss";
-import MyButton from "../../components/myButton";
 import Tab from "../../components/Tab";
 import UserTabListItem from "../../components/UserTabListItem";
 import BoardTabListItem from "../../components/BoardTabListItem";
 import { useRouter } from "next/router";
-import { route } from "next/dist/server/router";
 import useGetBoards from "../../hooks/useGetBoards";
 import useGetUsers from "../../hooks/useGetUsers";
+import { useGetBoardsQuery, useGetUsersQuery } from "../../generated/graphql";
+
+const endpoint = "http://localhost:3001/graphql";
 
 const Home: NextPage = () => {
 	const {
@@ -17,15 +17,39 @@ const Home: NextPage = () => {
 		isLoading: boardIsLoading,
 		isError: boardIsError,
 		isSuccess: boardIsSuccess,
-	} = useGetBoards({});
+	} = useGetBoardsQuery(
+		{
+			endpoint,
+			fetchParams: {
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+			},
+		},
+		{ input: {} }
+	);
+	// useGetBoards({});
 
 	const {
 		data: userData,
 		isLoading: userIsLoading,
 		isError: userIsError,
 		isSuccess: userIsSuccess,
-	} = useGetUsers({});
-	console.log(userData);
+	} = useGetUsersQuery(
+		{
+			endpoint,
+			fetchParams: {
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+			},
+		},
+		{ input: {} }
+	);
+	// useGetUsers({});
+
 	return (
 		<div className={styles.container}>
 			<Head>
@@ -36,8 +60,7 @@ const Home: NextPage = () => {
 			<Tab
 				tabs={{
 					Users: {
-						data:
-							!userIsLoading && userIsSuccess ? userData.data.getUsers : null,
+						data: !userIsLoading && userIsSuccess ? userData.getUsers : null,
 						// data: [
 						// 	{ username: "ichang1", email: "ichang1@haverford.edu" },
 						// 	{ username: "jhan1", email: "jhan1@brynmawr.edu" },
@@ -49,9 +72,7 @@ const Home: NextPage = () => {
 					},
 					Boards: {
 						data:
-							!boardIsLoading && boardIsSuccess
-								? boardData.data.getBoards
-								: null,
+							!boardIsLoading && boardIsSuccess ? boardData.getBoards : null,
 						// data: [
 						// 	{
 						// 		boardname: "Bi-Co Confession",
