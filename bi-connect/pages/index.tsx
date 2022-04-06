@@ -1,12 +1,30 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../styles/Home.module.scss";
+import useLogin from "../hooks/useLogin";
+import { useRouter } from "next/router";
+import { route } from "next/dist/server/router";
 
 const Home: NextPage = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [loginEnabled, setLoginEnabled] = useState(false);
+	const router = useRouter();
+	const { data, isLoading, isError, isSuccess } = useLogin(
+		email,
+		password,
+		loginEnabled
+	);
+	console.log(data, isLoading, isError, isSuccess);
+	useEffect(() => {
+		if (isSuccess && !isError && !data.errors) {
+			router.push("/admin");
+		} else {
+			setLoginEnabled(false);
+		}
+	}, [data, isSuccess, isError, setLoginEnabled]);
 
 	const handleEmailInputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		let input: string = e.target.value;
@@ -21,10 +39,7 @@ const Home: NextPage = () => {
 	};
 
 	const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
-		console.log(email);
-		console.log(password);
-		//TODO
-		//API call
+		setLoginEnabled(true);
 	};
 
 	return (

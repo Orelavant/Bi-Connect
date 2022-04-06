@@ -2,15 +2,15 @@ import React from "react";
 import TabListItem from "./TabListItem";
 
 interface BoardTabListItemProps {
-	boardname: string;
-	boardDescription: string;
+	name: string;
+	description: string;
 }
 
 const BoardTabListItem = (props: BoardTabListItemProps) => {
 	return (
 		<TabListItem>
-			<div>{"Board Name: " + props.boardname}</div>
-			<div>{"Board Description: " + props.boardDescription}</div>
+			<div>{"Board Name: " + props.name}</div>
+			<div>{"Board Description: " + props.description}</div>
 		</TabListItem>
 	);
 };

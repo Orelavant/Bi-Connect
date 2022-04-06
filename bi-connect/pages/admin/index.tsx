@@ -1,36 +1,31 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import React, { useState } from "react";
 import styles from "../../styles/Home.module.scss";
 import MyButton from "../../components/myButton";
 import Tab from "../../components/Tab";
 import UserTabListItem from "../../components/UserTabListItem";
 import BoardTabListItem from "../../components/BoardTabListItem";
+import { useRouter } from "next/router";
+import { route } from "next/dist/server/router";
+import useGetBoards from "../../hooks/useGetBoards";
+import useGetUsers from "../../hooks/useGetUsers";
 
 const Home: NextPage = () => {
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+	const {
+		data: boardData,
+		isLoading: boardIsLoading,
+		isError: boardIsError,
+		isSuccess: boardIsSuccess,
+	} = useGetBoards({});
 
-	const handleEmailInputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		let input: string = e.target.value;
-		setEmail(input);
-	};
-
-	const handlePasswordInputOnChange = (
-		e: React.ChangeEvent<HTMLInputElement>
-	) => {
-		let input: string = e.target.value;
-		setPassword(input);
-	};
-
-	const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
-		console.log(email);
-		console.log(password);
-		//TODO
-		//API call
-	};
-
+	const {
+		data: userData,
+		isLoading: userIsLoading,
+		isError: userIsError,
+		isSuccess: userIsSuccess,
+	} = useGetUsers({});
+	console.log(userData);
 	return (
 		<div className={styles.container}>
 			<Head>
@@ -41,26 +36,32 @@ const Home: NextPage = () => {
 			<Tab
 				tabs={{
 					Users: {
-						data: [
-							{ username: "ichang1", email: "ichang1@haverford.edu" },
-							{ username: "jhan1", email: "jhan1@brynmawr.edu" },
-						],
+						data:
+							!userIsLoading && userIsSuccess ? userData.data.getUsers : null,
+						// data: [
+						// 	{ username: "ichang1", email: "ichang1@haverford.edu" },
+						// 	{ username: "jhan1", email: "jhan1@brynmawr.edu" },
+						// ],
 						renderComponent: UserTabListItem,
 						createButtonOnClick: () => {
 							console.log("creating user");
 						},
 					},
 					Boards: {
-						data: [
-							{
-								boardname: "Bi-Co Confession",
-								boardDescription: "This is a page for confessions.",
-							},
-							{
-								boardname: "Bi-Co Badminton",
-								boardDescription: "This is a page for badminton club.",
-							},
-						],
+						data:
+							!boardIsLoading && boardIsSuccess
+								? boardData.data.getBoards
+								: null,
+						// data: [
+						// 	{
+						// 		boardname: "Bi-Co Confession",
+						// 		boardDescription: "This is a page for confessions.",
+						// 	},
+						// 	{
+						// 		boardname: "Bi-Co Badminton",
+						// 		boardDescription: "This is a page for badminton club.",
+						// 	},
+						// ],
 						renderComponent: BoardTabListItem,
 						createButtonOnClick: () => {
 							console.log("creating board");

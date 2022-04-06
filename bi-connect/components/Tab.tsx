@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
 import styles from "../styles/Tab.module.scss";
 import CreateButton from "./CreateButton";
+import LoadingTabItem from "./LoadingTabItem";
 
 interface TabData {
 	data: {
@@ -43,8 +44,18 @@ const Tab = ({ tabs }: TabProps) => {
 					{Object.entries(tabs).map(([tabKey, { data, renderComponent }]) => (
 						<Tabs.Content value={tabKey} asChild>
 							<div>
-								{data.map((json) =>
-									React.createElement(renderComponent, { ...json })
+								{data != null ? (
+									data.map((json) =>
+										React.createElement(renderComponent, { ...json })
+									)
+								) : (
+									<div>
+										<LoadingTabItem />
+										<LoadingTabItem />
+										<LoadingTabItem />
+										<LoadingTabItem />
+										<LoadingTabItem />
+									</div>
 								)}
 							</div>
 						</Tabs.Content>

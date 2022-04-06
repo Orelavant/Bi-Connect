@@ -163,36 +163,39 @@ export default class UserService {
 			limit,
 			offset,
 		} = input;
-		const filterQuery = {
-			$and: [
-				usernameStartsWith && {
-					username: new RegExp(`^${usernameStartsWith}`, "i"),
-				},
-				usernameEndsWith && {
-					username: new RegExp(`${usernameEndsWith}$`, "i"),
-				},
-				usernameContains && {
-					username: new RegExp(`^.*${usernameContains}.*$`, "i"),
-				},
-				emailStartsWith && { email: new RegExp(`^${emailStartsWith}`, "i") },
-				emailEndsWith && { email: new RegExp(`${emailEndsWith}$`, "i") },
-				emailContains && { email: new RegExp(`^.*${emailContains}.*$`, "i") },
-				isVerified != null && { verified: isVerified },
-				isRemoved != null && { removed: isRemoved },
-				createdAtBefore && {
-					createdAt: { $lte: createdAtBefore },
-				},
-				createdAtAfter && {
-					createdAt: { $gte: createdAtAfter },
-				},
-				updatedAtBefore && {
-					updatedAt: { $lte: updatedAtBefore },
-				},
-				updatedAtAfter && {
-					updatedAt: { $gte: updatedAtAfter },
-				},
-			].filter(Boolean),
-		};
+		const andFilter = [
+			usernameStartsWith && {
+				username: new RegExp(`^${usernameStartsWith}`, "i"),
+			},
+			usernameEndsWith && {
+				username: new RegExp(`${usernameEndsWith}$`, "i"),
+			},
+			usernameContains && {
+				username: new RegExp(`^.*${usernameContains}.*$`, "i"),
+			},
+			emailStartsWith && { email: new RegExp(`^${emailStartsWith}`, "i") },
+			emailEndsWith && { email: new RegExp(`${emailEndsWith}$`, "i") },
+			emailContains && { email: new RegExp(`^.*${emailContains}.*$`, "i") },
+			isVerified != null && { verified: isVerified },
+			isRemoved != null && { removed: isRemoved },
+			createdAtBefore && {
+				createdAt: { $lte: createdAtBefore },
+			},
+			createdAtAfter && {
+				createdAt: { $gte: createdAtAfter },
+			},
+			updatedAtBefore && {
+				updatedAt: { $lte: updatedAtBefore },
+			},
+			updatedAtAfter && {
+				updatedAt: { $gte: updatedAtAfter },
+			},
+		].filter(Boolean);
+		const filterQuery = andFilter.length
+			? {
+					$and: andFilter,
+			  }
+			: {};
 		try {
 			const users = await UserModel.find(filterQuery)
 				.sort({ username: 1 })
