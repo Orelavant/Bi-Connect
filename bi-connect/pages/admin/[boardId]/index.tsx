@@ -4,10 +4,10 @@ import { Item, Image } from "semantic-ui-react";
 import "fomantic-ui-css/semantic.css";
 
 const Board = ({ test }: any) => {
-  const router = useRouter();
   console.log(test);
   return (
     <Item.Group>
+      <div>test: {test}</div>
       <Item>
         <Item.Image size="tiny" src="/images/wireframe/image.png" />
 
