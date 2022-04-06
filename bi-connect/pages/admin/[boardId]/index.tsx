@@ -1,38 +1,22 @@
-import { useRouter } from "next/router";
 import React from "react";
 import { Item, Image } from "semantic-ui-react";
 import "fomantic-ui-css/semantic.css";
+import Post from "../../../components/Post";
+import myButton from "../../../components/myButton";
 
+// TODO: HOW TO ADD BUTTON
 const Board = ({ test }: any) => {
   console.log(test);
+  const boardInfo = getBoardInfo(test);
   return (
     <Item.Group>
-      <div>test: {test}</div>
-      <Item>
-        <Item.Image size="tiny" src="/images/wireframe/image.png" />
+		<div>
+			<h1>Board Title: {boardInfo.boardName}</h1>
+			<h3>Board Desc: {boardInfo.boardDesc}</h3>
+		</div>
 
-        <Item.Content>
-          <Item.Header as="a">Header</Item.Header>
-          <Item.Meta>Description</Item.Meta>
-          <Item.Description>
-            <p>This is the content</p>
-          </Item.Description>
-          <Item.Extra>Additional Details</Item.Extra>
-        </Item.Content>
-      </Item>
-
-      <Item>
-        <Item.Image size="tiny" src="/images/wireframe/image.png" />
-
-        <Item.Content>
-          <Item.Header as="a">Header</Item.Header>
-          <Item.Meta>Description</Item.Meta>
-          <Item.Description>
-            <p>This is more content</p>
-          </Item.Description>
-          <Item.Extra>Additional Details</Item.Extra>
-        </Item.Content>
-      </Item>
+		<Post title={"Test post 1"} content={"test content 1"} user={"test user 1"}></Post>
+		<Post title={"Test post 2"} content={"test content 2"} user={"test user 2"}></Post>
     </Item.Group>
   );
 };
@@ -41,5 +25,15 @@ export async function getServerSideProps({ query }: any) {
   const bid = query.boardId;
   return { props: { test: bid } };
 }
+
+// TODO: HAVE THIS QUERY DATABASE FOR BOARDINFO
+// Used to get boardinfo (title and desc)
+// Currently holds dummy data
+function getBoardInfo(boardId: string) {
+	return {
+		boardName: "Test Board",
+		boardDesc: "Test Description"
+	}
+};
 
 export default Board;
