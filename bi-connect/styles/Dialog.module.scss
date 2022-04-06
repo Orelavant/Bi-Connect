@@ -1,5 +1,5 @@
 $max-z: 2147483647;
-.content-container {
+.modal-container {
 	top: 0;
 	left: 0;
 	padding: 0;
@@ -14,9 +14,12 @@ $max-z: 2147483647;
 }
 
 .modal-overlay {
+	inset: 0;
 	height: 100%;
 	width: 100%;
 	background-color: rgba(0, 0, 0, 0.7);
+	background-color: gray;
+	position: fixed;
 }
 
 .content {
@@ -29,13 +32,17 @@ $max-z: 2147483647;
 	padding: 2em;
 }
 
-.create-user-modal-content {
-	display: flex;
-	flex-direction: column;
+.modal-submit-button {
+	width: 90%;
+	cursor: pointer;
 }
 
 .modal-close-button {
 	position: absolute;
 	top: 0.5em;
 	right: 0.5em;
+}
+
+.modal-input {
+	padding: 0.5em 1em;
 }
