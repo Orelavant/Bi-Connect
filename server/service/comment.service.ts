@@ -101,66 +101,69 @@ export default class CommentService {
 			limit,
 			offset,
 		} = input;
-		const filterQuery = {
-			$and: [
-				contentStartsWith && {
-					conent: new RegExp(`^${contentStartsWith}`, "i"),
+		const andFilter = [
+			contentStartsWith && {
+				conent: new RegExp(`^${contentStartsWith}`, "i"),
+			},
+			contentEndsWith && {
+				content: new RegExp(`${contentEndsWith}$`, "i"),
+			},
+			contentContains && {
+				content: new RegExp(`^.*${contentContains}.*$`, "i"),
+			},
+			creatorNameStartsWith && {
+				user: {
+					username: new RegExp(`^${creatorNameStartsWith}`, "i"),
 				},
-				contentEndsWith && {
-					content: new RegExp(`${contentEndsWith}$`, "i"),
+			},
+			creatorNameEndsWith && {
+				user: {
+					username: new RegExp(`${creatorNameEndsWith}$`, "i"),
 				},
-				contentContains && {
-					content: new RegExp(`^.*${contentContains}.*$`, "i"),
+			},
+			creatorNameContains && {
+				user: {
+					username: new RegExp(`^.*${creatorNameContains}.*$`, "i"),
 				},
-				creatorNameStartsWith && {
-					user: {
-						username: new RegExp(`^${creatorNameStartsWith}`, "i"),
-					},
+			},
+			likesLte != null && {
+				likes: {
+					$lte: likesLte,
 				},
-				creatorNameEndsWith && {
-					user: {
-						username: new RegExp(`${creatorNameEndsWith}$`, "i"),
-					},
+			},
+			likesGte != null && {
+				likes: {
+					$gte: likesGte,
 				},
-				creatorNameContains && {
-					user: {
-						username: new RegExp(`^.*${creatorNameContains}.*$`, "i"),
-					},
+			},
+			dislikesLte != null && {
+				dislikes: {
+					$lte: dislikesLte,
 				},
-				likesLte != null && {
-					likes: {
-						$lte: likesLte,
-					},
+			},
+			dislikesGte != null && {
+				dislikes: {
+					$gte: dislikesGte,
 				},
-				likesGte != null && {
-					likes: {
-						$gte: likesGte,
-					},
-				},
-				dislikesLte != null && {
-					dislikes: {
-						$lte: dislikesLte,
-					},
-				},
-				dislikesGte != null && {
-					dislikes: {
-						$gte: dislikesGte,
-					},
-				},
-				createdAtBefore && {
-					createdAt: { $lte: createdAtBefore },
-				},
-				createdAtAfter && {
-					createdAt: { $gte: createdAtAfter },
-				},
-				updatedAtBefore && {
-					updatedAt: { $lte: updatedAtBefore },
-				},
-				updatedAtAfter && {
-					updatedAt: { $gte: updatedAtAfter },
-				},
-			].filter(Boolean),
-		};
+			},
+			createdAtBefore && {
+				createdAt: { $lte: createdAtBefore },
+			},
+			createdAtAfter && {
+				createdAt: { $gte: createdAtAfter },
+			},
+			updatedAtBefore && {
+				updatedAt: { $lte: updatedAtBefore },
+			},
+			updatedAtAfter && {
+				updatedAt: { $gte: updatedAtAfter },
+			},
+		].filter(Boolean);
+		const filterQuery = andFilter.length
+			? {
+					$and: andFilter,
+			  }
+			: {};
 		try {
 			const comments = await CommentModel.find(filterQuery)
 				.sort({ updatedAt: -1 })

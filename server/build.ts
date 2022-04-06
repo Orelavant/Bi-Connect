@@ -24,7 +24,7 @@ export const createApolloServer = async <T>(
 
 	if (app) {
 		// apply middleware
-		server.applyMiddleware({ app });
+		server.applyMiddleware({ app, cors: false });
 	}
 
 	return server;

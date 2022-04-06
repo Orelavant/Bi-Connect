@@ -5,9 +5,11 @@ import CreateButton from "./CreateButton";
 import LoadingTabItem from "./LoadingTabItem";
 
 interface TabData {
-	data: {
-		[key: string]: any;
-	}[];
+	data:
+		| {
+				[key: string]: any;
+		  }[]
+		| null;
 	renderComponent: React.FunctionComponent<any>;
 	createButtonOnClick: () => void;
 }
@@ -26,8 +28,8 @@ const Tab = ({ tabs }: TabProps) => {
 			<div className={styles.card}>
 				<Tabs.List asChild>
 					<div className={styles["tab-trigger-list"]}>
-						{Object.entries(tabs).map(([tabKey, tabData]) => (
-							<Tabs.Trigger value={tabKey} asChild key={tabKey}>
+						{Object.entries(tabs).map(([tabKey, tabData], idx) => (
+							<Tabs.Trigger value={tabKey} asChild key={idx}>
 								<button
 									className={styles["trigger-button"]}
 									onClick={() => {
@@ -41,25 +43,30 @@ const Tab = ({ tabs }: TabProps) => {
 					</div>
 				</Tabs.List>
 				<div className={styles["tab-content-list-container"]}>
-					{Object.entries(tabs).map(([tabKey, { data, renderComponent }]) => (
-						<Tabs.Content value={tabKey} asChild>
-							<div>
-								{data != null ? (
-									data.map((json) =>
-										React.createElement(renderComponent, { ...json })
-									)
-								) : (
-									<div>
-										<LoadingTabItem />
-										<LoadingTabItem />
-										<LoadingTabItem />
-										<LoadingTabItem />
-										<LoadingTabItem />
-									</div>
-								)}
-							</div>
-						</Tabs.Content>
-					))}
+					{Object.entries(tabs).map(
+						([tabKey, { data, renderComponent }], idx) => (
+							<Tabs.Content value={tabKey} asChild key={idx}>
+								<div>
+									{data != null ? (
+										data.map((json, idx) =>
+											React.createElement(renderComponent, {
+												key: idx,
+												...json,
+											})
+										)
+									) : (
+										<div>
+											<LoadingTabItem />
+											<LoadingTabItem />
+											<LoadingTabItem />
+											<LoadingTabItem />
+											<LoadingTabItem />
+										</div>
+									)}
+								</div>
+							</Tabs.Content>
+						)
+					)}
 				</div>
 				<div className={styles["create-button-container"]}>
 					<CreateButton

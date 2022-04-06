@@ -100,65 +100,68 @@ export default class PostService {
 			limit,
 			offset,
 		} = input;
-		const filterQuery = {
-			$and: [
-				titleStartsWith && {
-					title: new RegExp(`^${titleStartsWith}`, "i"),
+		const andFilter = [
+			titleStartsWith && {
+				title: new RegExp(`^${titleStartsWith}`, "i"),
+			},
+			titleEndsWith && {
+				title: new RegExp(`${titleEndsWith}$`, "i"),
+			},
+			titleContains && { title: new RegExp(`^.*${titleContains}.*`, "i") },
+			contentStartsWith && {
+				content: new RegExp(`^${contentStartsWith}`, "i"),
+			},
+			contentEndsWith && { content: new RegExp(`${contentEndsWith}$`, "i") },
+			contentContains && {
+				content: new RegExp(`^.*${contentContains}.*$`, "i"),
+			},
+			boardNameStartsWith && {
+				boardName: new RegExp(`^${boardNameStartsWith}`, "i"),
+			},
+			boardNameEndsWith && {
+				boardName: new RegExp(`${boardNameEndsWith}$`, "i"),
+			},
+			boardNameContains && {
+				boardName: new RegExp(`^.*${boardNameContains}.*$`, "i"),
+			},
+			likesLte != null && {
+				likes: {
+					$lte: likesLte,
 				},
-				titleEndsWith && {
-					title: new RegExp(`${titleEndsWith}$`, "i"),
+			},
+			likesGte != null && {
+				likes: {
+					$gte: likesGte,
 				},
-				titleContains && { title: new RegExp(`^.*${titleContains}.*`, "i") },
-				contentStartsWith && {
-					content: new RegExp(`^${contentStartsWith}`, "i"),
+			},
+			dislikesLte != null && {
+				dislikes: {
+					$lte: dislikesLte,
 				},
-				contentEndsWith && { content: new RegExp(`${contentEndsWith}$`, "i") },
-				contentContains && {
-					content: new RegExp(`^.*${contentContains}.*$`, "i"),
+			},
+			dislikesGte != null && {
+				dislikes: {
+					$gte: dislikesGte,
 				},
-				boardNameStartsWith && {
-					boardName: new RegExp(`^${boardNameStartsWith}`, "i"),
-				},
-				boardNameEndsWith && {
-					boardName: new RegExp(`${boardNameEndsWith}$`, "i"),
-				},
-				boardNameContains && {
-					boardName: new RegExp(`^.*${boardNameContains}.*$`, "i"),
-				},
-				likesLte != null && {
-					likes: {
-						$lte: likesLte,
-					},
-				},
-				likesGte != null && {
-					likes: {
-						$gte: likesGte,
-					},
-				},
-				dislikesLte != null && {
-					dislikes: {
-						$lte: dislikesLte,
-					},
-				},
-				dislikesGte != null && {
-					dislikes: {
-						$gte: dislikesGte,
-					},
-				},
-				createdAtBefore && {
-					createdAt: { $lte: createdAtBefore },
-				},
-				createdAtAfter && {
-					createdAt: { $gte: createdAtAfter },
-				},
-				updatedAtBefore && {
-					updatedAt: { $lte: updatedAtBefore },
-				},
-				updatedAtAfter && {
-					updatedAt: { $gte: updatedAtAfter },
-				},
-			].filter(Boolean),
-		};
+			},
+			createdAtBefore && {
+				createdAt: { $lte: createdAtBefore },
+			},
+			createdAtAfter && {
+				createdAt: { $gte: createdAtAfter },
+			},
+			updatedAtBefore && {
+				updatedAt: { $lte: updatedAtBefore },
+			},
+			updatedAtAfter && {
+				updatedAt: { $gte: updatedAtAfter },
+			},
+		].filter(Boolean);
+		const filterQuery = andFilter.length
+			? {
+					$and: andFilter,
+			  }
+			: {};
 		try {
 			const posts = await PostModel.find(filterQuery)
 				.sort({ updatedAt: -1 })
