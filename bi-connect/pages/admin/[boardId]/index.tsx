@@ -2,9 +2,8 @@ import React from "react";
 import { Item, Image } from "semantic-ui-react";
 import "fomantic-ui-css/semantic.css";
 import Post from "../../../components/Post";
-import myButton from "../../../components/myButton";
+import CreateButton from "../../../components/CreateButton";
 
-// TODO: HOW TO ADD BUTTON
 const Board = ({ test }: any) => {
   console.log(test);
   const boardInfo = getBoardInfo(test);
@@ -17,6 +16,10 @@ const Board = ({ test }: any) => {
 
 		<Post title={"Test post 1"} content={"test content 1"} user={"test user 1"}></Post>
 		<Post title={"Test post 2"} content={"test content 2"} user={"test user 2"}></Post>
+
+		<CreateButton buttonName={"Create Post"} onClick={function (): void {
+			  throw new Error("Function not implemented.");
+		  } }></CreateButton>
     </Item.Group>
   );
 };

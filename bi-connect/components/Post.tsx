@@ -12,11 +12,11 @@ const Post = (prop: PostProps) => {
 	return (
 	<Item>
         <Item.Content>
-          <Item.Header as="a">{prop.title}</Item.Header>
-		  <Item.Meta>{prop.user}</Item.Meta>
+          <Item.Header as='a' to='/admin'>{prop.title}</Item.Header>
           <Item.Description>
             <p>{prop.content}</p>
           </Item.Description>
+		  <Item.Extra>{prop.user}</Item.Extra>
         </Item.Content>
 	</Item>
 	)
