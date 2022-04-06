@@ -1,0 +1,26 @@
+.input {
+	padding: 0.75em 1em;
+	border-radius: 0.5em;
+	border: 1px solid gray;
+	&:focus,
+	&:active {
+		border: 1px solid black;
+	}
+}
+
+.input-container {
+	position: relative;
+	&::before {
+		content: attr(data-label);
+		position: absolute;
+		width: max-content;
+		height: max-content;
+		font-size: 0.8em;
+		background-color: white;
+		margin: 0;
+		padding: 0 0.5em;
+		top: -7px;
+		left: 20px;
+		z-index: 10;
+	}
+}

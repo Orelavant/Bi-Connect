@@ -1,40 +1,102 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import CreateButton from "./CreateButton";
-import styles from "../styles/Modal.module.scss";
-import { useRef } from "react";
+import modalStyles from "../styles/Dialog.module.scss";
+import styles from "../styles/CreateUserModal.module.scss";
+import { useEffect, useState } from "react";
+import CustomInput from "./CustomInput";
+import { useCreateUserMutation } from "../generated/graphql";
 interface CreateUserDialogProps {}
 
+const endpoint = "http://localhost:3001/graphql";
 const CreateUserDialog = (props: CreateUserDialogProps) => {
-	const emailInputRef = useRef<HTMLInputElement>(null);
-	const usernameInputRef = useRef<HTMLInputElement>(null);
-	const passwordInputRef = useRef<HTMLInputElement>(null);
+	const { mutate, isSuccess, isError, isLoading, error } =
+		useCreateUserMutation({
+			endpoint,
+			fetchParams: {
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+			},
+		});
 
-	const handleSubmit = () => {
-		const email = emailInputRef?.current?.value;
-		const username = usernameInputRef?.current?.value;
-		const password = passwordInputRef?.current?.value;
-		console.log(email, username, password);
+	const [emailInputValue, setEmailInputValue] = useState("");
+	const [usernameInputValue, setUsernameInputValue] = useState("");
+	const [passwordInputValue, setPasswordInputValue] = useState("");
+	const [canSubmit, setCanSubmit] = useState(false);
+
+	const handleEmailInputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setEmailInputValue(e.target.value);
+	};
+
+	const handleUsernameInputOnChange = (
+		e: React.ChangeEvent<HTMLInputElement>
+	) => {
+		setUsernameInputValue(e.target.value);
+	};
+
+	const handlePasswordInputOnChange = (
+		e: React.ChangeEvent<HTMLInputElement>
+	) => {
+		setPasswordInputValue(e.target.value);
+	};
+
+	useEffect(() => {
+		const validInputs =
+			!!emailInputValue && !!usernameInputValue && !!passwordInputValue;
+		setCanSubmit(validInputs);
+	}, [emailInputValue, usernameInputValue, passwordInputValue]);
+
+	const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+		mutate({
+			input: {
+				email: emailInputValue,
+				username: usernameInputValue,
+				password: passwordInputValue,
+			},
+		});
+		if (isError) {
+			e.preventDefault();
+		}
+	};
+
+	const onOpenChange = (open: boolean) => {
+		if (open) {
+			setEmailInputValue("");
+			setUsernameInputValue("");
+			setPasswordInputValue("");
+		}
 	};
 
 	return (
-		<Dialog.Root modal={false}>
+		<Dialog.Root modal={false} onOpenChange={onOpenChange}>
 			<Dialog.Trigger asChild>
 				<CreateButton buttonName="Create User" onClick={() => {}} />
 			</Dialog.Trigger>
 			<Dialog.Portal>
-				<Dialog.Overlay className={styles["modal-overlay"]} />
-				<Dialog.Content className={styles["content-container"]}>
-					<div className={styles["content"]}>
+				<Dialog.Overlay className={modalStyles["modal-overlay"]} />
+				<Dialog.Content className={modalStyles["modal-container"]}>
+					<div className={modalStyles["content"]}>
 						<div className={styles["create-user-modal-content"]}>
-							<label>Email</label>
-							<input ref={emailInputRef} />
-							<label>Username</label>
-							<input ref={usernameInputRef} />
-							<label>Password</label>
-							<input ref={passwordInputRef} />
+							<CustomInput
+								label="Email"
+								placeholder="sam@gmail.com"
+								onChange={handleEmailInputOnChange}
+							/>
+							<CustomInput
+								label="Username"
+								placeholder="Sam"
+								onChange={handleUsernameInputOnChange}
+							/>
+							<CustomInput
+								label="Password"
+								type="password"
+								onChange={handlePasswordInputOnChange}
+							/>
 							<Dialog.Close asChild>
 								<button
-									className={styles["modal-submit-button"]}
+									disabled={!canSubmit}
+									className={modalStyles["modal-submit-button"]}
 									onClick={handleSubmit}
 								>
 									Submit
@@ -42,7 +104,7 @@ const CreateUserDialog = (props: CreateUserDialogProps) => {
 							</Dialog.Close>
 						</div>
 						<Dialog.Close asChild>
-							<button className={styles["modal-close-button"]}>X</button>
+							<button className={modalStyles["modal-close-button"]}>X</button>
 						</Dialog.Close>
 					</div>
 					<Dialog.Title />
