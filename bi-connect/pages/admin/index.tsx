@@ -8,6 +8,8 @@ import { useRouter } from "next/router";
 import useGetBoards from "../../hooks/useGetBoards";
 import useGetUsers from "../../hooks/useGetUsers";
 import { useGetBoardsQuery, useGetUsersQuery } from "../../generated/graphql";
+import CreateUserDialog from "../../components/CreateUserDialog";
+import CreateBoardDialog from "../../components/CreateBoardDialog";
 
 const endpoint = "http://localhost:3001/graphql";
 
@@ -66,9 +68,7 @@ const Home: NextPage = () => {
 						// 	{ username: "jhan1", email: "jhan1@brynmawr.edu" },
 						// ],
 						renderComponent: UserTabListItem,
-						createButtonOnClick: () => {
-							console.log("creating user");
-						},
+						createButtonDialog: <CreateUserDialog />,
 					},
 					Boards: {
 						data:
@@ -84,9 +84,7 @@ const Home: NextPage = () => {
 						// 	},
 						// ],
 						renderComponent: BoardTabListItem,
-						createButtonOnClick: () => {
-							console.log("creating board");
-						},
+						createButtonDialog: <CreateBoardDialog />,
 					},
 				}}
 			/>

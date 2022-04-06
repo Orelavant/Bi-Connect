@@ -11,7 +11,7 @@ interface TabData {
 		  }[]
 		| null;
 	renderComponent: React.FunctionComponent<any>;
-	createButtonOnClick: () => void;
+	createButtonDialog: React.ReactElement;
 }
 
 interface TabProps {
@@ -68,12 +68,9 @@ const Tab = ({ tabs }: TabProps) => {
 						)
 					)}
 				</div>
-				<div className={styles["create-button-container"]}>
-					<CreateButton
-						buttonName={"Create " + selectedTabName}
-						onClick={tabs[selectedTabName].createButtonOnClick}
-					></CreateButton>
-				</div>
+				{tabs[selectedTabName].createButtonDialog}
+				{/* <div className={styles["create-button-container"]}>
+				</div> */}
 			</div>
 		</Tabs.Root>
 	);
