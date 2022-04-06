@@ -1,5 +1,4 @@
 import React from "react";
-import styles from "../styles/";
 
 interface CommentProps {
   username: string;
@@ -7,7 +6,7 @@ interface CommentProps {
 }
 
 const CommentItem = (props: CommentProps) => {
-  return <div className={styles["comment-container"]}></div>;
+  return <div></div>;
 };
 
 export default CommentItem;
