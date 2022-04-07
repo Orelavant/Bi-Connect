@@ -8,7 +8,7 @@ interface UserTabListItemProps {
 
 const UserTabListItem = (props: UserTabListItemProps) => {
 	return (
-		<TabListItem nextPageName={`/admin/${props.username}`}>
+		<TabListItem nextPageName={`/admin/user/${props.username}`}>
 			<div className={styles["user-container"]}>
 				<div>{"Username: " + props.username}</div>
 				<div>{"Email: " + props.email}</div>
