@@ -457,6 +457,22 @@ export type GetBoardsQueryVariables = Exact<{
 
 export type GetBoardsQuery = { __typename?: 'Query', getBoards: Array<{ __typename?: 'Board', name: string, description: string }> };
 
+export type CreatePostMutationVariables = Exact<{
+  input: CreatePostInput;
+  boardDetails: BoardIdInput;
+  creatorDetails: UserIdInput;
+}>;
+
+
+export type CreatePostMutation = { __typename?: 'Mutation', createPost: { __typename?: 'Post', creatorName?: string | null, title?: string | null, content: string, boardName: string } };
+
+export type GetPostsQueryVariables = Exact<{
+  input: GetPostsInput;
+}>;
+
+
+export type GetPostsQuery = { __typename?: 'Query', getPosts: Array<{ __typename?: 'Post', _id: string, creatorName?: string | null, title?: string | null, content: string }> };
+
 export type CreateUserMutationVariables = Exact<{
   input: CreateUserInput;
 }>;
@@ -523,6 +539,55 @@ export const useGetBoardsQuery = <
     useQuery<GetBoardsQuery, TError, TData>(
       ['getBoards', variables],
       fetcher<GetBoardsQuery, GetBoardsQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetBoardsDocument, variables),
+      options
+    );
+export const CreatePostDocument = `
+    mutation createPost($input: CreatePostInput!, $boardDetails: BoardIdInput!, $creatorDetails: UserIdInput!) {
+  createPost(
+    input: $input
+    boardDetails: $boardDetails
+    creatorDetails: $creatorDetails
+  ) {
+    creatorName
+    title
+    content
+    boardName
+  }
+}
+    `;
+export const useCreatePostMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      options?: UseMutationOptions<CreatePostMutation, TError, CreatePostMutationVariables, TContext>
+    ) =>
+    useMutation<CreatePostMutation, TError, CreatePostMutationVariables, TContext>(
+      ['createPost'],
+      (variables?: CreatePostMutationVariables) => fetcher<CreatePostMutation, CreatePostMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, CreatePostDocument, variables)(),
+      options
+    );
+export const GetPostsDocument = `
+    query getPosts($input: GetPostsInput!) {
+  getPosts(input: $input) {
+    _id
+    creatorName
+    title
+    content
+  }
+}
+    `;
+export const useGetPostsQuery = <
+      TData = GetPostsQuery,
+      TError = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      variables: GetPostsQueryVariables,
+      options?: UseQueryOptions<GetPostsQuery, TError, TData>
+    ) =>
+    useQuery<GetPostsQuery, TError, TData>(
+      ['getPosts', variables],
+      fetcher<GetPostsQuery, GetPostsQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetPostsDocument, variables),
       options
     );
 export const CreateUserDocument = `
