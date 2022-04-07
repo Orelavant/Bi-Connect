@@ -26,7 +26,9 @@ export default class BoardService {
 			throw new ApolloError("User details not provided");
 		}
 		try {
-			await UserModel.findOne(userDetails).lean();
+			await UserModel.findOneAndUpdate(userDetails, {
+				followedBoardsNames: { $push: input.name },
+			}).lean();
 		} catch {
 			throw new ApolloError("Error finding user or db error");
 		}
@@ -202,26 +204,35 @@ export default class BoardService {
 		}
 	}
 
-	async deleteBoard(boardDetails: BoardIdInput) {
+	async deleteBoard(input: BoardIdInput) {
 		try {
-			const deletedBoard = await BoardModel.findOneAndDelete(boardDetails);
+			const deletedBoard = await BoardModel.findOneAndDelete(input);
 			return deletedBoard;
 		} catch {
 			throw new ApolloError("db error deleting board");
 		}
 	}
 
-	async deleteBoards(boardDetails: BoardsIdsInput) {
+	async deleteBoards(input: BoardsIdsInput) {
 		try {
 			const deletedBoards = await BoardModel.find({
-				name: { $in: boardDetails.names },
+				name: { $in: input.names },
 			});
 			await BoardModel.deleteMany({
-				name: { $in: boardDetails.names },
+				name: { $in: input.names },
 			});
 			return deletedBoards;
 		} catch {
 			throw new ApolloError("db error deleting boards");
+		}
+	}
+
+	async getBoardPosts(input: BoardIdInput) {
+		try {
+			const boardPosts = await PostModel.find({ boardName: input.name });
+			return boardPosts;
+		} catch {
+			throw new ApolloError("db error getting board's posts");
 		}
 	}
 }

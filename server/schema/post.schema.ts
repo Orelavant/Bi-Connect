@@ -4,19 +4,19 @@ import { Min, MinLength } from "class-validator";
 import { Timestamp } from "./base.schema";
 import { postPreDelete } from "../hooks/pre/post.pre";
 
-// @pre<Post>(
-// 	["deleteOne", "deleteMany", "findOneAndDelete"],
-// 	async function (next) {
-// 		// CASCADE on user posts and post's comments
-// 		const filter = this.getFilter();
-// 		try {
-// 			await postPreDelete(filter);
-// 		} catch (err) {
-// 			throw err;
-// 		}
-// 		next();
-// 	}
-// )
+@pre<Post>(
+	["deleteOne", "deleteMany", "findOneAndDelete"],
+	async function (next) {
+		// CASCADE on user posts and post's comments
+		const filter = this.getFilter();
+		try {
+			await postPreDelete(filter);
+		} catch (err) {
+			throw err;
+		}
+		next();
+	}
+)
 @ObjectType()
 export class Post extends Timestamp {
 	@Field(() => String)

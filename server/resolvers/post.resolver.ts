@@ -7,7 +7,8 @@ import {
 	UpdatePostInput,
 } from "../inputs/post.inputs";
 import { UserIdInput } from "../inputs/user.inputs";
-import { Board as Post } from "../schema/board.schema";
+import { Comment } from "../schema/comment.schema";
+import { Post } from "../schema/post.schema";
 import PostService from "../service/post.service";
 
 @Resolver()
@@ -24,6 +25,11 @@ export default class PostResolver {
 	@Query(() => [Post!]!)
 	getPosts(@Arg("input") input: GetPostsInput) {
 		return this.postService.getPosts(input);
+	}
+
+	@Query(() => [Comment!]!)
+	getPostComments(@Arg("input") input: PostIdInput) {
+		return this.postService.getPostComments(input);
 	}
 
 	@Mutation(() => Post)
