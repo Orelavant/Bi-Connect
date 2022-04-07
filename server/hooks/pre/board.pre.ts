@@ -6,7 +6,8 @@ export const boardPreDelete = async (filter) => {
 	try {
 		const boardsToBeDeleted = await BoardModel.find(filter, {
 			name: 1,
-		}).lean();
+		}).exec();
+		// .lean();
 		const boardsToBeDeletedNames = boardsToBeDeleted.map(({ name }) => name);
 		await deleteBoardFromUsers(boardsToBeDeletedNames);
 		await deleteBoardPosts(boardsToBeDeletedNames);

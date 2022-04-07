@@ -28,7 +28,7 @@ const init = async () => {
 		context: (ctx: Context) => {
 			// console.log(ctx.req.cookies);
 			// console.log(ctx.res.cookie);
-			const token = ctx.req.cookies.accessToken;
+			const token = ctx.req.cookies.biConnectAccessToken;
 			if (token) {
 				const user = verifyJWT<User>(token);
 				ctx.user = user;

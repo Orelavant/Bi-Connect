@@ -1,5 +1,10 @@
 import { ApolloError } from "apollo-server-errors";
-import { BoardModel, PostModel, UserModel } from "../schema/models";
+import {
+	BoardModel,
+	CommentModel,
+	PostModel,
+	UserModel,
+} from "../schema/models";
 import { UserIdInput } from "../inputs/user.inputs";
 import {
 	CreatePostInput,
@@ -244,6 +249,15 @@ export default class PostService {
 			return deletedPosts;
 		} catch {
 			throw new ApolloError("db error deleting posts");
+		}
+	}
+
+	async getPostComments(input: PostIdInput) {
+		try {
+			const postComments = await CommentModel.find({ postId: input._id });
+			return postComments;
+		} catch {
+			throw new ApolloError("db error getting post's comments");
 		}
 	}
 }
