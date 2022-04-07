@@ -1,6 +1,9 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import CreateButton from "./CreateButton";
-import { useCreateBoardMutation } from "../generated/graphql";
+import {
+	useCreateBoardMutation,
+	useIsAdminLoggedInQuery,
+} from "../generated/graphql";
 import { useEffect, useState } from "react";
 import modalStyles from "../styles/Dialog.module.scss";
 import CustomInput from "./CustomInput";
@@ -19,6 +22,23 @@ const CreateBoardDialog = (props: CreateBoardDialogProps) => {
 				},
 			},
 		});
+
+	const {
+		data,
+		isSuccess: isLoggedInIsSucess,
+		isError: isLoggedInIsError,
+		isLoading: isLoggedInIsLoading,
+		error: isLoggedInError,
+	} = useIsAdminLoggedInQuery({
+		endpoint,
+		fetchParams: {
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+			},
+			credentials: "include",
+		},
+	});
 
 	const [nameInputValue, setNameInputValue] = useState("");
 	const [descriptionInputValue, setDescriptionInputValue] = useState("");
@@ -39,6 +59,7 @@ const CreateBoardDialog = (props: CreateBoardDialogProps) => {
 		setCanSubmit(validInputs);
 	}, [nameInputValue, descriptionInputValue]);
 
+	// console.log(data?.isAdminLoggedIn?.username);
 	const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
 		mutate({
 			input: {
@@ -46,10 +67,11 @@ const CreateBoardDialog = (props: CreateBoardDialogProps) => {
 				description: descriptionInputValue,
 			},
 			creatorDetails: {
-				username: "jhan529",
+				username: data?.isAdminLoggedIn?.username,
 			},
 		});
 		if (isError) {
+			console.log(error);
 			e.preventDefault();
 		}
 	};

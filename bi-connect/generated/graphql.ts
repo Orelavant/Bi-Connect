@@ -178,24 +178,24 @@ export type Mutation = {
   __typename?: 'Mutation';
   createBoard: Board;
   createComment: Comment;
-  createPost: Board;
+  createPost: Post;
   createUser: User;
   deleteBoard: Board;
   deleteComment: Comment;
-  deletePost: Board;
+  deletePost: Post;
   login: Scalars['String'];
   loginAdmin: Scalars['String'];
   removeBoard: Board;
   removeComment: Comment;
-  removePost: Board;
+  removePost: Post;
   removeUser: User;
   restoreBoard: Board;
   restoreComment: Comment;
-  restorePost: Board;
+  restorePost: Post;
   restoreUser: User;
   updateBoard: Board;
   updateComment: Comment;
-  updatePost: Board;
+  updatePost: Post;
   updateUser: User;
 };
 
@@ -313,6 +313,20 @@ export type MutationUpdateUserArgs = {
   userDetails: UserIdInput;
 };
 
+export type Post = {
+  __typename?: 'Post';
+  _id: Scalars['String'];
+  boardName: Scalars['String'];
+  content: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  creatorName?: Maybe<Scalars['String']>;
+  dislikes: Scalars['Int'];
+  likes: Scalars['Int'];
+  removed: Scalars['Boolean'];
+  title?: Maybe<Scalars['String']>;
+  updatedAt: Scalars['DateTime'];
+};
+
 export type PostIdInput = {
   _id: Scalars['String'];
 };
@@ -324,8 +338,9 @@ export type Query = {
   getBoards: Array<Board>;
   getComment: Comment;
   getComments: Array<Comment>;
-  getPost: Board;
-  getPosts: Array<Board>;
+  getPost: Post;
+  getPostComments: Array<Comment>;
+  getPosts: Array<Post>;
   getUser: User;
   getUsers: Array<User>;
   isAdminLoggedIn?: Maybe<User>;
@@ -359,6 +374,11 @@ export type QueryGetCommentsArgs = {
 
 
 export type QueryGetPostArgs = {
+  input: PostIdInput;
+};
+
+
+export type QueryGetPostCommentsArgs = {
   input: PostIdInput;
 };
 
@@ -400,6 +420,7 @@ export type UpdateUserInput = {
 export type User = {
   __typename?: 'User';
   _id: Scalars['String'];
+  admin: Scalars['Boolean'];
   commentsIds: Array<Scalars['String']>;
   createdAt: Scalars['DateTime'];
   dislikedCommentsIds: Array<Scalars['String']>;
@@ -443,13 +464,6 @@ export type CreateUserMutationVariables = Exact<{
 
 export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', email: string, username: string } };
 
-export type LoginMutationVariables = Exact<{
-  input: LoginInput;
-}>;
-
-
-export type LoginMutation = { __typename?: 'Mutation', login: string };
-
 export type LoginAdminMutationVariables = Exact<{
   input: LoginInput;
 }>;
@@ -463,6 +477,11 @@ export type GetUsersQueryVariables = Exact<{
 
 
 export type GetUsersQuery = { __typename?: 'Query', getUsers: Array<{ __typename?: 'User', username: string, email: string }> };
+
+export type IsAdminLoggedInQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type IsAdminLoggedInQuery = { __typename?: 'Query', isAdminLoggedIn?: { __typename?: 'User', username: string, email: string, admin: boolean } | null };
 
 
 export const CreateBoardDocument = `
@@ -526,23 +545,6 @@ export const useCreateUserMutation = <
       (variables?: CreateUserMutationVariables) => fetcher<CreateUserMutation, CreateUserMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, CreateUserDocument, variables)(),
       options
     );
-export const LoginDocument = `
-    mutation login($input: LoginInput!) {
-  login(input: $input)
-}
-    `;
-export const useLoginMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit },
-      options?: UseMutationOptions<LoginMutation, TError, LoginMutationVariables, TContext>
-    ) =>
-    useMutation<LoginMutation, TError, LoginMutationVariables, TContext>(
-      ['login'],
-      (variables?: LoginMutationVariables) => fetcher<LoginMutation, LoginMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, LoginDocument, variables)(),
-      options
-    );
 export const LoginAdminDocument = `
     mutation loginAdmin($input: LoginInput!) {
   loginAdmin(input: $input)
@@ -579,5 +581,27 @@ export const useGetUsersQuery = <
     useQuery<GetUsersQuery, TError, TData>(
       ['getUsers', variables],
       fetcher<GetUsersQuery, GetUsersQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetUsersDocument, variables),
+      options
+    );
+export const IsAdminLoggedInDocument = `
+    query isAdminLoggedIn {
+  isAdminLoggedIn {
+    username
+    email
+    admin
+  }
+}
+    `;
+export const useIsAdminLoggedInQuery = <
+      TData = IsAdminLoggedInQuery,
+      TError = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      variables?: IsAdminLoggedInQueryVariables,
+      options?: UseQueryOptions<IsAdminLoggedInQuery, TError, TData>
+    ) =>
+    useQuery<IsAdminLoggedInQuery, TError, TData>(
+      variables === undefined ? ['isAdminLoggedIn'] : ['isAdminLoggedIn', variables],
+      fetcher<IsAdminLoggedInQuery, IsAdminLoggedInQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, IsAdminLoggedInDocument, variables),
       options
     );

@@ -27,9 +27,9 @@ export default class BoardService {
 		}
 		try {
 			await UserModel.findOneAndUpdate(userDetails, {
-				followedBoardsNames: { $push: input.name },
+				$push: { followedBoardsNames: input.name },
 			}).lean();
-		} catch {
+		} catch (err) {
 			throw new ApolloError("Error finding user or db error");
 		}
 		try {

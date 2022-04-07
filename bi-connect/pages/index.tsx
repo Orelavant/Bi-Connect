@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import styles from "../styles/Home.module.scss";
 import useLogin from "../hooks/useLogin";
 import { useRouter } from "next/router";
-import { useLoginMutation } from "../generated/graphql";
+import { useLoginAdminMutation } from "../generated/graphql";
 
 const endpoint = "http://localhost:3001/graphql";
 
@@ -18,7 +18,7 @@ const Home: NextPage = () => {
 	// 	password,
 	// 	loginEnabled
 	// );
-	const { mutate } = useLoginMutation(
+	const { mutate } = useLoginAdminMutation(
 		{
 			endpoint,
 			fetchParams: {
@@ -26,6 +26,7 @@ const Home: NextPage = () => {
 					Accept: "application/json",
 					"Content-Type": "application/json",
 				},
+				credentials: "include",
 			},
 		},
 		{

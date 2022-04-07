@@ -107,7 +107,7 @@ export default class UserService {
 		const token = signJWT(user);
 
 		// set cookie
-		context.res.cookie("accessToken", token, {
+		context.res.cookie("biConnectAccessToken", token, {
 			maxAge: 3.154e10, // 1 year
 			httpOnly: true,
 			domain: process.env.DOMAIN || "localhost",
