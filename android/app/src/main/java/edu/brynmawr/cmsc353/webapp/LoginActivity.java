@@ -48,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
     private void loginUser(String username, String password) {
         Log.i(TAG, "Attempting to login user " + username);
         ApolloClient apolloClient = ApolloClient.builder()
-                .serverUrl("http://localhost:3001/graphql")
+                .serverUrl("http://10.0.2.2:3001/graphql")
                 .build();
 
         apolloClient.mutate(new LoginMutation(new LoginInput("jhan1@brynmawr.edu", "123456")))
