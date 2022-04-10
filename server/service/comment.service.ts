@@ -22,9 +22,7 @@ export default class CommentService {
 	) {
 		let user;
 		try {
-			user = await UserModel.findOne(userDetails, {
-				username: 1,
-			});
+			user = await UserModel.findOne(userDetails);
 		} catch {
 			throw new ApolloError("User does not exist or db error");
 		}
