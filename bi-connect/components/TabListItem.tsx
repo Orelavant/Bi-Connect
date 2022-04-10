@@ -1,25 +1,30 @@
 import React from "react";
 import styles from "../styles/TabListItem.module.scss";
+import Link from "next/link";
 import {
 	MdHighlightOff,
 	MdModeEditOutline,
 	MdRemoveRedEye,
 } from "react-icons/md";
+
 interface TabListItemProps {
 	children: React.ReactNode;
 	onClickDelete?: () => void;
 	onClickEdit?: () => void;
 	onClickView?: () => void;
 	onClickSoftDelete?: () => void;
+	nextPageName?: string;
 }
 
-const TabListItem = ({ children }: TabListItemProps) => {
+const TabListItem = (props: TabListItemProps) => {
 	return (
 		<div className={styles["tab-list-container"]}>
-			<div>{children}</div>
+			<div>{props.children}</div>
 			<div className={styles["buttons-container"]}>
 				<button className={styles["view-button"]}>
-					<MdRemoveRedEye className={styles["view-button-icon"]} />
+					<Link href={props.nextPageName || ""}>
+						<MdRemoveRedEye className={styles["view-button-icon"]} />
+					</Link>
 				</button>
 				<button className={styles["delete-button"]}>
 					<MdHighlightOff className={styles["delete-button-icon"]} />

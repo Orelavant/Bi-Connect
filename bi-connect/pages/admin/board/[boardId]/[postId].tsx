@@ -1,12 +1,17 @@
-import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import React from "react";
 import { Comment, Header, Form, Button } from "semantic-ui-react";
 import "fomantic-ui-css/semantic.css";
 
-const Post = ({ test }: any) => {
-  const router = useRouter();
-  console.log(test);
+const dummydata = {
+  username: "test123",
+  content: "this is a comment",
+  date: "2/4/21"
+}
+
+const Post = ({ postid }) => {
   return (
+    {props.postid.map(postid =>
+      )}
     <Comment.Group>
       <Header as="h3" dividing>
         Comments
@@ -81,7 +86,7 @@ const Post = ({ test }: any) => {
 
 export async function getServerSideProps({ query }: any) {
   const pid = query.postId;
-  return { props: { test: pid } };
+  return { props: { postid: pid } };
 }
 
 export default Post;
