@@ -11,6 +11,10 @@ import styles from "../styles/CreateBoardModal.module.scss";
 interface CreatePostDialogProps {}
 const endpoint = "http://localhost:3001/graphql";
 
+interface CreatePostDialogProps {
+	boardName: string;
+}
+
 const CreatePostDialog = (props: CreatePostDialogProps) => {
 	const { mutate, isSuccess, isError, isLoading, error } =
 		useCreatePostMutation({
@@ -40,12 +44,12 @@ const CreatePostDialog = (props: CreatePostDialogProps) => {
 		},
 	});
 
-	const [nameInputValue, setNameInputValue] = useState("");
+	const [titleInputValue, setTitleInputValue] = useState("");
 	const [descriptionInputValue, setDescriptionInputValue] = useState("");
 	const [canSubmit, setCanSubmit] = useState(false);
 
-	const handleNameInputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setNameInputValue(e.target.value);
+	const handleTitleInputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setTitleInputValue(e.target.value);
 	};
 
 	const handleDescriptionInputOnChange = (
@@ -55,22 +59,23 @@ const CreatePostDialog = (props: CreatePostDialogProps) => {
 	};
 
 	useEffect(() => {
-		const validInputs = !!nameInputValue && !!descriptionInputValue;
+		const validInputs = !!titleInputValue && !!descriptionInputValue;
 		setCanSubmit(validInputs);
-	}, [nameInputValue, descriptionInputValue]);
+	}, [titleInputValue, descriptionInputValue]);
 
 	// console.log(data?.isAdminLoggedIn?.username);
 	const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
 		mutate({
 			input: {
-				title: nameInputValue,
+				title: titleInputValue,
 				content: descriptionInputValue,
 			},
             boardDetails: {
-                name: "haverford-2022"
+                name: props.boardName
             },
 			creatorDetails: {
-				username: data?.isAdminLoggedIn?.username,
+				username: "john",
+                email: "john@haverford.edu",
 			},
 		});
 		if (isError) {
@@ -81,7 +86,7 @@ const CreatePostDialog = (props: CreatePostDialogProps) => {
 
 	const onOpenChange = (open: boolean) => {
 		if (open) {
-			setNameInputValue("");
+			setTitleInputValue("");
 			setDescriptionInputValue("");
 		}
 	};
@@ -97,13 +102,13 @@ const CreatePostDialog = (props: CreatePostDialogProps) => {
 					<div className={modalStyles["content"]}>
 						<div className={styles["create-board-modal-content"]}>
 							<CustomInput
-								label="Name"
-								placeholder="Haverford Confessions"
-								onChange={handleNameInputOnChange}
+								label="Title"
+								placeholder="Put your title here:"
+								onChange={handleTitleInputOnChange}
 							/>
 							<CustomInput
 								label="Description"
-								placeholder="This is the page description for Haverford Confessions."
+								placeholder="and the description here!"
 								onChange={handleDescriptionInputOnChange}
 							/>
 							<Dialog.Close asChild>

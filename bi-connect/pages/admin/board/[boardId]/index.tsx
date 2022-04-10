@@ -1,21 +1,22 @@
 import React from "react";
 import { Item, Image } from "semantic-ui-react";
 import "fomantic-ui-css/semantic.css";
-import Post from "../../../components/Post";
-import CreateButton from "../../../components/CreateButton";
-import { useGetPostsQuery } from "../../../generated/graphql";
+import Post from "../../../../components/Post";
+import CreateButton from "../../../../components/CreateButton";
+import { useGetPostsQuery } from "../../../../generated/graphql";
+import CreatePostDialog from "../../../../components/CreatePostDialog";
 
 const endpoint = "http://localhost:3001/graphql";
 
-const Board = ({ test }: any) => {
+const Board = ({ bid }: any) => {
 	// Get information to display posts
-	console.log(test);
-	const boardInfo = getBoardInfo(test);
+	console.log(bid);
 	const {
-		data: postData,
 		isLoading: postIsLoading,
+		error: postError,
 		isError: postIsError,
 		isSuccess: postIsSuccess,
+    	data: postData
 	} = useGetPostsQuery(
 		{
 			endpoint,
@@ -26,25 +27,36 @@ const Board = ({ test }: any) => {
 				},
 			},
 		},
-		{ input: {} }
+		{ 
+			input: {
+      			"boardNameContains": bid
+			} 
+		}
 	);
-	// useGetBoards({});
 
 	// Structure of the page
-	// TODO: INSERT POST DATA FROM DATABASE
+	// TODO: IF EMPTY, PUT DOWN A MESSAGE SAYING THAT THIS BOARD IS EMPTY
   	return (
 		<Item.Group>
 			<div>
-				<h1>Board Title: {boardInfo.boardName}</h1>
-				<h3>Board Desc: {boardInfo.boardDesc}</h3>
+				<h1>Board Title: {bid}</h1>
+				<h3>Board Desc: "test description"</h3>
 			</div>
 
-			<Post title={"Test post 1"} content={"test content 1"} user={"test user 1"}></Post>
-			<Post title={"Test post 2"} content={"test content 2"} user={"test user 2"}></Post>
+			{postData?.getPosts.map((post, i) => (
+				<Post
+					boardName={postData?.getPosts[i].boardName}  
+					id={postData?.getPosts[i]._id}
+					title={postData?.getPosts[i].title} 
+					content={postData?.getPosts[i].content} 
+					user={postData?.getPosts[i].creatorName}
+				></Post>
+				))
+			}
 
-			<CreateButton buttonName={"Create Post"} onClick={function (): void {
-				throw new Error("Function not implemented.");
-			} }></CreateButton>
+			<CreatePostDialog 
+			boardName= {bid}
+			></CreatePostDialog>
 		</Item.Group>
   	);
 };
@@ -52,17 +64,7 @@ const Board = ({ test }: any) => {
 // Get boardID from query parameter
 export async function getServerSideProps({ query }: any) {
   const bid = query.boardId;
-  return { props: { test: bid } };
+  return { props: { bid: bid } };
 }
-
-// TODO: HAVE THIS QUERY DATABASE FOR BOARDINFO
-// Used to get boardinfo (title and desc)
-// Currently holds dummy data
-function getBoardInfo(boardId: string) {
-	return {
-		boardName: "Test Board",
-		boardDesc: "Test Description"
-	}
-};
 
 export default Board;

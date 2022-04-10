@@ -7,6 +7,7 @@ export const getPostsQuery = gql`
 			creatorName
 			title
 			content
+			boardName
 		}
 	}
 `;

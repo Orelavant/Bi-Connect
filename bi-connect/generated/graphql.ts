@@ -471,7 +471,7 @@ export type GetPostsQueryVariables = Exact<{
 }>;
 
 
-export type GetPostsQuery = { __typename?: 'Query', getPosts: Array<{ __typename?: 'Post', _id: string, creatorName?: string | null, title?: string | null, content: string }> };
+export type GetPostsQuery = { __typename?: 'Query', getPosts: Array<{ __typename?: 'Post', _id: string, creatorName?: string | null, title?: string | null, content: string, boardName: string }> };
 
 export type CreateUserMutationVariables = Exact<{
   input: CreateUserInput;
@@ -574,6 +574,7 @@ export const GetPostsDocument = `
     creatorName
     title
     content
+    boardName
   }
 }
     `;

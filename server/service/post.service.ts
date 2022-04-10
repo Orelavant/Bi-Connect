@@ -30,7 +30,7 @@ export default class PostService {
 		}
 		let user: types.DocumentType<User>;
 		try {
-			user = await UserModel.findOne(creatorDetails, { username: 1 });
+			user = await UserModel.findOne(creatorDetails);
 		} catch {
 			throw new ApolloError("User does not exist or db error");
 		}
@@ -47,13 +47,15 @@ export default class PostService {
 				creatorName: user.username,
 				boardName: board.name,
 			});
-		} catch {
+		} catch (postCreationError){
+			console.log(postCreationError);
 			throw new ApolloError("db error while creating post");
 		}
 		try {
 			user.postsIds.push(post._id);
 			await user.save();
-		} catch {
+		} catch (postToUserError) {
+			console.log(postToUserError);
 			throw new ApolloError("db error while adding post to user");
 		}
 		return post;
