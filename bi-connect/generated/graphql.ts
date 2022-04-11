@@ -466,6 +466,15 @@ export type GetBoardsQueryVariables = Exact<{
 
 export type GetBoardsQuery = { __typename?: 'Query', getBoards: Array<{ __typename?: 'Board', name: string, description: string }> };
 
+export type CreateCommentMutationVariables = Exact<{
+  input: CreateCommentInput;
+  postDetails: PostIdInput;
+  creatorDetails: UserIdInput;
+}>;
+
+
+export type CreateCommentMutation = { __typename?: 'Mutation', createComment: { __typename?: 'Comment', _id: string } };
+
 export type CreatePostMutationVariables = Exact<{
   input: CreatePostInput;
   boardDetails: BoardIdInput;
@@ -481,6 +490,13 @@ export type GetPostQueryVariables = Exact<{
 
 
 export type GetPostQuery = { __typename?: 'Query', getPost: { __typename?: 'Post', _id: string, creatorName?: string | null, title?: string | null, content: string, createdAt: any, likes: number, dislikes: number } };
+
+export type GetPostCommentsQueryVariables = Exact<{
+  input: PostIdInput;
+}>;
+
+
+export type GetPostCommentsQuery = { __typename?: 'Query', getPostComments: Array<{ __typename?: 'Comment', _id: string, createdAt: any, creatorName: string, content: string, likes: number, dislikes: number, parentId?: string | null }> };
 
 export type GetPostsQueryVariables = Exact<{
   input: GetPostsInput;
@@ -586,6 +602,29 @@ export const useGetBoardsQuery = <
       fetcher<GetBoardsQuery, GetBoardsQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetBoardsDocument, variables),
       options
     );
+export const CreateCommentDocument = `
+    mutation createComment($input: CreateCommentInput!, $postDetails: PostIdInput!, $creatorDetails: UserIdInput!) {
+  createComment(
+    input: $input
+    postDetails: $postDetails
+    creatorDetails: $creatorDetails
+  ) {
+    _id
+  }
+}
+    `;
+export const useCreateCommentMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      options?: UseMutationOptions<CreateCommentMutation, TError, CreateCommentMutationVariables, TContext>
+    ) =>
+    useMutation<CreateCommentMutation, TError, CreateCommentMutationVariables, TContext>(
+      ['createComment'],
+      (variables?: CreateCommentMutationVariables) => fetcher<CreateCommentMutation, CreateCommentMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, CreateCommentDocument, variables)(),
+      options
+    );
 export const CreatePostDocument = `
     mutation createPost($input: CreatePostInput!, $boardDetails: BoardIdInput!, $creatorDetails: UserIdInput!) {
   createPost(
@@ -636,6 +675,32 @@ export const useGetPostQuery = <
     useQuery<GetPostQuery, TError, TData>(
       ['getPost', variables],
       fetcher<GetPostQuery, GetPostQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetPostDocument, variables),
+      options
+    );
+export const GetPostCommentsDocument = `
+    query getPostComments($input: PostIdInput!) {
+  getPostComments(input: $input) {
+    _id
+    createdAt
+    creatorName
+    content
+    likes
+    dislikes
+    parentId
+  }
+}
+    `;
+export const useGetPostCommentsQuery = <
+      TData = GetPostCommentsQuery,
+      TError = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      variables: GetPostCommentsQueryVariables,
+      options?: UseQueryOptions<GetPostCommentsQuery, TError, TData>
+    ) =>
+    useQuery<GetPostCommentsQuery, TError, TData>(
+      ['getPostComments', variables],
+      fetcher<GetPostCommentsQuery, GetPostCommentsQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetPostCommentsDocument, variables),
       options
     );
 export const GetPostsDocument = `

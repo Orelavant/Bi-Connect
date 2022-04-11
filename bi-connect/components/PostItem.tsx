@@ -2,6 +2,8 @@ import React from "react";
 import { Item, Icon, Comment, Header, Form, Button } from "semantic-ui-react";
 import "fomantic-ui-css/semantic.css";
 import RelativeTime from "@yaireo/relative-time";
+("npm i @yaireo/relative-time -S");
+("npm i --save-dev @types/yaireo__relative-time");
 import Link from "next/link";
 
 interface PostCommentProps {

@@ -1,7 +1,11 @@
 import React from "react";
-import { useGetPostQuery } from "../../../../generated/graphql";
+import {
+  useGetPostQuery,
+  useGetPostCommentsQuery,
+} from "../../../../generated/graphql";
 import PostItem from "../../../../components/PostItem";
 import styles from "../../../../styles/PostComment.module.scss";
+import CommentThread from "../../../../components/CommentThread";
 interface PostProps {
   postid: string;
 }
@@ -27,18 +31,6 @@ const Post = (props: PostProps) => {
     { input: { _id: props.postid } }
   );
 
-  const { isLoading, isError, data, error } = useGetPostQuery(
-    {
-      endpoint,
-      fetchParams: {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      },
-    },
-    { input: { _id: props.postid } }
-  );
   return (
     <div className={styles["post-comment-container"]}>
       <div className={styles["post-container"]}>
@@ -65,7 +57,9 @@ const Post = (props: PostProps) => {
           }
         />
       </div>
-      <div className={styles["comment-container"]}></div>
+      <div className={styles["comment-container"]}>
+        <CommentThread postid={props.postid}></CommentThread>
+      </div>
     </div>
   );
 };
