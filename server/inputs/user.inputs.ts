@@ -26,6 +26,10 @@ export class CreateUserInput {
 export class UserIdInput {
 	@Field(() => String, { nullable: true })
 	@prop()
+	_id: string;
+
+	@Field(() => String, { nullable: true })
+	@prop()
 	username: string;
 
 	@IsEmail()
@@ -64,6 +68,14 @@ export class UpdateUserInput {
 	@Field(() => String, { nullable: true })
 	@prop()
 	password?: string;
+
+	@Field(() => Boolean, { nullable: true })
+	@prop()
+	admin?: boolean;
+
+	@Field(() => Boolean, { nullable: true })
+	@prop()
+	removed?: boolean;
 
 	@Field(() => String, { nullable: true })
 	@prop()

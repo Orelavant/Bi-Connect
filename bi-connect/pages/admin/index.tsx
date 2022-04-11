@@ -4,9 +4,6 @@ import styles from "../../styles/Home.module.scss";
 import Tab from "../../components/Tab";
 import UserTabListItem from "../../components/UserTabListItem";
 import BoardTabListItem from "../../components/BoardTabListItem";
-import { useRouter } from "next/router";
-import useGetBoards from "../../hooks/useGetBoards";
-import useGetUsers from "../../hooks/useGetUsers";
 import { useGetBoardsQuery, useGetUsersQuery } from "../../generated/graphql";
 import CreateUserDialog from "../../components/CreateUserDialog";
 import CreateBoardDialog from "../../components/CreateBoardDialog";
@@ -31,7 +28,6 @@ const Home: NextPage = () => {
 		},
 		{ input: {} }
 	);
-	// useGetBoards({});
 
 	const {
 		data: userData,
@@ -50,7 +46,6 @@ const Home: NextPage = () => {
 		},
 		{ input: {} }
 	);
-	// useGetUsers({});
 
 	return (
 		<div className={styles.container}>
@@ -63,26 +58,12 @@ const Home: NextPage = () => {
 				tabs={{
 					Users: {
 						data: !userIsLoading && userIsSuccess ? userData.getUsers : null,
-						// data: [
-						// 	{ username: "ichang1", email: "ichang1@haverford.edu" },
-						// 	{ username: "jhan1", email: "jhan1@brynmawr.edu" },
-						// ],
 						renderComponent: UserTabListItem,
 						createButtonDialog: <CreateUserDialog />,
 					},
 					Boards: {
 						data:
 							!boardIsLoading && boardIsSuccess ? boardData.getBoards : null,
-						// data: [
-						// 	{
-						// 		boardname: "Bi-Co Confession",
-						// 		boardDescription: "This is a page for confessions.",
-						// 	},
-						// 	{
-						// 		boardname: "Bi-Co Badminton",
-						// 		boardDescription: "This is a page for badminton club.",
-						// 	},
-						// ],
 						renderComponent: BoardTabListItem,
 						createButtonDialog: <CreateBoardDialog />,
 					},

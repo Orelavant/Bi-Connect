@@ -18,6 +18,11 @@
 	&:hover {
 		background-color: lightblue;
 	}
+	&[data-state="active"] {
+		border: 1px solid transparent;
+		outline: 2px solid black;
+		z-index: 1;
+	}
 }
 
 .tab-content-list-container {
