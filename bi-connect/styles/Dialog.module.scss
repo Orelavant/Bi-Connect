@@ -24,7 +24,7 @@ $max-z: 2147483647;
 
 .content {
 	position: absolute;
-	height: 300px;
+	height: max-content;
 	width: 300px;
 	background-color: white;
 	border: 1px solid black;

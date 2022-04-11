@@ -85,6 +85,7 @@ export default class CommentService {
 			contentStartsWith,
 			contentEndsWith,
 			contentContains,
+			creatorName,
 			creatorNameStartsWith,
 			creatorNameEndsWith,
 			creatorNameContains,
@@ -101,7 +102,7 @@ export default class CommentService {
 		} = input;
 		const andFilter = [
 			contentStartsWith && {
-				conent: new RegExp(`^${contentStartsWith}`, "i"),
+				content: new RegExp(`^${contentStartsWith}`, "i"),
 			},
 			contentEndsWith && {
 				content: new RegExp(`${contentEndsWith}$`, "i"),
@@ -109,19 +110,18 @@ export default class CommentService {
 			contentContains && {
 				content: new RegExp(`^.*${contentContains}.*$`, "i"),
 			},
+			creatorName && {
+				creatorName,
+			},
 			creatorNameStartsWith && {
-				user: {
-					username: new RegExp(`^${creatorNameStartsWith}`, "i"),
-				},
+				creatorName: new RegExp(`^${creatorNameStartsWith}`, "i"),
 			},
 			creatorNameEndsWith && {
-				user: {
-					username: new RegExp(`${creatorNameEndsWith}$`, "i"),
-				},
+				creatorName: new RegExp(`${creatorNameEndsWith}$`, "i"),
 			},
 			creatorNameContains && {
-				user: {
-					username: new RegExp(`^.*${creatorNameContains}.*$`, "i"),
+				creatorName: {
+					creatorName: new RegExp(`^.*${creatorNameContains}.*$`, "i"),
 				},
 			},
 			likesLte != null && {

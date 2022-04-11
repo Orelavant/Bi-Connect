@@ -1,8 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styles from "../styles/Home.module.scss";
-import useLogin from "../hooks/useLogin";
 import { useRouter } from "next/router";
 import { useLoginAdminMutation } from "../generated/graphql";
 
@@ -11,13 +10,9 @@ const endpoint = "http://localhost:3001/graphql";
 const Home: NextPage = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	// const [loginEnabled, setLoginEnabled] = useState(false);
+
 	const router = useRouter();
-	// const { data, isLoading, isError, isSuccess } = useLogin(
-	// 	email,
-	// 	password,
-	// 	loginEnabled
-	// );
+
 	const { mutate } = useLoginAdminMutation(
 		{
 			endpoint,
@@ -38,14 +33,6 @@ const Home: NextPage = () => {
 			},
 		}
 	);
-
-	// useEffect(() => {
-	// 	if (isSuccess && !isError) {
-	// 		router.push("/admin");
-	// 	} else {
-	// 		setLoginEnabled(false);
-	// 	}
-	// }, [isSuccess, isError, setLoginEnabled]);
 
 	const handleEmailInputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		let input: string = e.target.value;
@@ -91,8 +78,6 @@ const Home: NextPage = () => {
 				<button onClick={handleSubmit} className={styles["login-button"]}>
 					Login
 				</button>
-				{/* <div className={styles["button-container"]}>
-			</div> */}
 			</div>
 		</div>
 	);

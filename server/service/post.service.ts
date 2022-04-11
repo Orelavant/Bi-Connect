@@ -10,6 +10,7 @@ import {
 	CreatePostInput,
 	GetPostsInput,
 	PostIdInput,
+	PostsFilterInput,
 	PostsIdsInput,
 	UpdatePostInput,
 } from "../inputs/post.inputs";
@@ -47,7 +48,7 @@ export default class PostService {
 				creatorName: user.username,
 				boardName: board.name,
 			});
-		} catch (postCreationError){
+		} catch (postCreationError) {
 			console.log(postCreationError);
 			throw new ApolloError("db error while creating post");
 		}
@@ -87,6 +88,10 @@ export default class PostService {
 
 	async getPosts(input: GetPostsInput) {
 		const {
+			creatorName,
+			creatorNameStartsWith,
+			creatorNameEndsWith,
+			creatorNameContains,
 			titleStartsWith,
 			titleEndsWith,
 			titleContains,
@@ -108,6 +113,20 @@ export default class PostService {
 			offset,
 		} = input;
 		const andFilter = [
+			creatorName && {
+				creatorName,
+			},
+			creatorNameStartsWith && {
+				creatorName: new RegExp(`^${creatorNameStartsWith}`, "i"),
+			},
+			creatorNameEndsWith && {
+				creatorName: new RegExp(`${creatorNameEndsWith}$`, "i"),
+			},
+			creatorNameContains && {
+				creatorName: {
+					creatorName: new RegExp(`^.*${creatorNameContains}.*$`, "i"),
+				},
+			},
 			titleStartsWith && {
 				title: new RegExp(`^${titleStartsWith}`, "i"),
 			},
