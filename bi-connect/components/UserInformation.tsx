@@ -80,10 +80,10 @@ const UserInformation = ({
 					</button>
 				</div>
 			</div>
-			<label>Activity</label>
+			{/* <label>Activity</label>
 			<div className={styles["user-posts-comments-container"]}>
 				<UserPostsComments username={username} _id={_id} />
-			</div>
+			</div> */}
 		</div>
 	);
 };

@@ -2,7 +2,7 @@ import React from "react";
 import { useGetUserPostsQuery } from "../generated/graphql";
 import { useQueryClient } from "react-query";
 import PostItem from "./PostItem";
-import { Tab } from "semantic-ui-react";
+import Tab from "../components/Tab";
 
 interface UserPostsCommentsProps {
 	_id: string;
@@ -44,13 +44,13 @@ const UserPostsComments = ({ _id, username }: UserPostsCommentsProps) => {
 				Posts: {
 					data: postDataIsSuccess ? postData.getPosts : null,
 					renderComponent: PostItem,
-					createButtonDialog: null,
+					createButtonDialog: <div></div>,
 				},
-				// Comments: {
-				// 	data: !boardIsLoading && boardIsSuccess ? boardData.getBoards : null,
-				// 	renderComponent: BoardTabListItem,
-				// 	createButtonDialog: <CreateBoardDialog />,
-				// },
+				Posts2: {
+					data: postDataIsSuccess ? postData.getPosts : null,
+					renderComponent: PostItem,
+					createButtonDialog: <div></div>,
+				},
 			}}
 		/>
 	);
