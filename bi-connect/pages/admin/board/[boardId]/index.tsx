@@ -3,51 +3,65 @@ import { Item, Image } from "semantic-ui-react";
 import "fomantic-ui-css/semantic.css";
 import Post from "../../../../components/Post";
 import CreateButton from "../../../../components/CreateButton";
+import { useGetPostsQuery } from "../../../../generated/graphql";
+import CreatePostDialog from "../../../../components/CreatePostDialog";
 
-const Board = ({ test }: any) => {
-  console.log(test);
-  const boardInfo = getBoardInfo(test);
-  return (
-    <Item.Group>
-      <div>
-        <h1>Board Title: {boardInfo.boardName}</h1>
-        <h3>Board Desc: {boardInfo.boardDesc}</h3>
-      </div>
+const endpoint = "http://localhost:3001/graphql";
 
-      <Post
-        title={"Test post 1"}
-        content={"test content 1"}
-        user={"test user 1"}
-      ></Post>
-      <Post
-        title={"Test post 2"}
-        content={"test content 2"}
-        user={"test user 2"}
-      ></Post>
+const Board = ({ bid }: any) => {
+	// Get information to display posts
+	console.log(bid);
+	const {
+		isLoading: postIsLoading,
+		error: postError,
+		isError: postIsError,
+		isSuccess: postIsSuccess,
+		data: postData,
+	} = useGetPostsQuery(
+		{
+			endpoint,
+			fetchParams: {
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+			},
+		},
+		{
+			input: {
+				boardNameContains: bid,
+			},
+		}
+	);
 
-      <CreateButton
-        buttonName={"Create Post"}
-        onClick={function (): void {
-          throw new Error("Function not implemented.");
-        }}
-      ></CreateButton>
-    </Item.Group>
-  );
+	// Structure of the page
+	// TODO: IF EMPTY, PUT DOWN A MESSAGE SAYING THAT THIS BOARD IS EMPTY
+	return (
+		<Item.Group>
+			<div>
+				<h1>Board Title: {bid}</h1>
+				<h3>Board Desc: "test description"</h3>
+			</div>
+
+			{postData?.getPosts.map((post, i) => (
+				<Post
+					boardName={postData?.getPosts[i].boardName}
+					id={postData?.getPosts[i]._id}
+					title={postData?.getPosts[i].title || ""}
+					content={postData?.getPosts[i].content}
+					user={postData?.getPosts[i].creatorName || ""}
+				></Post>
+			))}
+
+			<CreatePostDialog boardName={bid}></CreatePostDialog>
+		</Item.Group>
+	);
 };
 
+// Get boardID from query parameter
 export async function getServerSideProps({ query }: any) {
-  const bid = query.boardId;
-  return { props: { test: bid } };
-}
-
-// TODO: HAVE THIS QUERY DATABASE FOR BOARDINFO
-// Used to get boardinfo (title and desc)
-// Currently holds dummy data
-function getBoardInfo(boardId: string) {
-  return {
-    boardName: "Test Board",
-    boardDesc: "Test Description",
-  };
+	const bid = query.boardId;
+	return { props: { bid: bid } };
 }
 
 export default Board;

@@ -470,12 +470,19 @@ export type CreatePostMutationVariables = Exact<{
 
 export type CreatePostMutation = { __typename?: 'Mutation', createPost: { __typename?: 'Post', creatorName?: string | null, title?: string | null, content: string, boardName: string } };
 
+export type GetPostQueryVariables = Exact<{
+  input: PostIdInput;
+}>;
+
+
+export type GetPostQuery = { __typename?: 'Query', getPost: { __typename?: 'Post', _id: string, creatorName?: string | null, title?: string | null, content: string } };
+
 export type GetPostsQueryVariables = Exact<{
   input: GetPostsInput;
 }>;
 
 
-export type GetPostsQuery = { __typename?: 'Query', getPosts: Array<{ __typename?: 'Post', _id: string, creatorName?: string | null, title?: string | null, content: string }> };
+export type GetPostsQuery = { __typename?: 'Query', getPosts: Array<{ __typename?: 'Post', _id: string, creatorName?: string | null, title?: string | null, content: string, boardName: string }> };
 
 export type CreateUserMutationVariables = Exact<{
   input: CreateUserInput;
@@ -586,6 +593,29 @@ export const useCreatePostMutation = <
       (variables?: CreatePostMutationVariables) => fetcher<CreatePostMutation, CreatePostMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, CreatePostDocument, variables)(),
       options
     );
+export const GetPostDocument = `
+    query getPost($input: PostIdInput!) {
+  getPost(input: $input) {
+    _id
+    creatorName
+    title
+    content
+  }
+}
+    `;
+export const useGetPostQuery = <
+      TData = GetPostQuery,
+      TError = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      variables: GetPostQueryVariables,
+      options?: UseQueryOptions<GetPostQuery, TError, TData>
+    ) =>
+    useQuery<GetPostQuery, TError, TData>(
+      ['getPost', variables],
+      fetcher<GetPostQuery, GetPostQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetPostDocument, variables),
+      options
+    );
 export const GetPostsDocument = `
     query getPosts($input: GetPostsInput!) {
   getPosts(input: $input) {
@@ -593,6 +623,7 @@ export const GetPostsDocument = `
     creatorName
     title
     content
+    boardName
   }
 }
     `;
