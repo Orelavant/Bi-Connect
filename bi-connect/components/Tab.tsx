@@ -60,8 +60,6 @@ const Tab = ({ tabs }: TabProps) => {
 					)}
 				</div>
 				{tabs[selectedTabName].createButtonDialog}
-				{/* <div className={styles["create-button-container"]}>
-				</div> */}
 			</div>
 		</Tabs.Root>
 	);
