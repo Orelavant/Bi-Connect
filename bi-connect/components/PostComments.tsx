@@ -5,6 +5,7 @@ import CreateCommentDialog from "./CreateCommentDialog";
 import CommentThread from "./CommentThread";
 import tree_util from "tree-util";
 import { useGetPostCommentsQuery } from "../generated/graphql";
+import styles from "../styles/PostComment.module.scss";
 
 const endpoint = "http://localhost:3001/graphql";
 interface PostCommentsProps {

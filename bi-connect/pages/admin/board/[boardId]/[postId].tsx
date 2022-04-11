@@ -4,7 +4,7 @@ import {
   useGetPostCommentsQuery,
 } from "../../../../generated/graphql";
 import PostItem from "../../../../components/PostItem";
-import styles from "../../../../styles/PostComment.module.scss";
+import styles from "../../../../styles/PostPage.module.scss";
 import "fomantic-ui-css/semantic.css";
 import PostComments from "../../../../components/PostComments";
 
