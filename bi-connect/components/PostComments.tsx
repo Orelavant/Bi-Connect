@@ -46,9 +46,12 @@ const PostComments = (props: PostCommentsProps) => {
         callBack={setReload}
       />
       <Comment.Group threaded>
-        {tree.map((commentTree, i) => (
-          <CommentThread key={i} root={commentTree.rootNode}></CommentThread>
-        ))}
+        {tree
+          .slice(0)
+          .reverse()
+          .map((commentTree, i) => (
+            <CommentThread key={i} root={commentTree.rootNode}></CommentThread>
+          ))}
       </Comment.Group>
     </div>
   );

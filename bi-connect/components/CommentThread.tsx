@@ -49,9 +49,12 @@ const CommentThread = (props: CommentThreadProps) => {
           ) : null}
         </Comment.Content>
         <Comment.Group>
-          {props.root.children.map((childRoot, i) => (
-            <CommentThread key={i} root={childRoot} />
-          ))}
+          {props.root.children
+            .slice(0)
+            .reverse()
+            .map((childRoot, i) => (
+              <CommentThread key={i} root={childRoot} />
+            ))}
         </Comment.Group>
       </Comment>
     </div>
