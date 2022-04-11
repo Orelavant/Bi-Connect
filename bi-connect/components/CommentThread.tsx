@@ -7,10 +7,8 @@ interface CommentProps {
   content: string;
 }
 
-const CommentIdtem = (props: CommentProps) => {
-  return (
-    
-  );
+const CommentThread = (props: CommentProps) => {
+  return <div></div>;
 };
 
-export default CommentItem;
+export default CommentThread;
