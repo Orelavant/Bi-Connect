@@ -2,7 +2,8 @@ import React from "react";
 import { Item, Image } from "semantic-ui-react";
 import "fomantic-ui-css/semantic.css";
 import Post from "../../../../components/Post";
-import CreateButton from "../../../../components/CreateButton";
+import styles from "../../../../styles/PostComment.module.scss";
+import postStyles from "../../../../styles/Post.module.scss";
 import { useGetPostsQuery } from "../../../../generated/graphql";
 import CreatePostDialog from "../../../../components/CreatePostDialog";
 
