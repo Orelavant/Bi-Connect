@@ -475,7 +475,7 @@ export type GetPostQueryVariables = Exact<{
 }>;
 
 
-export type GetPostQuery = { __typename?: 'Query', getPost: { __typename?: 'Post', _id: string, creatorName?: string | null, title?: string | null, content: string } };
+export type GetPostQuery = { __typename?: 'Query', getPost: { __typename?: 'Post', _id: string, creatorName?: string | null, title?: string | null, content: string, createdAt: any, likes: number, dislikes: number } };
 
 export type GetPostsQueryVariables = Exact<{
   input: GetPostsInput;
@@ -600,6 +600,9 @@ export const GetPostDocument = `
     creatorName
     title
     content
+    createdAt
+    likes
+    dislikes
   }
 }
     `;
