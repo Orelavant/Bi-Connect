@@ -23,17 +23,15 @@ public class LoginActivity extends AppCompatActivity {
     private EditText etEmail;
     private EditText etPassword;
     private Button btnLogin;
+    private Button btnRegister;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-//        if(User already logged in){
-//            goMainActivity();
-//        }
-
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
+        btnRegister = findViewById(R.id.btnRegister);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -43,27 +41,49 @@ public class LoginActivity extends AppCompatActivity {
                 loginUser(email,password);
             }
         });
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(TAG, "onClick register button");
+                goRegisterActivity();
+            }
+        });
     }
 
-    private void loginUser(String username, String password) {
-        Log.i(TAG, "Attempting to login user " + username);
+    private void loginUser(String email, String password) {
+        Log.i(TAG, "Attempting to login user " + email);
         ApolloClient apolloClient = ApolloClient.builder()
                 .serverUrl("http://10.0.2.2:3001/graphql")
                 .build();
 
-        apolloClient.mutate(new LoginMutation(new LoginInput(etEmail.getText().toString(), etPassword.getText().toString())))
+
+        apolloClient.mutate(new LoginMutation(new LoginInput(email, password)))
         .enqueue( new ApolloCall.Callback<LoginMutation.Data>() {
 
             @Override
             public void onResponse(@NonNull Response<LoginMutation.Data> response) {
-                Log.i(TAG, "Login success for :" + username);
+                Log.i(TAG, "Login success for :" + email);
                 goMainActivity();
+                runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        Toast.makeText(LoginActivity.this, "Login Success!", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             @Override
             public void onFailure(@NonNull ApolloException e) {
-                Log.i(TAG, "Login failed for: " + username);
-                Log.i(TAG, e.toString());
+                Log.i(TAG, "Login failed for: " + email);
+                runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        Toast.makeText(LoginActivity.this, "Login Failed, Email/password error.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
             }
         } );
     }
@@ -73,4 +93,11 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(i);
         finish();
     }
+
+    private void goRegisterActivity() {
+        Intent i = new Intent(this, RegisterActivity.class);
+        startActivity(i);
+        finish();
+    }
+
 }
