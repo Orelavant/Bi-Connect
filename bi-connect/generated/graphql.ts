@@ -118,6 +118,7 @@ export type GetCommentsInput = {
   contentStartsWith?: InputMaybe<Scalars['String']>;
   createdAtAfter?: InputMaybe<Scalars['DateTime']>;
   createdAtBefore?: InputMaybe<Scalars['DateTime']>;
+  creatorName?: InputMaybe<Scalars['String']>;
   creatorNameContains?: InputMaybe<Scalars['String']>;
   creatorNameEndsWith?: InputMaybe<Scalars['String']>;
   creatorNameStartsWith?: InputMaybe<Scalars['String']>;
@@ -140,6 +141,10 @@ export type GetPostsInput = {
   contentStartsWith?: InputMaybe<Scalars['String']>;
   createdAtAfter?: InputMaybe<Scalars['DateTime']>;
   createdAtBefore?: InputMaybe<Scalars['DateTime']>;
+  creatorName?: InputMaybe<Scalars['String']>;
+  creatorNameContains?: InputMaybe<Scalars['String']>;
+  creatorNameEndsWith?: InputMaybe<Scalars['String']>;
+  creatorNameStartsWith?: InputMaybe<Scalars['String']>;
   dislikesGte?: InputMaybe<Scalars['Int']>;
   dislikesLte?: InputMaybe<Scalars['Int']>;
   likesGte?: InputMaybe<Scalars['Int']>;
@@ -520,6 +525,20 @@ export type GetUserQueryVariables = Exact<{
 
 export type GetUserQuery = { __typename?: 'Query', getUser: { __typename?: 'User', _id: string, username: string, email: string, followedBoardsNames: Array<string>, postsIds: Array<string>, likedPostsIds: Array<string>, dislikedPostsIds: Array<string>, commentsIds: Array<string>, likedCommentsIds: Array<string>, dislikedCommentsIds: Array<string>, verified: boolean, removed: boolean, admin: boolean } };
 
+export type GetUserCommentsQueryVariables = Exact<{
+  input: GetCommentsInput;
+}>;
+
+
+export type GetUserCommentsQuery = { __typename?: 'Query', getComments: Array<{ __typename?: 'Comment', creatorName: string, content: string, createdAt: any, likes: number, dislikes: number }> };
+
+export type GetUserPostsQueryVariables = Exact<{
+  input: GetPostsInput;
+}>;
+
+
+export type GetUserPostsQuery = { __typename?: 'Query', getPosts: Array<{ __typename?: 'Post', title?: string | null, creatorName?: string | null, content: string, createdAt: any, likes: number, dislikes: number }> };
+
 export type IsAdminLoggedInQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -758,6 +777,55 @@ export const useGetUserQuery = <
     useQuery<GetUserQuery, TError, TData>(
       ['getUser', variables],
       fetcher<GetUserQuery, GetUserQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetUserDocument, variables),
+      options
+    );
+export const GetUserCommentsDocument = `
+    query getUserComments($input: GetCommentsInput!) {
+  getComments(input: $input) {
+    creatorName
+    content
+    createdAt
+    likes
+    dislikes
+  }
+}
+    `;
+export const useGetUserCommentsQuery = <
+      TData = GetUserCommentsQuery,
+      TError = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      variables: GetUserCommentsQueryVariables,
+      options?: UseQueryOptions<GetUserCommentsQuery, TError, TData>
+    ) =>
+    useQuery<GetUserCommentsQuery, TError, TData>(
+      ['getUserComments', variables],
+      fetcher<GetUserCommentsQuery, GetUserCommentsQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetUserCommentsDocument, variables),
+      options
+    );
+export const GetUserPostsDocument = `
+    query getUserPosts($input: GetPostsInput!) {
+  getPosts(input: $input) {
+    title
+    creatorName
+    content
+    createdAt
+    likes
+    dislikes
+  }
+}
+    `;
+export const useGetUserPostsQuery = <
+      TData = GetUserPostsQuery,
+      TError = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      variables: GetUserPostsQueryVariables,
+      options?: UseQueryOptions<GetUserPostsQuery, TError, TData>
+    ) =>
+    useQuery<GetUserPostsQuery, TError, TData>(
+      ['getUserPosts', variables],
+      fetcher<GetUserPostsQuery, GetUserPostsQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetUserPostsDocument, variables),
       options
     );
 export const IsAdminLoggedInDocument = `

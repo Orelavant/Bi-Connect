@@ -4,8 +4,10 @@ import { MdHighlightOff } from "react-icons/md";
 import styles from "../styles/UserInformation.module.scss";
 import EditUserDialog from "./EditUserDialog";
 import UserFollowedBoard from "./UserFollowedBoard";
+import UserPostsComments from "./UserPostsComments";
 
 interface UserInformationProps {
+	_id: string;
 	username: string;
 	email: string;
 	followedBoardsNames: string[];
@@ -15,6 +17,7 @@ interface UserInformationProps {
 }
 
 const UserInformation = ({
+	_id,
 	username,
 	email,
 	followedBoardsNames,
@@ -78,7 +81,9 @@ const UserInformation = ({
 				</div>
 			</div>
 			<label>Activity</label>
-			<div className={styles["user-posts-comments-container"]}></div>
+			<div className={styles["user-posts-comments-container"]}>
+				<UserPostsComments username={username} _id={_id} />
+			</div>
 		</div>
 	);
 };

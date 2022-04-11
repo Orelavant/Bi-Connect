@@ -42,7 +42,6 @@ const Board = ({ bid }: any) => {
 				<h1>Board Title: {bid}</h1>
 				<h3>Board Desc: "test description"</h3>
 			</div>
-
 			{postData?.getPosts.map((post, i) => (
 				<Post
 					boardName={postData?.getPosts[i].boardName}

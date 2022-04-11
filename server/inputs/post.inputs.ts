@@ -50,6 +50,22 @@ export class UpdatePostInput {
 export class PostsFilterInput extends ListFilterInput {
 	@Field(() => String, { nullable: true })
 	@prop()
+	creatorName?: string;
+
+	@Field(() => String, { nullable: true })
+	@prop()
+	creatorNameStartsWith?: string;
+
+	@Field(() => String, { nullable: true })
+	@prop()
+	creatorNameEndsWith?: string;
+
+	@Field(() => String, { nullable: true })
+	@prop()
+	creatorNameContains?: string;
+
+	@Field(() => String, { nullable: true })
+	@prop()
 	titleStartsWith?: string;
 
 	@Field(() => String, { nullable: true })

@@ -9,7 +9,7 @@ interface BoardTabListItemProps {
 
 const BoardTabListItem = (props: BoardTabListItemProps) => {
 	return (
-		<TabListItem nextPageName={`/admin/board/${props._id}`}>
+		<TabListItem nextPageName={`/admin/board/${props.name}`}>
 			<div>{"Board Name: " + props.name}</div>
 			<div>{"Board Description: " + props.description}</div>
 		</TabListItem>

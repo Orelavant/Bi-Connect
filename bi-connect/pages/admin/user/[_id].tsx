@@ -14,26 +14,28 @@ const endpoint = "http://localhost:3001/graphql";
 
 const Username = ({ _id }: UsernameProps) => {
 	const queryClient = useQueryClient();
-	const { data, isLoading, isError, isSuccess, isRefetching } = useGetUserQuery(
-		{
-			endpoint,
-			fetchParams: {
-				headers: {
-					Accept: "application/json",
-					"Content-Type": "application/json",
+	const { data, isLoading, isError, isSuccess, isRefetching, error } =
+		useGetUserQuery(
+			{
+				endpoint,
+				fetchParams: {
+					headers: {
+						Accept: "application/json",
+						"Content-Type": "application/json",
+					},
 				},
 			},
-		},
-		{ input: { _id } },
-		{
-			queryKey: `user-${_id}`,
-			onSuccess: (data) => {
-				queryClient.setQueryData(`user-${_id}`, data.getUser);
-			},
-		}
-	);
+			{ input: { _id } },
+			{
+				queryKey: `user-${_id}`,
+				onSuccess: (data) => {
+					queryClient.setQueryData(`user-${_id}`, data.getUser);
+				},
+			}
+		);
 
 	if (isError) {
+		console.log(error);
 		return <div>Error finding user</div>;
 	}
 	if (isLoading) {
@@ -46,6 +48,7 @@ const Username = ({ _id }: UsernameProps) => {
 			(queryClient.getQueryData(`user-${_id}`) as any) || {};
 		return (
 			<UserInformation
+				_id={_id}
 				username={username || data.getUser.username}
 				email={email || data.getUser.email}
 				followedBoardsNames={
