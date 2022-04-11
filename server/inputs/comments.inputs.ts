@@ -58,6 +58,10 @@ export class CommentsFilterInput extends ListFilterInput {
 
 	@Field(() => String, { nullable: true })
 	@prop()
+	creatorName?: string;
+
+	@Field(() => String, { nullable: true })
+	@prop()
 	creatorNameStartsWith?: string;
 
 	@Field(() => String, { nullable: true })

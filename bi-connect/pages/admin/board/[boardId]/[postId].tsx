@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   useGetPostQuery,
   useGetPostCommentsQuery,
 } from "../../../../generated/graphql";
 import PostItem from "../../../../components/PostItem";
-import styles from "../../../../styles/PostComment.module.scss";
-import CommentThread from "../../../../components/CommentThread";
+import styles from "../../../../styles/PostPage.module.scss";
+import "fomantic-ui-css/semantic.css";
+import PostComments from "../../../../components/PostComments";
+
 interface PostProps {
   postid: string;
 }
@@ -58,7 +60,7 @@ const Post = (props: PostProps) => {
         />
       </div>
       <div className={styles["comment-container"]}>
-        <CommentThread postid={props.postid}></CommentThread>
+        <PostComments postId={props.postid} />
       </div>
     </div>
   );

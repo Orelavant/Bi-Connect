@@ -1,0 +1,17 @@
+.user-followed-board {
+	width: max-content;
+	background-color: lightblue;
+	border: none;
+	border-radius: 5px;
+	padding: 0.5em;
+	cursor: pointer;
+	&:hover {
+		filter: brightness(1.08);
+	}
+	a {
+		color: black;
+		&:hover {
+			color: black;
+		}
+	}
+}

@@ -1,12 +1,5 @@
-<<<<<<< HEAD
-.header {
-    :hover {
-        background-color: yellow;
-    }
-}
-=======
-.posts-container {
-  overflow: auto;
+.post-comment-container {
+  overflow-y: auto;
   height: 90%;
   width: 90%;
   border-radius: 0.75em;
@@ -27,10 +20,11 @@
 
 .post-container {
   border: 0.1em solid lightgray;
-  padding: 0.75em 0.5em 3.25em 0.5em;
+  padding: 0.75em 0.5em;
   border: 1px solid gray;
   border-radius: 0.75em;
   background-color: rgb(216, 235, 241);
-  margin-top: 0.5em;
 }
->>>>>>> 15c92d239f5bfcf9e87b89996951c031d3876e53
+
+.comment-container {
+}

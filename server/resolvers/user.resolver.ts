@@ -49,14 +49,14 @@ export default class UserResolver {
 		return context.user?.admin ? context.user : null;
 	}
 
-	@Query(() => User)
-	getUser(@Arg("input") input: UserIdInput) {
-		return this.userService.getUser(input);
-	}
-
 	@Query(() => [User!]!)
 	getUsers(@Arg("input") input: GetUsersInput) {
 		return this.userService.getUsers(input);
+	}
+
+	@Query(() => User)
+	getUser(@Arg("input") input: UserIdInput) {
+		return this.userService.getUser(input);
 	}
 
 	@Mutation(() => User)
