@@ -5,7 +5,6 @@ import {
 } from "../../../../generated/graphql";
 import PostItem from "../../../../components/PostItem";
 import styles from "../../../../styles/PostComment.module.scss";
-import tree_util from "tree-util";
 import "fomantic-ui-css/semantic.css";
 import PostComments from "../../../../components/PostComments";
 
@@ -33,31 +32,6 @@ const Post = (props: PostProps) => {
     },
     { input: { _id: props.postid } }
   );
-
-  // const {
-  //   isLoading: isCommentLoading,
-  //   isError: isCommentError,
-  //   data: commentData,
-  //   error: commentError,
-  //   isSuccess: isCommentSuccess,
-  // } = useGetPostCommentsQuery(
-  //   {
-  //     endpoint,
-  //     fetchParams: {
-  //       headers: {
-  //         Accept: "application/json",
-  //         "Content-Type": "application/json",
-  //       },
-  //     },
-  //   },
-  //   { input: { _id: props.postid } }
-  // );
-
-  // const data =
-  //   !isCommentLoading && isCommentSuccess ? commentData.getPostComments : [{}];
-
-  // const standardConfig = { id: "_id", parentid: "parentId" };
-  // const tree = tree_util.buildTrees(data, standardConfig);
 
   return (
     <div className={styles["post-comment-container"]}>

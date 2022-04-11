@@ -46,16 +46,7 @@ const CommentThread = (props: CommentThreadProps) => {
               postId={props.root.dataObj.postId}
               parentId={props.root.dataObj._id}
             />
-          ) : // <Form reply>
-          //   <Form.TextArea style={{ maxHeight: 100 }} />
-          //   <Button
-          //     content="Add Reply"
-          //     labelPosition="left"
-          //     icon="edit"
-          //     primary
-          //   />
-          // </Form>
-          null}
+          ) : null}
         </Comment.Content>
         <Comment.Group>
           {props.root.children.map((childRoot, i) => (
