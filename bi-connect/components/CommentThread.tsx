@@ -1,54 +1,69 @@
-import React from "react";
-import { Comment } from "semantic-ui-react";
+import React, { useEffect, useState } from "react";
+import { Comment, Form, Button } from "semantic-ui-react";
 import "fomantic-ui-css/semantic.css";
-import { useGetPostCommentsQuery } from "../generated/graphql";
-import tree_util from "tree-util";
+import RelativeTime from "@yaireo/relative-time";
+import CreateCommentDialog from "./CreateCommentDialog";
 
 const endpoint = "http://localhost:3001/graphql";
 interface CommentThreadProps {
-  postid: string;
+  root: any;
 }
 
 const CommentThread = (props: CommentThreadProps) => {
-  const {
-    isLoading: isCommentLoading,
-    isError: isCommentError,
-    data: commentData,
-    error: commentError,
-    isSuccess: isCommentSuccess,
-  } = useGetPostCommentsQuery(
-    {
-      endpoint,
-      fetchParams: {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      },
-    },
-    { input: { _id: props.postid } }
-  );
+  const [showReply, setShowReply] = useState(false);
+  const relativeTime = new RelativeTime();
 
-  const data = 
-
-  let tree = tree_util.buildTrees();
-
-  console.log(commentData);
   return (
-    <Comment>
-      <Comment.Content>
-        <Comment.Author as="a">
-          {commentData?.getPostComments[0].creatorName}
-        </Comment.Author>
-        <Comment.Metadata>
-          <div>Today at 5:42PM</div>
-        </Comment.Metadata>
-        <Comment.Text>How artistic!</Comment.Text>
-        <Comment.Actions>
-          <Comment.Action>Reply</Comment.Action>
-        </Comment.Actions>
-      </Comment.Content>
-    </Comment>
+    <div>
+      <Comment>
+        <Comment.Avatar
+          src="https://www.gravatar.com/avatar/?d=mp
+"
+        />
+        <Comment.Content>
+          <Comment.Author as="a">
+            {props.root.dataObj.creatorName}
+          </Comment.Author>
+          <Comment.Metadata>
+            {new Date(props.root.dataObj.createdAt) < new Date()
+              ? relativeTime.from(new Date(props.root.dataObj.createdAt))
+              : props.root.dataObj.createdAt}
+          </Comment.Metadata>
+          <Comment.Text>{props.root.dataObj.content}</Comment.Text>
+
+          <Comment.Actions>
+            <Comment.Action
+              onClick={() => {
+                setShowReply(true ? !showReply : false);
+              }}
+            >
+              Reply
+            </Comment.Action>
+          </Comment.Actions>
+          {showReply ? (
+            <CreateCommentDialog
+              callBack={setShowReply}
+              postId={props.root.dataObj.postId}
+              parentId={props.root.dataObj._id}
+            />
+          ) : // <Form reply>
+          //   <Form.TextArea style={{ maxHeight: 100 }} />
+          //   <Button
+          //     content="Add Reply"
+          //     labelPosition="left"
+          //     icon="edit"
+          //     primary
+          //   />
+          // </Form>
+          null}
+        </Comment.Content>
+        <Comment.Group>
+          {props.root.children.map((childRoot, i) => (
+            <CommentThread key={i} root={childRoot} />
+          ))}
+        </Comment.Group>
+      </Comment>
+    </div>
   );
 };
 

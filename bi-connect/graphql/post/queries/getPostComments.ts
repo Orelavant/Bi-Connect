@@ -10,6 +10,7 @@ query getPostComments($input: PostIdInput!) {
         likes
         dislikes
         parentId
+        postId
     }
 }
 `;

@@ -487,7 +487,7 @@ export type GetPostCommentsQueryVariables = Exact<{
 }>;
 
 
-export type GetPostCommentsQuery = { __typename?: 'Query', getPostComments: Array<{ __typename?: 'Comment', _id: string, createdAt: any, creatorName: string, content: string, likes: number, dislikes: number, parentId?: string | null }> };
+export type GetPostCommentsQuery = { __typename?: 'Query', getPostComments: Array<{ __typename?: 'Comment', _id: string, createdAt: any, creatorName: string, content: string, likes: number, dislikes: number, parentId?: string | null, postId: string }> };
 
 export type GetPostsQueryVariables = Exact<{
   input: GetPostsInput;
@@ -649,6 +649,7 @@ export const GetPostCommentsDocument = `
     likes
     dislikes
     parentId
+    postId
   }
 }
     `;
