@@ -3,7 +3,11 @@ package edu.brynmawr.cmsc353.webapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,6 +31,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         RecyclerView rvBoards = findViewById(R.id.rvBoards);
+        Button btnLogout = findViewById(R.id.btnLogout);
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goLoginActivity();
+            }
+        });
         BoardAdapter boardAdapter = new BoardAdapter(this, boards);
         rvBoards.setAdapter(boardAdapter);
         rvBoards.setLayoutManager(new LinearLayoutManager(this));
@@ -62,9 +73,13 @@ public class MainActivity extends AppCompatActivity {
                     }
                 } );
 
-
-
     }
+    private void goLoginActivity() {
+        Intent i = new Intent(this, LoginActivity.class);
+        startActivity(i);
+        finish();
+    }
+
 }
 
     /*
