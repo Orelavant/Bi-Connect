@@ -1,0 +1,9 @@
+query getPosts($input: GetPostsInput!) {
+    getPosts(input: $input) {
+        _id
+        title
+        content
+        creatorName
+        boardName
+    }
+}
