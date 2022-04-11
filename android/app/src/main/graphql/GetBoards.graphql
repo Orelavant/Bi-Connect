@@ -1,0 +1,6 @@
+query getBoards($input: GetBoardsInput!) {
+		getBoards(input: $input) {
+			name
+			description
+		}
+	}

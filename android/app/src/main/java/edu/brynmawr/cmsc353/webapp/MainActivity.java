@@ -1,82 +1,72 @@
 package edu.brynmawr.cmsc353.webapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import org.json.JSONObject;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+
+import com.apollographql.apollo.ApolloCall;
+import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.api.Input;
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.exception.ApolloException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    List<Board> boards = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    }
 
-    protected String message;
+        RecyclerView rvBoards = findViewById(R.id.rvBoards);
+        BoardAdapter boardAdapter = new BoardAdapter(this, boards);
+        rvBoards.setAdapter(boardAdapter);
+        rvBoards.setLayoutManager(new LinearLayoutManager(this));
 
+        ApolloClient apolloClient = ApolloClient.builder()
+                .serverUrl("http://10.0.2.2:3001/graphql")
+                .build();
 
-    public void onConnectButtonClick(View v) {
+        apolloClient.query(new GetBoardsQuery(new GetBoardsInput(Input.fromNullable(null), Input.fromNullable(null),
+                Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null),
+                Input.fromNullable(null), Input.fromNullable(null),Input.fromNullable(null), Input.fromNullable(null),
+                Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null))))
+                .enqueue( new ApolloCall.Callback<GetBoardsQuery.Data>() {
 
-        TextView tv = findViewById(R.id.statusField);
+                    @Override
+                    public void onResponse(@NonNull Response<GetBoardsQuery.Data> response) {
+                        List<GetBoardsQuery.GetBoard> getboards = response.getData().getBoards;
+                        for (GetBoardsQuery.GetBoard getboard:getboards) {
+                            boards.add(new Board(getboard.name(), getboard.description()));
+                        }
+                        runOnUiThread(new Runnable() {
 
-        try {
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-            executor.execute( () -> {
-                try {
-                    // assumes that there is a server running on the AVD's host on port 3000
-                    // and that it has a /test endpoint that returns a JSON object with
-                    // a field called "message"
+                            @Override
+                            public void run() {
 
-                    URL url = new URL("http://10.0.2.2:3000/test");
+                               boardAdapter.notifyDataSetChanged();
 
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("GET");
-                    conn.connect();
+                            }
+                        });
+                    }
+                    @Override
+                    public void onFailure(@NonNull ApolloException e) {
+                    }
+                } );
 
-                    Scanner in = new Scanner(url.openStream());
-                    String response = in.nextLine();
-
-                    JSONObject jo = new JSONObject(response);
-
-                    // need to set the instance variable in the Activity object
-                    // because we cannot directly access the TextView from here
-                    message = jo.getString("message");
-
-                }
-                catch (Exception e) {
-                    message = e.toString();
-                }
-            }
-            );
-
-            // this waits for up to 2 seconds
-            // it's a bit of a hack because it's not truly asynchronous
-            // but it should be okay for our purposes (and is a lot easier)
-            executor.awaitTermination(2, TimeUnit.SECONDS);
-
-            // now we can set the status in the TextView
-            tv.setText(message);
-        }
-        catch (Exception e) {
-            // uh oh
-            e.printStackTrace();
-            tv.setText(e.toString());
-        }
 
 
     }
+}
 
     /*
     This implementation uses AsyncTasks, which are now deprecated.
@@ -108,4 +98,3 @@ public class MainActivity extends AppCompatActivity {
     }
 
      */
-}
