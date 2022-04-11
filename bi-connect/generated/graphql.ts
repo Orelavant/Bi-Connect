@@ -49,6 +49,7 @@ export type Board = {
 };
 
 export type BoardIdInput = {
+  _id?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
 };
 
@@ -117,6 +118,7 @@ export type GetCommentsInput = {
   contentStartsWith?: InputMaybe<Scalars['String']>;
   createdAtAfter?: InputMaybe<Scalars['DateTime']>;
   createdAtBefore?: InputMaybe<Scalars['DateTime']>;
+  creatorName?: InputMaybe<Scalars['String']>;
   creatorNameContains?: InputMaybe<Scalars['String']>;
   creatorNameEndsWith?: InputMaybe<Scalars['String']>;
   creatorNameStartsWith?: InputMaybe<Scalars['String']>;
@@ -139,6 +141,10 @@ export type GetPostsInput = {
   contentStartsWith?: InputMaybe<Scalars['String']>;
   createdAtAfter?: InputMaybe<Scalars['DateTime']>;
   createdAtBefore?: InputMaybe<Scalars['DateTime']>;
+  creatorName?: InputMaybe<Scalars['String']>;
+  creatorNameContains?: InputMaybe<Scalars['String']>;
+  creatorNameEndsWith?: InputMaybe<Scalars['String']>;
+  creatorNameStartsWith?: InputMaybe<Scalars['String']>;
   dislikesGte?: InputMaybe<Scalars['Int']>;
   dislikesLte?: InputMaybe<Scalars['Int']>;
   likesGte?: InputMaybe<Scalars['Int']>;
@@ -412,8 +418,10 @@ export type UpdatePostInput = {
 };
 
 export type UpdateUserInput = {
+  admin?: InputMaybe<Scalars['Boolean']>;
   password?: InputMaybe<Scalars['String']>;
   picture?: InputMaybe<Scalars['String']>;
+  removed?: InputMaybe<Scalars['Boolean']>;
   username?: InputMaybe<Scalars['String']>;
 };
 
@@ -438,6 +446,7 @@ export type User = {
 };
 
 export type UserIdInput = {
+  _id?: InputMaybe<Scalars['String']>;
   email?: InputMaybe<Scalars['String']>;
   username?: InputMaybe<Scalars['String']>;
 };
@@ -510,12 +519,41 @@ export type LoginAdminMutationVariables = Exact<{
 
 export type LoginAdminMutation = { __typename?: 'Mutation', loginAdmin: string };
 
+export type UpdateUserMutationVariables = Exact<{
+  userDetails: UserIdInput;
+  input: UpdateUserInput;
+}>;
+
+
+export type UpdateUserMutation = { __typename?: 'Mutation', updateUser: { __typename?: 'User', _id: string, username: string, email: string, followedBoardsNames: Array<string>, verified: boolean, admin: boolean, removed: boolean, updatedAt: any } };
+
 export type GetUsersQueryVariables = Exact<{
   input: GetUsersInput;
 }>;
 
 
-export type GetUsersQuery = { __typename?: 'Query', getUsers: Array<{ __typename?: 'User', username: string, email: string }> };
+export type GetUsersQuery = { __typename?: 'Query', getUsers: Array<{ __typename?: 'User', _id: string, username: string, email: string }> };
+
+export type GetUserQueryVariables = Exact<{
+  input: UserIdInput;
+}>;
+
+
+export type GetUserQuery = { __typename?: 'Query', getUser: { __typename?: 'User', _id: string, username: string, email: string, followedBoardsNames: Array<string>, postsIds: Array<string>, likedPostsIds: Array<string>, dislikedPostsIds: Array<string>, commentsIds: Array<string>, likedCommentsIds: Array<string>, dislikedCommentsIds: Array<string>, verified: boolean, removed: boolean, admin: boolean } };
+
+export type GetUserCommentsQueryVariables = Exact<{
+  input: GetCommentsInput;
+}>;
+
+
+export type GetUserCommentsQuery = { __typename?: 'Query', getComments: Array<{ __typename?: 'Comment', creatorName: string, content: string, createdAt: any, likes: number, dislikes: number }> };
+
+export type GetUserPostsQueryVariables = Exact<{
+  input: GetPostsInput;
+}>;
+
+
+export type GetUserPostsQuery = { __typename?: 'Query', getPosts: Array<{ __typename?: 'Post', title?: string | null, creatorName?: string | null, content: string, createdAt: any, likes: number, dislikes: number }> };
 
 export type IsAdminLoggedInQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -726,9 +764,36 @@ export const useLoginAdminMutation = <
       (variables?: LoginAdminMutationVariables) => fetcher<LoginAdminMutation, LoginAdminMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, LoginAdminDocument, variables)(),
       options
     );
+export const UpdateUserDocument = `
+    mutation updateUser($userDetails: UserIdInput!, $input: UpdateUserInput!) {
+  updateUser(userDetails: $userDetails, input: $input) {
+    _id
+    username
+    email
+    followedBoardsNames
+    verified
+    admin
+    removed
+    updatedAt
+  }
+}
+    `;
+export const useUpdateUserMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      options?: UseMutationOptions<UpdateUserMutation, TError, UpdateUserMutationVariables, TContext>
+    ) =>
+    useMutation<UpdateUserMutation, TError, UpdateUserMutationVariables, TContext>(
+      ['updateUser'],
+      (variables?: UpdateUserMutationVariables) => fetcher<UpdateUserMutation, UpdateUserMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, UpdateUserDocument, variables)(),
+      options
+    );
 export const GetUsersDocument = `
     query getUsers($input: GetUsersInput!) {
   getUsers(input: $input) {
+    _id
     username
     email
   }
@@ -745,6 +810,87 @@ export const useGetUsersQuery = <
     useQuery<GetUsersQuery, TError, TData>(
       ['getUsers', variables],
       fetcher<GetUsersQuery, GetUsersQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetUsersDocument, variables),
+      options
+    );
+export const GetUserDocument = `
+    query getUser($input: UserIdInput!) {
+  getUser(input: $input) {
+    _id
+    username
+    email
+    followedBoardsNames
+    postsIds
+    likedPostsIds
+    dislikedPostsIds
+    commentsIds
+    likedCommentsIds
+    dislikedCommentsIds
+    verified
+    removed
+    admin
+  }
+}
+    `;
+export const useGetUserQuery = <
+      TData = GetUserQuery,
+      TError = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      variables: GetUserQueryVariables,
+      options?: UseQueryOptions<GetUserQuery, TError, TData>
+    ) =>
+    useQuery<GetUserQuery, TError, TData>(
+      ['getUser', variables],
+      fetcher<GetUserQuery, GetUserQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetUserDocument, variables),
+      options
+    );
+export const GetUserCommentsDocument = `
+    query getUserComments($input: GetCommentsInput!) {
+  getComments(input: $input) {
+    creatorName
+    content
+    createdAt
+    likes
+    dislikes
+  }
+}
+    `;
+export const useGetUserCommentsQuery = <
+      TData = GetUserCommentsQuery,
+      TError = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      variables: GetUserCommentsQueryVariables,
+      options?: UseQueryOptions<GetUserCommentsQuery, TError, TData>
+    ) =>
+    useQuery<GetUserCommentsQuery, TError, TData>(
+      ['getUserComments', variables],
+      fetcher<GetUserCommentsQuery, GetUserCommentsQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetUserCommentsDocument, variables),
+      options
+    );
+export const GetUserPostsDocument = `
+    query getUserPosts($input: GetPostsInput!) {
+  getPosts(input: $input) {
+    title
+    creatorName
+    content
+    createdAt
+    likes
+    dislikes
+  }
+}
+    `;
+export const useGetUserPostsQuery = <
+      TData = GetUserPostsQuery,
+      TError = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      variables: GetUserPostsQueryVariables,
+      options?: UseQueryOptions<GetUserPostsQuery, TError, TData>
+    ) =>
+    useQuery<GetUserPostsQuery, TError, TData>(
+      ['getUserPosts', variables],
+      fetcher<GetUserPostsQuery, GetUserPostsQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetUserPostsDocument, variables),
       options
     );
 export const IsAdminLoggedInDocument = `

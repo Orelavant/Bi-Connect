@@ -4,6 +4,7 @@ import {
 	CreatePostInput,
 	GetPostsInput,
 	PostIdInput,
+	PostsFilterInput,
 	UpdatePostInput,
 } from "../inputs/post.inputs";
 import { UserIdInput } from "../inputs/user.inputs";

@@ -2,6 +2,7 @@ import React from "react";
 import TabListItem from "./TabListItem";
 
 interface BoardTabListItemProps {
+	_id: string;
 	name: string;
 	description: string;
 }

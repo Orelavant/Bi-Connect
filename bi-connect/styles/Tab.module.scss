@@ -18,9 +18,17 @@
 	&:hover {
 		background-color: lightblue;
 	}
+	&[data-state="active"] {
+		border: 1px solid transparent;
+		outline: 2px solid black;
+		z-index: 1;
+	}
 }
 
 .tab-content-list-container {
+	// display: flex;
+	height: calc(100vh - 4em);
+	overflow-y: auto;
 	& > * > :not(:last-child) {
 		margin-bottom: 1.5em;
 	}
@@ -36,10 +44,7 @@
 	border-radius: 0.75em;
 	box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,
 		rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
-	position: absolute;
-	left: 50%;
-	top: 50%;
-	transform: translate(-50%, -50%);
+	position: relative;
 	padding: 2em;
 	display: flex;
 	flex-direction: column;

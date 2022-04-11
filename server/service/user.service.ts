@@ -14,6 +14,7 @@ import {
 } from "../inputs/user.inputs";
 import { types } from "@typegoose/typegoose";
 import { User } from "../schema/user.schema";
+import { PostsFilterInput } from "../inputs/post.inputs";
 dotenv.config();
 
 export default class UserService {
@@ -141,7 +142,7 @@ export default class UserService {
 		try {
 			const user = await UserModel.findOne(input).lean();
 			return user;
-		} catch {
+		} catch (err) {
 			throw new ApolloError("User does not exist or db error");
 		}
 	}
@@ -315,12 +316,6 @@ export default class UserService {
 	}
 
 	async getUserComments(input: UserIdInput) {
-		if (Object.keys(input).length === 0) {
-			throw new ApolloError("User details not provided");
-		}
-	}
-
-	async getUserPosts(input: UserIdInput) {
 		if (Object.keys(input).length === 0) {
 			throw new ApolloError("User details not provided");
 		}

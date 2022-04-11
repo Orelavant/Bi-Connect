@@ -1,0 +1,89 @@
+.user-page-container {
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	align-items: center;
+}
+
+.user-information-container {
+	// border: 1px solid black;
+	border-radius: 1em;
+	padding: 1em;
+
+	& > :not(:last-child) {
+		margin-bottom: 1em;
+	}
+	position: relative;
+	width: 100%;
+	margin-top: 1em;
+}
+
+.user-meta-data-container {
+	right: 1em;
+	position: absolute;
+	display: flex;
+	& > :not(:last-child) {
+		margin-right: 0.5em;
+	}
+}
+
+.user-verified,
+.user-removed {
+	border-radius: 5px;
+	padding: 0.5em;
+	user-select: none;
+}
+
+.user-followed-boards-items-container {
+	border-radius: 0.5em;
+	padding: 0.75em;
+	width: 30em;
+	right: 0;
+	display: flex;
+	flex-wrap: wrap;
+	& > :not(:last-child) {
+		margin-right: 0.75em;
+	}
+}
+
+.buttons-container {
+	display: flex;
+	justify-content: flex-end;
+	& > :not(:last-child) {
+		margin-right: 0.5em;
+	}
+
+	.delete-button-icon,
+	.soft-delete-button-icon,
+	.edit-button-icon {
+		width: 1.5em;
+		height: 1.5em;
+	}
+
+	.delete-button-icon {
+		color: red;
+	}
+
+	.soft-delete-button-icon {
+		color: green;
+	}
+
+	button {
+		border: 1px solid black;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 3em;
+		height: 2em;
+		border-radius: 2vh;
+		cursor: pointer;
+
+		&:hover {
+			filter: brightness(1.05);
+		}
+	}
+}
+
+.user-posts-comments-container {
+	width: 80%;
+}

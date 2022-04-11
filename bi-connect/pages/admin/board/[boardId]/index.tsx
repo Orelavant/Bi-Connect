@@ -17,7 +17,7 @@ const Board = ({ bid }: any) => {
 		error: postError,
 		isError: postIsError,
 		isSuccess: postIsSuccess,
-    	data: postData
+		data: postData,
 	} = useGetPostsQuery(
 		{
 			endpoint,
@@ -28,46 +28,40 @@ const Board = ({ bid }: any) => {
 				},
 			},
 		},
-		{ 
+		{
 			input: {
-      			"boardNameContains": bid
-			} 
+				boardNameContains: bid,
+			},
 		}
 	);
 
 	// Structure of the page
 	// TODO: IF EMPTY, PUT DOWN A MESSAGE SAYING THAT THIS BOARD IS EMPTY
-  	return (
+	return (
 		<Item.Group>
 			<div>
 				<h1>Board Title: {bid}</h1>
 				<h3>Board Desc: "test description"</h3>
 			</div>
-
 			{postData?.getPosts.map((post, i) => (
-				<div className={styles["post-container"]}>
-					<Post
-						boardName={postData?.getPosts[i].boardName}  
-						id={postData?.getPosts[i]._id}
-						title={postData?.getPosts[i].title} 
-						content={postData?.getPosts[i].content} 
-						user={postData?.getPosts[i].creatorName}
-					></Post>
-				</div>
-				))
-			}
+				<Post
+					boardName={postData?.getPosts[i].boardName}
+					id={postData?.getPosts[i]._id}
+					title={postData?.getPosts[i].title || ""}
+					content={postData?.getPosts[i].content}
+					user={postData?.getPosts[i].creatorName || ""}
+				></Post>
+			))}
 
-			<CreatePostDialog 
-			boardName= {bid}
-			></CreatePostDialog>
+			<CreatePostDialog boardName={bid}></CreatePostDialog>
 		</Item.Group>
-  	);
+	);
 };
 
 // Get boardID from query parameter
 export async function getServerSideProps({ query }: any) {
-  const bid = query.boardId;
-  return { props: { bid: bid } };
+	const bid = query.boardId;
+	return { props: { bid: bid } };
 }
 
 export default Board;
