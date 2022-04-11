@@ -2,7 +2,8 @@ import React from "react";
 import { Item, Image } from "semantic-ui-react";
 import "fomantic-ui-css/semantic.css";
 import Post from "../../../../components/Post";
-import CreateButton from "../../../../components/CreateButton";
+import styles from "../../../../styles/PostComment.module.scss";
+import postStyles from "../../../../styles/Post.module.scss";
 import { useGetPostsQuery } from "../../../../generated/graphql";
 import CreatePostDialog from "../../../../components/CreatePostDialog";
 
@@ -44,13 +45,15 @@ const Board = ({ bid }: any) => {
 			</div>
 
 			{postData?.getPosts.map((post, i) => (
-				<Post
-					boardName={postData?.getPosts[i].boardName}  
-					id={postData?.getPosts[i]._id}
-					title={postData?.getPosts[i].title} 
-					content={postData?.getPosts[i].content} 
-					user={postData?.getPosts[i].creatorName}
-				></Post>
+				<div className={styles["post-container"]}>
+					<Post
+						boardName={postData?.getPosts[i].boardName}  
+						id={postData?.getPosts[i]._id}
+						title={postData?.getPosts[i].title} 
+						content={postData?.getPosts[i].content} 
+						user={postData?.getPosts[i].creatorName}
+					></Post>
+				</div>
 				))
 			}
 
