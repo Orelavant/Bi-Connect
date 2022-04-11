@@ -1,7 +1,7 @@
 import React from "react";
 import { useGetPostQuery } from "../../../../generated/graphql";
 import PostItem from "../../../../components/PostItem";
-import styles from "../styles/PostComment.module.scss";
+import styles from "../../../../styles/PostComment.module.scss";
 interface PostProps {
   postid: string;
 }
@@ -39,12 +39,11 @@ const Post = (props: PostProps) => {
     },
     { input: { _id: props.postid } }
   );
-  console.log(postData);
   return (
     <div className={styles["post-comment-container"]}>
       <div className={styles["post-container"]}>
         <PostItem
-          username={
+          creatorName={
             !isPostLoading && isPostSuccess
               ? postData.getPost.creatorName
               : null
@@ -55,7 +54,15 @@ const Post = (props: PostProps) => {
           content={
             !isPostLoading && isPostSuccess ? postData.getPost.content : null
           }
-          timestamp={"hello"}
+          createdAt={
+            !isPostLoading && isPostSuccess ? postData.getPost.createdAt : null
+          }
+          likes={
+            !isPostLoading && isPostSuccess ? postData.getPost.likes : null
+          }
+          dislikes={
+            !isPostLoading && isPostSuccess ? postData.getPost.dislikes : null
+          }
         />
       </div>
       <div className={styles["comment-container"]}></div>

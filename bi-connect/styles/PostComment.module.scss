@@ -1,0 +1,29 @@
+.post-comment-container {
+  height: 90%;
+  width: 90%;
+  border-radius: 0.75em;
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,
+    rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 2em;
+  display: flex;
+  flex-direction: column;
+
+  & > :not(:last-child) {
+    margin-bottom: 1.5em;
+  }
+}
+
+.post-container {
+  border: 0.1em solid lightgray;
+  padding: 0.75em 0.5em;
+  border: 1px solid gray;
+  border-radius: 0.75em;
+  background-color: rgb(216, 235, 241);
+}
+
+.comment-container {
+}

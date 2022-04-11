@@ -7,6 +7,9 @@ export const getPostQuery = gql`
 			creatorName
 			title
 			content
+			createdAt
+			likes
+			dislikes
 		}
 	}
 `;
