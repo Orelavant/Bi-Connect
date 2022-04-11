@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 public class LoginActivity extends AppCompatActivity {
 
     public static final String TAG = "LoginActivity";
-    private EditText etUsername;
+    private EditText etEmail;
     private EditText etPassword;
     private Button btnLogin;
     @Override
@@ -31,16 +31,16 @@ public class LoginActivity extends AppCompatActivity {
 //            goMainActivity();
 //        }
 
-        etUsername = findViewById(R.id.etUsername);
+        etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "onClick login button");
-                String username = etUsername.getText().toString();
+                String email = etEmail.getText().toString();
                 String password = etPassword.getText().toString();
-                loginUser(username,password);
+                loginUser(email,password);
             }
         });
     }
@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
                 .serverUrl("http://10.0.2.2:3001/graphql")
                 .build();
 
-        apolloClient.mutate(new LoginMutation(new LoginInput("jhan1@brynmawr.edu", "123456")))
+        apolloClient.mutate(new LoginMutation(new LoginInput(etEmail.getText().toString(), etPassword.getText().toString())))
         .enqueue( new ApolloCall.Callback<LoginMutation.Data>() {
 
             @Override
