@@ -13,7 +13,6 @@ import android.widget.Toast;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.api.Error;
@@ -35,6 +34,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         RecyclerView rvBoards = findViewById(R.id.rvBoards);
+        Button btnLogout = findViewById(R.id.btnLogout);
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goLoginActivity();
+            }
+        });
         BoardAdapter boardAdapter = new BoardAdapter(this, boards);
         rvBoards.setAdapter(boardAdapter);
         rvBoards.setLayoutManager(new LinearLayoutManager(this));
@@ -88,6 +94,12 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(MainActivity.this, CreateBoardActivity.class);
         startActivity(i);
     }
+    private void goLoginActivity() {
+        Intent i = new Intent(this, LoginActivity.class);
+        startActivity(i);
+        finish();
+    }
+
 }
 
     /*

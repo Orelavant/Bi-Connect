@@ -17,13 +17,23 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnCreateBoard"
-        android:onClick="createBoardOnClick"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="33dp"
-        android:layout_marginBottom="26dp"
+        android:layout_marginEnd="27dp"
+        android:layout_marginBottom="65dp"
         android:clickable="true"
+        android:onClick="createBoardOnClick"
         app:srcCompat="@android:drawable/ic_input_add" />
+
+    <Button
+        android:id="@+id/btnLogout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="6dp"
+        android:layout_marginBottom="4dp"
+        android:text="Logout" />
 </RelativeLayout>
