@@ -1,0 +1,6 @@
+mutation createBoard($creatorDetails: UserIdInput!, $input: CreateBoardInput!) {
+    createBoard(input: $input, creatorDetails: $creatorDetails) {
+        name
+        description
+    }
+}

@@ -13,9 +13,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.exception.ApolloHttpException;
+
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -62,6 +67,18 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(@NonNull Response<LoginMutation.Data> response) {
+                List<Error> errors = response.getErrors();
+                if (errors != null && errors.size() > 0) {
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            Toast.makeText(LoginActivity.this, "Login Failed, Email/password error.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    return;
+                }
+
                 Log.i(TAG, "Login success for :" + email);
                 goMainActivity();
                 runOnUiThread(new Runnable() {
