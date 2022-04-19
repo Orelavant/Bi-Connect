@@ -1,9 +1,6 @@
 package edu.brynmawr.cmsc353.webapp;
 
-import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.Configuration;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,36 +8,37 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.ViewHolder> {
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     Context context;
-    List<Board> boards;
+    List<Post> posts;
 
-    public BoardAdapter(Context context, List<Board> boards) {
+    public PostAdapter(Context context, List<Post> posts) {
         this.context = context;
-        this.boards = boards;
+        this.posts = posts;
     }
 
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View boardView = LayoutInflater.from(context).inflate(R.layout.item_board, parent, false);
-        return new ViewHolder(boardView);
+        View postView = LayoutInflater.from(context).inflate(R.layout.item_post, parent, false);
+        return new ViewHolder(postView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Board board = boards.get(position);
-        holder.bind(board);
+        Post post = posts.get(position);
+        holder.bind(post);
     }
 
     @Override
     public int getItemCount() {
-        return boards.size();
+        return posts.size();
     }
 
 
@@ -56,19 +54,9 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.ViewHolder> 
             container = itemView.findViewById(R.id.container);
         }
 
-        public void bind(Board board) {
-            tvName.setText(board.getName());
-            tvDescription.setText(board.getDescription());
-            //This is for going into the board later
-//            container.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Intent i = new Intent(context, detailActivity.class);
-//                    i.putExtra("title", movie.getTitle());
-//                    i.putExtra("movie", Parcels.wrap(movie));
-//                    context.startActivity(i);
-//                }
-//            });
+        public void bind(Post post) {
+            tvName.setText(post.getTitle());
+            tvDescription.setText(post.getContent());
         }
     }
 }

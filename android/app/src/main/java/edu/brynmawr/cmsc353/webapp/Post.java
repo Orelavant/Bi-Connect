@@ -1,20 +1,32 @@
 package edu.brynmawr.cmsc353.webapp;
 
-public class Board {
-    String name;
-    String description;
+public class Post {
+    String title;
+    String content;
+    String id;
+    String creatorName;
 
-    public Board(String name, String description) {
-        this.name = name;
-        this.description = description;
+    public Post(String title, String content, String id, String creatorName) {
+        this.title = title;
+        this.content = content;
+        this.id = id;
+        this.creatorName = creatorName;
     }
 
-    public String getName() {
-        return this.name;
+    public String getTitle() {
+        return title;
     }
 
-    public String getDescription() {
-        return this.description;
+    public String getContent() {
+        return content;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
     }
 
 }

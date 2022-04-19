@@ -1,14 +1,12 @@
 package edu.brynmawr.cmsc353.webapp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,16 +19,18 @@ import com.apollographql.apollo.exception.ApolloException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class BoardActivity extends AppCompatActivity {
 
-    List<Board> boards = new ArrayList<>();
+    List<Post> posts = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_board);
 
-        RecyclerView rvBoards = findViewById(R.id.rvBoards);
+        RecyclerView rvBoards = findViewById(R.id.rvPosts);
+
+        // Logging out
         Button btnLogout = findViewById(R.id.btnLogout);
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -38,32 +38,36 @@ public class MainActivity extends AppCompatActivity {
                 goLoginActivity();
             }
         });
-        BoardAdapter boardAdapter = new BoardAdapter(this, boards);
-        rvBoards.setAdapter(boardAdapter);
+
+        PostAdapter postAdapter = new PostAdapter(this, posts);
+        rvBoards.setAdapter(postAdapter);
         rvBoards.setLayoutManager(new LinearLayoutManager(this));
 
         ApolloClient apolloClient = ApolloClient.builder()
                 .serverUrl("http://10.0.2.2:3001/graphql")
                 .build();
 
-        apolloClient.query(new GetBoardsQuery(new GetBoardsInput(Input.fromNullable(null), Input.fromNullable(null),
+        // Populate views
+        apolloClient.query(new GetPostsQuery(new GetBoardsInput(Input.fromNullable(null), Input.fromNullable(null),
                 Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null),
                 Input.fromNullable(null), Input.fromNullable(null),Input.fromNullable(null), Input.fromNullable(null),
                 Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null))))
-                .enqueue( new ApolloCall.Callback<GetBoardsQuery.Data>() {
+                .enqueue( new ApolloCall.Callback<GetPostsQuery.Data>() {
 
                     @Override
-                    public void onResponse(@NonNull Response<GetBoardsQuery.Data> response) {
-                        List<GetBoardsQuery.GetBoard> getboards = response.getData().getBoards;
-                        for (GetBoardsQuery.GetBoard getboard:getboards) {
-                            boards.add(new Board(getboard.name(), getboard.description()));
+                    public void onResponse(@NonNull Response<GetPostsQuery.Data> response) {
+                        List<GetPostsQuery.GetPost> getposts = response.getData().getPosts;
+                        for (GetPostsQuery.GetPost getpost:getposts) {
+                            posts.add(new Post(getpost.title(), getpost.content(),
+                                    getpost._id(),
+                                    getpost.creatorName()));
                         }
                         runOnUiThread(new Runnable() {
 
                             @Override
                             public void run() {
 
-                               boardAdapter.notifyDataSetChanged();
+                               postAdapter.notifyDataSetChanged();
 
                             }
                         });
