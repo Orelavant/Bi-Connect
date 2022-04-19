@@ -17,6 +17,7 @@ import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.request.RequestHeaders;
@@ -65,13 +66,13 @@ public class LoginActivity extends AppCompatActivity {
         Log.i(TAG, "Attempting to login user " + email);
 
         SharedPreferences preferences = getSharedPreferences("BI_CONNECT_STORAGE", Context.MODE_PRIVATE);
-        String cookie = preferences.getString("biConnectAccessToken", null);
+        String token = preferences.getString("biConnectAccessToken", null);
+        String cookie = String.format("biConnectAccessToken=%s;", token);
 
         RequestHeaders requestHeaders;
         Map<String, String> headers = new HashMap<>();
         if (cookie != null) {
-            headers.put("biConnectAccessToken", cookie);
-
+            headers.put("cookie", cookie);
         }
         requestHeaders = RequestHeaders.builder().addHeaders(headers).build();
 
@@ -80,13 +81,20 @@ public class LoginActivity extends AppCompatActivity {
                 .build();
 
         apolloClient.query(new IsLoggedInQuery())
+                .toBuilder()
+                .requestHeaders(requestHeaders)
+                .httpCachePolicy(HttpCachePolicy.NETWORK_ONLY)
+                .canBeBatched(true)
+                .build()
                 .enqueue(new ApolloCall.Callback<IsLoggedInQuery.Data>() {
                     @Override
                     public void onResponse(@NonNull Response<IsLoggedInQuery.Data> response) {
                         List<Error> errors = response.getErrors();
                         if (errors == null || (errors != null && errors.size() > 0)) {
+                            Log.i(TAG, response.toString());
                             return;
                         }
+                        Log.i(TAG, "IT WORKED");
                         // cookie with good token so logged in
                         String username = response.getData().isLoggedIn().username;
                         String email = response.getData().isLoggedIn().username;
@@ -126,15 +134,15 @@ public class LoginActivity extends AppCompatActivity {
                     });
                     return;
                 }
-                String cookie = response.getData().login();
+                String token = response.getData().login();
                 // set cookie to preferences
                 SharedPreferences preferences = getSharedPreferences("BI_CONNECT_STORAGE", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("biConnectAccessToken", cookie);
+                editor.putString("email", email);
+                editor.putString("biConnectAccessToken", token);
                 editor.apply();
 
                 Log.i(TAG, "Login success for :" + email);
-                Log.v(TAG, response.toString());
                 goMainActivity();
                 runOnUiThread(new Runnable() {
 

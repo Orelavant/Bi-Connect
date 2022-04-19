@@ -89,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
                 } );
     }
     public void createBoardOnClick(View v) {
-        Log.i(TAG, "onClick cancel board button");
         // go to create board screen
         Intent i = new Intent(MainActivity.this, CreateBoardActivity.class);
         startActivity(i);

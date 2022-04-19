@@ -3,7 +3,9 @@ package edu.brynmawr.cmsc353.webapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -58,9 +60,11 @@ public class CreateBoardActivity extends AppCompatActivity {
                 .serverUrl("http://10.0.2.2:3001/graphql")
                 .build();
 
-
+        SharedPreferences preferences = getSharedPreferences("BI_CONNECT_STORAGE", Context.MODE_PRIVATE);
+        String email = preferences.getString("email", "no email :(");
+        Log.i(TAG, email);
         apolloClient.mutate(new CreateBoardMutation(
-                new UserIdInput(Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable("jhan1@brynmawr.edu")),
+                new UserIdInput(Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(email)),
                 new CreateBoardInput(boardName, Input.fromNullable(boardDescription), Input.fromNullable(null), Input.fromNullable(null))
                 )
         )
