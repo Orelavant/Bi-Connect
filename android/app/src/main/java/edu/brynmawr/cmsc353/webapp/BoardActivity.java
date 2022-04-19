@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
@@ -48,26 +50,38 @@ public class BoardActivity extends AppCompatActivity {
                 .build();
 
         // Populate views
-        apolloClient.query(new GetPostsQuery(new GetBoardsInput(Input.fromNullable(null), Input.fromNullable(null),
+        apolloClient.query(new GetPostsQuery(new GetPostsInput(Input.fromNullable(null), Input.fromNullable(null),
                 Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null),
-                Input.fromNullable(null), Input.fromNullable(null),Input.fromNullable(null), Input.fromNullable(null),
-                Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null))))
-                .enqueue( new ApolloCall.Callback<GetPostsQuery.Data>() {
+                Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null),
+                Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null),
+                Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null),
+                Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null),
+                Input.fromNullable(null)))).enqueue( new ApolloCall.Callback<GetPostsQuery.Data>() {
 
                     @Override
                     public void onResponse(@NonNull Response<GetPostsQuery.Data> response) {
+                        List<Error> errors = response.getErrors();
+                        if (errors != null && errors.size() > 0) {
+                            String message = errors.get(0).getMessage();
+                            runOnUiThread(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    Toast.makeText(BoardActivity.this, "Failed getting posts", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            return;
+                        }
                         List<GetPostsQuery.GetPost> getposts = response.getData().getPosts;
                         for (GetPostsQuery.GetPost getpost:getposts) {
-                            posts.add(new Post(getpost.title(), getpost.content(),
-                                    getpost._id(),
-                                    getpost.creatorName()));
+                            posts.add(new Post(getpost.title(), getpost.content(), getpost._id(), getpost.creatorName()));
                         }
                         runOnUiThread(new Runnable() {
 
                             @Override
                             public void run() {
 
-                               postAdapter.notifyDataSetChanged();
+                                postAdapter.notifyDataSetChanged();
 
                             }
                         });
@@ -76,14 +90,13 @@ public class BoardActivity extends AppCompatActivity {
                     public void onFailure(@NonNull ApolloException e) {
                     }
                 } );
-
     }
+
     private void goLoginActivity() {
         Intent i = new Intent(this, LoginActivity.class);
         startActivity(i);
         finish();
     }
-
 }
 
     /*

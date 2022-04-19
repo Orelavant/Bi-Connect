@@ -25,8 +25,11 @@ export default class BoardService {
 		if (Object.keys(userDetails).length === 0) {
 			throw new ApolloError("User details not provided");
 		}
+		const cleanedUserDetails = Object.fromEntries(
+			Object.entries(userDetails).filter(([_, v]) => v != null)
+		);
 		try {
-			await UserModel.findOneAndUpdate(userDetails, {
+			await UserModel.findOneAndUpdate(cleanedUserDetails, {
 				$push: { followedBoardsNames: input.name },
 			}).lean();
 		} catch (err) {
