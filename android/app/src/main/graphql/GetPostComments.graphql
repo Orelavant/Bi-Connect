@@ -1,0 +1,12 @@
+query getPostComments($input: PostIdInput!) {
+    getPostComments(input: $input){
+        _id
+        createdAt
+        creatorName
+        content
+        likes
+        dislikes
+        parentId
+        postId
+    }
+}
