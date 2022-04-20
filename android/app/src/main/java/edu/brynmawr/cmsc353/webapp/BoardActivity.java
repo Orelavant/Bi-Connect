@@ -50,6 +50,8 @@ public class BoardActivity extends AppCompatActivity {
                 .serverUrl("http://10.0.2.2:3001/graphql")
                 .build();
 
+        Input<String> testBoardName = new Input<>("Bryn Mawr Confessions", true);
+
         // Populate views
         apolloClient.query(new GetPostsQuery(new GetPostsInput(Input.fromNullable(null), Input.fromNullable(null),
                 Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null),
@@ -57,12 +59,15 @@ public class BoardActivity extends AppCompatActivity {
                 Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null),
                 Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null),
                 Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null),
-                Input.fromNullable(null)))).enqueue( new ApolloCall.Callback<GetPostsQuery.Data>() {
+                testBoardName))).enqueue( new ApolloCall.Callback<GetPostsQuery.Data>() {
 
                     @Override
                     public void onResponse(@NonNull Response<GetPostsQuery.Data> response) {
                         List<Error> errors = response.getErrors();
+                        Integer errorSize = (Integer) errors.size();
+                        Log.i("errorSize", errorSize.toString());
                         if (errors != null && errors.size() > 0) {
+                            Log.e("getPostsError", errors.toString());
                             String message = errors.get(0).getMessage();
                             runOnUiThread(new Runnable() {
 
