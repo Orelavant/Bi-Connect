@@ -57,7 +57,11 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "onClick register button");
-                goRegisterActivity();
+                try {
+                    goRegisterActivity();
+                } catch (Exception e) {
+                    Log.e("tag", e.toString());
+                }
             }
         });
     }
@@ -125,6 +129,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(@NonNull Response<LoginMutation.Data> response) {
                 List<Error> errors = response.getErrors();
                 if (errors != null && errors.size() > 0) {
+                    Log.e("loginError", errors.toString());
                     runOnUiThread(new Runnable() {
 
                         @Override
@@ -180,4 +185,9 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
+    private void goBoardActivity() {
+        Intent i = new Intent(this, BoardActivity.class);
+        startActivity(i);
+        finish();
+    }
 }
