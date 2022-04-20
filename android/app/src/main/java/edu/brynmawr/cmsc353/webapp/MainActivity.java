@@ -89,11 +89,13 @@ public class MainActivity extends AppCompatActivity {
                 } );
 
     }
+
     public void createBoardOnClick(View v) {
         // go to create board screen
         Intent i = new Intent(MainActivity.this, CreateBoardActivity.class);
         startActivity(i);
     }
+
     private void goLoginActivity() {
         Intent i = new Intent(this, LoginActivity.class);
         startActivity(i);

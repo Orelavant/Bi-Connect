@@ -2,6 +2,7 @@ package edu.brynmawr.cmsc353.webapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -96,6 +97,15 @@ public class BoardActivity extends AppCompatActivity {
         Intent i = new Intent(this, LoginActivity.class);
         startActivity(i);
         finish();
+    }
+
+    public void createPostOnClick(View v) {
+        // go to create board screen
+        Log.i("tag", "yeah");
+
+        // TODO ADD THIS IN LATER
+//        Intent i = new Intent(BoardActivity.this, CreatePostActivity.class);
+//        startActivity(i);
     }
 }
 

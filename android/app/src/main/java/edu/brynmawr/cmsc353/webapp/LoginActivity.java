@@ -57,7 +57,11 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "onClick register button");
-                goRegisterActivity();
+                try {
+                    goRegisterActivity();
+                } catch (Exception e) {
+                    Log.e("tag", e.toString());
+                }
             }
         });
     }
@@ -179,5 +183,4 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(i);
         finish();
     }
-
 }
