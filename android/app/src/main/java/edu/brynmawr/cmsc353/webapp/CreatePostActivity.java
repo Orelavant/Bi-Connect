@@ -66,9 +66,8 @@ public class CreatePostActivity extends AppCompatActivity {
 
 
         Log.i(TAG, email);
-        apolloClient.mutate(new CreatePostMutation(new CreatePostInput(new Input<>(postTitle,
-                true), postContent), new BoardIdInput(Input.fromNullable(null), "Bryn Mawr Confessions"),
-                new UserIdInput(Input.fromNullable(null), new Input<>("jhan529", true), new Input<>("jhan1@brynmawr.edu", true))))
+        apolloClient.mutate(new CreatePostMutation(new CreatePostInput(Input.fromNullable(postTitle), postContent), new BoardIdInput(Input.fromNullable(null), boardName),
+                new UserIdInput(Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(email))))
 
                 .enqueue(new ApolloCall.Callback<CreatePostMutation.Data>() {
 
