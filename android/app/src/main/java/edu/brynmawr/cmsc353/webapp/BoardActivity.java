@@ -18,6 +18,7 @@ import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,27 +31,36 @@ public class BoardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
-
-        RecyclerView rvBoards = findViewById(R.id.rvPosts);
+        String bN = getIntent().getExtras().get("boardname").toString();
+        String email = getIntent().getExtras().get("email").toString();
+        RecyclerView rvPosts = findViewById(R.id.rvPosts);
 
         // Logging out
         Button btnLogout = findViewById(R.id.btnLogout);
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goLoginActivity();
+                goMainActivity(bN, email);
             }
         });
-
+        FloatingActionButton createPost = findViewById(R.id.btnCreatePost);
+        createPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(BoardActivity.this, CreatePostActivity.class);
+                i.putExtra("boardName", bN);
+                i.putExtra("email", email);
+                startActivity(i);
+            }
+        });
         PostAdapter postAdapter = new PostAdapter(this, posts);
-        rvBoards.setAdapter(postAdapter);
-        rvBoards.setLayoutManager(new LinearLayoutManager(this));
+        rvPosts.setAdapter(postAdapter);
+        rvPosts.setLayoutManager(new LinearLayoutManager(this));
 
         ApolloClient apolloClient = ApolloClient.builder()
                 .serverUrl("http://10.0.2.2:3001/graphql")
                 .build();
-
-        Input<String> testBoardName = new Input<>("Bryn Mawr Confessions", true);
+        Input<String> boardName = new Input<>(bN, true);
 
         // Populate views
         apolloClient.query(new GetPostsQuery(new GetPostsInput(Input.fromNullable(null), Input.fromNullable(null),
@@ -59,13 +69,15 @@ public class BoardActivity extends AppCompatActivity {
                 Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null),
                 Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null),
                 Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(null),
-                testBoardName))).enqueue( new ApolloCall.Callback<GetPostsQuery.Data>() {
+                boardName))).enqueue( new ApolloCall.Callback<GetPostsQuery.Data>() {
 
                     @Override
                     public void onResponse(@NonNull Response<GetPostsQuery.Data> response) {
                         List<Error> errors = response.getErrors();
-                        Integer errorSize = (Integer) errors.size();
-                        Log.i("errorSize", errorSize.toString());
+                        if (errors != null) {
+                            Integer errorSize = (Integer) errors.size();
+                            Log.i("errorSize", errorSize.toString());
+                        }
                         if (errors != null && errors.size() > 0) {
                             Log.e("getPostsError", errors.toString());
                             String message = errors.get(0).getMessage();
@@ -94,24 +106,28 @@ public class BoardActivity extends AppCompatActivity {
                     }
                     @Override
                     public void onFailure(@NonNull ApolloException e) {
+                        Log.d("Getting Post", e.toString());
+                        runOnUiThread(new Runnable() {
+
+                            @Override
+                            public void run() {
+
+                                Toast.makeText(BoardActivity.this, "Failed getting posts", Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
                     }
                 } );
     }
 
-    private void goLoginActivity() {
-        Intent i = new Intent(this, LoginActivity.class);
+    private void goMainActivity(String bN, String email) {
+        Intent i = new Intent(this, MainActivity.class);
+        i.putExtra("boardName", bN);
+        i.putExtra("email", email);
         startActivity(i);
         finish();
     }
 
-    public void createPostOnClick(View v) {
-        // go to create board screen
-        Log.i("tag", "yeah");
-
-        // TODO ADD THIS IN LATER
-//        Intent i = new Intent(BoardActivity.this, CreatePostActivity.class);
-//        startActivity(i);
-    }
 }
 
     /*

@@ -175,18 +175,13 @@ public class LoginActivity extends AppCompatActivity {
 
     private void goMainActivity() {
         Intent i = new Intent(this, MainActivity.class);
+        i.putExtra("email", etEmail.getText().toString());
         startActivity(i);
         finish();
     }
 
     private void goRegisterActivity() {
         Intent i = new Intent(this, RegisterActivity.class);
-        startActivity(i);
-        finish();
-    }
-
-    private void goBoardActivity() {
-        Intent i = new Intent(this, BoardActivity.class);
         startActivity(i);
         finish();
     }

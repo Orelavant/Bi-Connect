@@ -42,6 +42,8 @@ public class CreateBoardActivity extends AppCompatActivity {
                 Log.i(TAG, "onClick cancel board button");
                 // go back to board list screen
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                String email = getIntent().getExtras().get("email").toString();
+                i.putExtra("email", email);
                 startActivity(i);
             }
         });
@@ -91,6 +93,7 @@ public class CreateBoardActivity extends AppCompatActivity {
                                 String message = String.format("%s was successfully created!", boardName);
                                 Toast.makeText(CreateBoardActivity.this, message, Toast.LENGTH_SHORT).show();
                                 Intent i = new Intent(CreateBoardActivity.this, MainActivity.class);
+                                i.putExtra("email", email);
                                 startActivity(i);
                             }
                         });

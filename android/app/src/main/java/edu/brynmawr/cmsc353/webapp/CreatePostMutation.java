@@ -33,9 +33,6 @@ import java.util.Map;
 import okio.Buffer;
 import okio.BufferedSource;
 import okio.ByteString;
-import type.BoardIdInput;
-import type.CreatePostInput;
-import type.UserIdInput;
 
 public final class CreatePostMutation implements Mutation<CreatePostMutation.Data, CreatePostMutation.Data, CreatePostMutation.Variables> {
   public static final String OPERATION_ID = "0eebe4291869fccfca1fb4be3d3717e1e1bb524442705a65f29ec716038bb550";

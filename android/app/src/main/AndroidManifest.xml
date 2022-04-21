@@ -27,6 +27,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity"></activity>
+        <activity android:name=".CreatePostActivity"></activity>
         <activity android:name=".RegisterActivity"></activity>
         <activity android:name=".BoardActivity"></activity>
     </application>

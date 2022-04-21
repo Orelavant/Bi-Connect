@@ -23,7 +23,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="6dp"
         android:layout_marginBottom="4dp"
-        android:text="Logout" />
+        android:text="Back" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnCreatePost"

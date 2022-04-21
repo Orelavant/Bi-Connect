@@ -1,9 +1,12 @@
 package edu.brynmawr.cmsc353.webapp;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +21,12 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.ViewHolder> 
 
     Context context;
     List<Board> boards;
+    String email;
 
-    public BoardAdapter(Context context, List<Board> boards) {
+    public BoardAdapter(Context context, List<Board> boards, String email) {
         this.context = context;
         this.boards = boards;
+        this.email = email;
     }
 
 
@@ -60,15 +65,15 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.ViewHolder> 
             tvName.setText(board.getName());
             tvDescription.setText(board.getDescription());
             //This is for going into the board later
-//            container.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Intent i = new Intent(context, detailActivity.class);
-//                    i.putExtra("title", movie.getTitle());
-//                    i.putExtra("movie", Parcels.wrap(movie));
-//                    context.startActivity(i);
-//                }
-//            });
+            container.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(context, BoardActivity.class);
+                    i.putExtra("boardname",  tvName.getText().toString());
+                    i.putExtra("email", email);
+                    context.startActivity(i);
+                }
+            });
         }
     }
 }

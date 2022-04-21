@@ -16,33 +16,26 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
-public final class UserIdInput implements InputType {
+public final class BoardIdInput implements InputType {
   private final Input<String> _id;
 
-  private final Input<String> username;
-
-  private final Input<String> email;
+  private final @NotNull String name;
 
   private transient volatile int $hashCode;
 
   private transient volatile boolean $hashCodeMemoized;
 
-  UserIdInput(Input<String> _id, Input<String> username, Input<String> email) {
+  BoardIdInput(Input<String> _id, @NotNull String name) {
     this._id = _id;
-    this.username = username;
-    this.email = email;
+    this.name = name;
   }
 
   public @Nullable String _id() {
     return this._id.value;
   }
 
-  public @Nullable String username() {
-    return this.username.value;
-  }
-
-  public @Nullable String email() {
-    return this.email.value;
+  public @NotNull String name() {
+    return this.name;
   }
 
   public static Builder builder() {
@@ -57,12 +50,7 @@ public final class UserIdInput implements InputType {
         if (_id.defined) {
           writer.writeString("_id", _id.value);
         }
-        if (username.defined) {
-          writer.writeString("username", username.value);
-        }
-        if (email.defined) {
-          writer.writeString("email", email.value);
-        }
+        writer.writeString("name", name);
       }
     };
   }
@@ -74,9 +62,7 @@ public final class UserIdInput implements InputType {
       h *= 1000003;
       h ^= _id.hashCode();
       h *= 1000003;
-      h ^= username.hashCode();
-      h *= 1000003;
-      h ^= email.hashCode();
+      h ^= name.hashCode();
       $hashCode = h;
       $hashCodeMemoized = true;
     }
@@ -88,11 +74,10 @@ public final class UserIdInput implements InputType {
     if (o == this) {
       return true;
     }
-    if (o instanceof UserIdInput) {
-      UserIdInput that = (UserIdInput) o;
+    if (o instanceof BoardIdInput) {
+      BoardIdInput that = (BoardIdInput) o;
       return this._id.equals(that._id)
-       && this.username.equals(that.username)
-       && this.email.equals(that.email);
+       && this.name.equals(that.name);
     }
     return false;
   }
@@ -100,9 +85,7 @@ public final class UserIdInput implements InputType {
   public static final class Builder {
     private Input<String> _id = Input.absent();
 
-    private Input<String> username = Input.absent();
-
-    private Input<String> email = Input.absent();
+    private @NotNull String name;
 
     Builder() {
     }
@@ -112,13 +95,8 @@ public final class UserIdInput implements InputType {
       return this;
     }
 
-    public Builder username(@Nullable String username) {
-      this.username = Input.fromNullable(username);
-      return this;
-    }
-
-    public Builder email(@Nullable String email) {
-      this.email = Input.fromNullable(email);
+    public Builder name(@NotNull String name) {
+      this.name = name;
       return this;
     }
 
@@ -127,18 +105,9 @@ public final class UserIdInput implements InputType {
       return this;
     }
 
-    public Builder usernameInput(@NotNull Input<String> username) {
-      this.username = Utils.checkNotNull(username, "username == null");
-      return this;
-    }
-
-    public Builder emailInput(@NotNull Input<String> email) {
-      this.email = Utils.checkNotNull(email, "email == null");
-      return this;
-    }
-
-    public UserIdInput build() {
-      return new UserIdInput(_id, username, email);
+    public BoardIdInput build() {
+      Utils.checkNotNull(name, "name == null");
+      return new BoardIdInput(_id, name);
     }
   }
 }

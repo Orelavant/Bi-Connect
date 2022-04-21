@@ -34,19 +34,18 @@ import java.util.Map;
 import okio.Buffer;
 import okio.BufferedSource;
 import okio.ByteString;
-import edu.brynmawr.cmsc353.webapp.GetPostsInput;
 
 public final class GetPostsQuery implements Query<GetPostsQuery.Data, GetPostsQuery.Data, GetPostsQuery.Variables> {
-  public static final String OPERATION_ID = "5f17abfadb1e8eeb6781e6417bb02bd03788b8002fdc2192915cac75240832b1";
+  public static final String OPERATION_ID = "0911b289392a994dd4616fd6584247c61620f885959489af802500d737a7ad93";
 
   public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
-    "query getPosts($input: edu.brynmawr.cmsc353.webapp.GetPostsInput!) {\n"
+    "query getPosts($input: GetPostsInput!) {\n"
         + "  getPosts(input: $input) {\n"
         + "    __typename\n"
         + "    _id\n"
+        + "    creatorName\n"
         + "    title\n"
         + "    content\n"
-        + "    creatorName\n"
         + "    boardName\n"
         + "  }\n"
         + "}"
@@ -61,7 +60,7 @@ public final class GetPostsQuery implements Query<GetPostsQuery.Data, GetPostsQu
 
   private final Variables variables;
 
-  public GetPostsQuery(@NotNull edu.brynmawr.cmsc353.webapp.GetPostsInput input) {
+  public GetPostsQuery(@NotNull GetPostsInput input) {
     Utils.checkNotNull(input, "input == null");
     variables = new Variables(input);
   }
@@ -148,13 +147,12 @@ public final class GetPostsQuery implements Query<GetPostsQuery.Data, GetPostsQu
   }
 
   public static final class Builder {
-    private @NotNull
-    edu.brynmawr.cmsc353.webapp.GetPostsInput input;
+    private @NotNull GetPostsInput input;
 
     Builder() {
     }
 
-    public Builder input(@NotNull edu.brynmawr.cmsc353.webapp.GetPostsInput input) {
+    public Builder input(@NotNull GetPostsInput input) {
       this.input = input;
       return this;
     }
@@ -166,18 +164,16 @@ public final class GetPostsQuery implements Query<GetPostsQuery.Data, GetPostsQu
   }
 
   public static final class Variables extends Operation.Variables {
-    private final @NotNull
-    edu.brynmawr.cmsc353.webapp.GetPostsInput input;
+    private final @NotNull GetPostsInput input;
 
     private final transient Map<String, Object> valueMap = new LinkedHashMap<>();
 
-    Variables(@NotNull edu.brynmawr.cmsc353.webapp.GetPostsInput input) {
+    Variables(@NotNull GetPostsInput input) {
       this.input = input;
       this.valueMap.put("input", input);
     }
 
-    public @NotNull
-    edu.brynmawr.cmsc353.webapp.GetPostsInput input() {
+    public @NotNull GetPostsInput input() {
       return input;
     }
 
@@ -302,9 +298,9 @@ public final class GetPostsQuery implements Query<GetPostsQuery.Data, GetPostsQu
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("_id", "_id", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("creatorName", "creatorName", null, true, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("title", "title", null, true, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("content", "content", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forString("creatorName", "creatorName", null, true, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("boardName", "boardName", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
@@ -312,11 +308,11 @@ public final class GetPostsQuery implements Query<GetPostsQuery.Data, GetPostsQu
 
     final @NotNull String _id;
 
+    final @Nullable String creatorName;
+
     final @Nullable String title;
 
     final @NotNull String content;
-
-    final @Nullable String creatorName;
 
     final @NotNull String boardName;
 
@@ -326,13 +322,13 @@ public final class GetPostsQuery implements Query<GetPostsQuery.Data, GetPostsQu
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public GetPost(@NotNull String __typename, @NotNull String _id, @Nullable String title,
-        @NotNull String content, @Nullable String creatorName, @NotNull String boardName) {
+    public GetPost(@NotNull String __typename, @NotNull String _id, @Nullable String creatorName,
+        @Nullable String title, @NotNull String content, @NotNull String boardName) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this._id = Utils.checkNotNull(_id, "_id == null");
+      this.creatorName = creatorName;
       this.title = title;
       this.content = Utils.checkNotNull(content, "content == null");
-      this.creatorName = creatorName;
       this.boardName = Utils.checkNotNull(boardName, "boardName == null");
     }
 
@@ -344,16 +340,16 @@ public final class GetPostsQuery implements Query<GetPostsQuery.Data, GetPostsQu
       return this._id;
     }
 
+    public @Nullable String creatorName() {
+      return this.creatorName;
+    }
+
     public @Nullable String title() {
       return this.title;
     }
 
     public @NotNull String content() {
       return this.content;
-    }
-
-    public @Nullable String creatorName() {
-      return this.creatorName;
     }
 
     public @NotNull String boardName() {
@@ -367,9 +363,9 @@ public final class GetPostsQuery implements Query<GetPostsQuery.Data, GetPostsQu
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], _id);
-          writer.writeString($responseFields[2], title);
-          writer.writeString($responseFields[3], content);
-          writer.writeString($responseFields[4], creatorName);
+          writer.writeString($responseFields[2], creatorName);
+          writer.writeString($responseFields[3], title);
+          writer.writeString($responseFields[4], content);
           writer.writeString($responseFields[5], boardName);
         }
       };
@@ -381,9 +377,9 @@ public final class GetPostsQuery implements Query<GetPostsQuery.Data, GetPostsQu
         $toString = "GetPost{"
           + "__typename=" + __typename + ", "
           + "_id=" + _id + ", "
+          + "creatorName=" + creatorName + ", "
           + "title=" + title + ", "
           + "content=" + content + ", "
-          + "creatorName=" + creatorName + ", "
           + "boardName=" + boardName
           + "}";
       }
@@ -399,9 +395,9 @@ public final class GetPostsQuery implements Query<GetPostsQuery.Data, GetPostsQu
         GetPost that = (GetPost) o;
         return this.__typename.equals(that.__typename)
          && this._id.equals(that._id)
+         && ((this.creatorName == null) ? (that.creatorName == null) : this.creatorName.equals(that.creatorName))
          && ((this.title == null) ? (that.title == null) : this.title.equals(that.title))
          && this.content.equals(that.content)
-         && ((this.creatorName == null) ? (that.creatorName == null) : this.creatorName.equals(that.creatorName))
          && this.boardName.equals(that.boardName);
       }
       return false;
@@ -416,11 +412,11 @@ public final class GetPostsQuery implements Query<GetPostsQuery.Data, GetPostsQu
         h *= 1000003;
         h ^= _id.hashCode();
         h *= 1000003;
+        h ^= (creatorName == null) ? 0 : creatorName.hashCode();
+        h *= 1000003;
         h ^= (title == null) ? 0 : title.hashCode();
         h *= 1000003;
         h ^= content.hashCode();
-        h *= 1000003;
-        h ^= (creatorName == null) ? 0 : creatorName.hashCode();
         h *= 1000003;
         h ^= boardName.hashCode();
         $hashCode = h;
@@ -434,11 +430,11 @@ public final class GetPostsQuery implements Query<GetPostsQuery.Data, GetPostsQu
       public GetPost map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String _id = reader.readString($responseFields[1]);
-        final String title = reader.readString($responseFields[2]);
-        final String content = reader.readString($responseFields[3]);
-        final String creatorName = reader.readString($responseFields[4]);
+        final String creatorName = reader.readString($responseFields[2]);
+        final String title = reader.readString($responseFields[3]);
+        final String content = reader.readString($responseFields[4]);
         final String boardName = reader.readString($responseFields[5]);
-        return new GetPost(__typename, _id, title, content, creatorName, boardName);
+        return new GetPost(__typename, _id, creatorName, title, content, boardName);
       }
     }
   }

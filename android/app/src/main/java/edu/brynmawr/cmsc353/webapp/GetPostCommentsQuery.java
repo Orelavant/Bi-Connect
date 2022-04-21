@@ -35,7 +35,6 @@ import okio.Buffer;
 import okio.BufferedSource;
 import okio.ByteString;
 import type.CustomType;
-import type.PostIdInput;
 
 public final class GetPostCommentsQuery implements Query<GetPostCommentsQuery.Data, GetPostCommentsQuery.Data, GetPostCommentsQuery.Variables> {
   public static final String OPERATION_ID = "363bcf98eb6d4617e725d061ae06fdb595dddf6d6230f19c1cbfb0740b3163e7";
