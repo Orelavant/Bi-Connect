@@ -13,8 +13,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
+
+import java.util.List;
 
 public class RegisterActivity extends AppCompatActivity {
     public static final String TAG = "RegisterActivity";
@@ -53,6 +56,18 @@ public class RegisterActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(@NonNull Response<CreateUserMutation.Data> response) {
+                        List<Error> errors = response.getErrors();
+                        if (errors != null && errors.size() > 0) {
+                            Log.e("loginError", errors.toString());
+                            runOnUiThread(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    Toast.makeText(RegisterActivity.this, "Duplicate User.", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            return;
+                        }
                         Log.i(TAG, "Create user success for :" + username);
                         goLoginActivity();
                         runOnUiThread(new Runnable() {

@@ -31,7 +31,7 @@ public class BoardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
-        String bN = getIntent().getExtras().get("boardname").toString();
+        String bN = getIntent().getExtras().get("boardName").toString();
         String email = getIntent().getExtras().get("email").toString();
         RecyclerView rvPosts = findViewById(R.id.rvPosts);
 
@@ -53,7 +53,7 @@ public class BoardActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-        PostAdapter postAdapter = new PostAdapter(this, posts);
+        PostAdapter postAdapter = new PostAdapter(this, posts, email);
         rvPosts.setAdapter(postAdapter);
         rvPosts.setLayoutManager(new LinearLayoutManager(this));
 
@@ -92,7 +92,7 @@ public class BoardActivity extends AppCompatActivity {
                         }
                         List<GetPostsQuery.GetPost> getposts = response.getData().getPosts;
                         for (GetPostsQuery.GetPost getpost:getposts) {
-                            posts.add(new Post(getpost.title(), getpost.content(), getpost._id(), getpost.creatorName()));
+                            posts.add(new Post(getpost.title(), getpost.content(), getpost._id(), getpost.creatorName(), getpost.boardName()));
                         }
                         runOnUiThread(new Runnable() {
 

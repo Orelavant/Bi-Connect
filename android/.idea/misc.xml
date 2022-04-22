@@ -10,13 +10,16 @@
         <entry key="..\:/Users/jvalero/Documents/College/Senior/Spring/SE/Bi-Connect/android/app/src/main/res/layout/item_board.xml" value="0.1609375" />
         <entry key="..\:/Users/jvalero/Documents/College/Senior/Spring/SE/Bi-Connect/android/app/src/main/res/layout/item_post.xml" value="0.1609375" />
         <entry key="app/src/main/res/layout/activity_board.xml" value="0.16983695652173914" />
+        <entry key="app/src/main/res/layout/activity_comment.xml" value="0.3278985507246377" />
         <entry key="app/src/main/res/layout/activity_create_board.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_create_comment.xml" value="0.223731884057971" />
         <entry key="app/src/main/res/layout/activity_create_post.xml" value="0.3177083333333333" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.22056159420289856" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.165" />
         <entry key="app/src/main/res/layout/activity_register.xml" value="0.21105072463768115" />
         <entry key="app/src/main/res/layout/content_create_board.xml" value="0.1796875" />
         <entry key="app/src/main/res/layout/item_board.xml" value="0.34729730824448296" />
+        <entry key="app/src/main/res/layout/item_comment.xml" value="0.3278985507246377" />
         <entry key="app/src/main/res/layout/item_post.xml" value="0.16983695652173914" />
       </map>
     </option>
