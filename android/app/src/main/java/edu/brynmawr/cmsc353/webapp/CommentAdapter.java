@@ -17,10 +17,16 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
     Context context;
     List<Comment> comments;
+    String email;
+    String boardName;
+    String postID;
 
-    public CommentAdapter(Context context, List<Comment> comments) {
+    public CommentAdapter(Context context, List<Comment> comments, String email, String boardName, String postID) {
         this.context = context;
         this.comments = comments;
+        this.email = email;
+        this.boardName = boardName;
+        this.postID = postID;
     }
 
     @NonNull
@@ -62,6 +68,17 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             if(tvContent != null) {
                 tvContent.setText(comment.getContent());
             }
+            container.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(context, CreateCommentActivity.class);
+                    i.putExtra("parentID",comment.getId());
+                    i.putExtra("postID", postID);
+                    i.putExtra("boardName", boardName);
+                    i.putExtra("email", email);
+                    context.startActivity(i);
+                }
+            });
         }
     }
 }

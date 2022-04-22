@@ -35,6 +35,8 @@ public class CreateCommentActivity extends AppCompatActivity {
         btnCreate = findViewById(R.id.btnCreate);
         String postID = getIntent().getExtras().get("postID").toString();
         String email = getIntent().getExtras().get("email").toString();
+        String boardName = getIntent().getExtras().get("boardName").toString();
+        String parentID = getIntent().getExtras().get("parentID").toString();
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -43,7 +45,7 @@ public class CreateCommentActivity extends AppCompatActivity {
                 Intent i = new Intent(getApplicationContext(), CommentActivity.class);
                 i.putExtra("postID", postID);
                 i.putExtra("email", email);
-                i.putExtra("boardName", getIntent().getExtras().get("boardName").toString());
+                i.putExtra("boardName", boardName);
                 startActivity(i);
             }
         });
@@ -52,19 +54,19 @@ public class CreateCommentActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Log.v(TAG, "onClick create comment button");
                 String commentContent = etCommentContent.getText().toString();
-                createComment(commentContent, postID, email);
+                createComment(commentContent, postID, email, boardName, parentID);
             }
         });
     }
 
-    private void createComment(String commentContent, String postID, String email) {
+    private void createComment(String commentContent, String postID, String email, String boardName, String parentID) {
         ApolloClient apolloClient = ApolloClient.builder()
                 .serverUrl("http://10.0.2.2:3001/graphql")
                 .build();
 
 
         Log.i(TAG, email);
-        apolloClient.mutate(new CreateCommentMutation(new CreateCommentInput(commentContent, Input.fromNullable("")), new PostIdInput(postID), new UserIdInput(Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(email))))
+        apolloClient.mutate(new CreateCommentMutation(new CreateCommentInput(commentContent, Input.fromNullable(parentID)), new PostIdInput(postID), new UserIdInput(Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(email))))
 
                 .enqueue(new ApolloCall.Callback<CreateCommentMutation.Data>() {
 
@@ -87,11 +89,12 @@ public class CreateCommentActivity extends AppCompatActivity {
 
                             @Override
                             public void run() {
-                                String message = String.format("%s was successfully created!");
+                                String message = String.format("Comment was successfully created!");
                                 Toast.makeText(CreateCommentActivity.this, message, Toast.LENGTH_SHORT).show();
                                 Intent i = new Intent(CreateCommentActivity.this, CommentActivity.class);
-                                i.putExtra("boardname", getIntent().getExtras().get("boardName").toString());
-                                i.putExtra("email", getIntent().getExtras().get("email").toString());
+                                i.putExtra("boardName", boardName);
+                                i.putExtra("email", email);
+                                i.putExtra("postID", postID);
                                 startActivity(i);
                             }
                         });
@@ -99,12 +102,12 @@ public class CreateCommentActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(@NonNull ApolloException e) {
-                        Log.i(TAG, "create post failed");
+                        Log.i(TAG, "create comment failed");
                         runOnUiThread(new Runnable() {
 
                             @Override
                             public void run() {
-                                Toast.makeText(CreateCommentActivity.this, "Create post failed, network error", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(CreateCommentActivity.this, "Create comment failed, network error", Toast.LENGTH_SHORT).show();
                             }
                         });
 

@@ -26,36 +26,41 @@ import java.util.Objects;
 
 public class CommentActivity extends AppCompatActivity {
     public static final String TAG = "CommentActivity";
-    private Button btnCreateBoard;
     List<Comment> comments = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment);
+        Intent intent = getIntent();
+        String postID = intent.getExtras().get("postID").toString();
+        String email = intent.getExtras().get("email").toString();
+        String boardName = intent.getExtras().get("boardName").toString();
+        Log.i("THE POST ID: %s ", postID);
+
 
         RecyclerView rvComments = findViewById(R.id.rvComments);
         Button btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goBoardActivity();
+                goBoardActivity(boardName, email);
             }
         });
-        Intent intent = getIntent();
         FloatingActionButton btnCreateButton = findViewById(R.id.btnCreateComment);
         btnCreateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent( CommentActivity.this, CreateCommentActivity.class);
-                i.putExtra("postID", intent.getExtras().get("postID").toString());
-                i.putExtra("email", intent.getExtras().get("email").toString());
-                i.putExtra("boardName", getIntent().getExtras().get("boardName").toString());
+                i.putExtra("postID", postID);
+                i.putExtra("email", email);
+                i.putExtra("boardName", boardName);
+                i.putExtra("parentID", "");
                 startActivity(i);
             }
         });
 
-        CommentAdapter commentAdapter = new CommentAdapter(this, comments);
+        CommentAdapter commentAdapter = new CommentAdapter(this, comments, email, boardName, postID);
         rvComments.setAdapter(commentAdapter);
         rvComments.setLayoutManager(new LinearLayoutManager(this));
 
@@ -82,7 +87,7 @@ public class CommentActivity extends AppCompatActivity {
                         }
                         List<GetPostCommentsQuery.GetPostComment> getcomments = response.getData().getPostComments;
                         for (GetPostCommentsQuery.GetPostComment getcomment:getcomments) {
-                            comments.add(new Comment(getcomment.creatorName(), getcomment.content()));
+                            comments.add(new Comment(getcomment.creatorName(), getcomment.content(), getcomment._id(), getcomment.postId()));
                         }
                         Log.i("trying to check comments num for this comment: ", Integer.toString(comments.size()));
                         runOnUiThread(new Runnable() {
@@ -103,10 +108,10 @@ public class CommentActivity extends AppCompatActivity {
     }
 
 
-    private void goBoardActivity() {
+    private void goBoardActivity(String boardName, String email) {
         Intent i = new Intent(this, BoardActivity.class);
-        i.putExtra("boardName", getIntent().getExtras().get("boardName").toString());
-        i.putExtra("email", getIntent().getExtras().get("email").toString());
+        i.putExtra("boardName", boardName);
+        i.putExtra("email", email);
         startActivity(i);
         finish();
     }

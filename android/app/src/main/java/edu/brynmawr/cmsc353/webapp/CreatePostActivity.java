@@ -44,7 +44,7 @@ public class CreatePostActivity extends AppCompatActivity {
                 // go back to post list screen
                 Intent i = new Intent(getApplicationContext(), BoardActivity.class);
                 i.putExtra("email", email);
-                i.putExtra("boardname", boardName);
+                i.putExtra("boardName", boardName);
                 startActivity(i);
             }
         });
@@ -93,6 +93,8 @@ public class CreatePostActivity extends AppCompatActivity {
                                 String message = String.format("%s was successfully created!", postTitle);
                                 Toast.makeText(CreatePostActivity.this, message, Toast.LENGTH_SHORT).show();
                                 Intent i = new Intent(CreatePostActivity.this, BoardActivity.class);
+                                i.putExtra("email", email);
+                                i.putExtra("boardName", boardName);
                                 startActivity(i);
                             }
                         });
