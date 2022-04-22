@@ -8,6 +8,7 @@ import {
 import { UserIdInput } from "../inputs/user.inputs";
 import { Board } from "../schema/board.schema";
 import BoardService from "../service/board.service";
+import { filterAttributes } from "../utils/misc";
 
 @Resolver()
 export default class BoardResolver {
@@ -17,12 +18,20 @@ export default class BoardResolver {
 
 	@Query(() => Board)
 	getBoard(@Arg("input") input: BoardIdInput) {
+		const cleanedInput = filterAttributes<BoardIdInput>(input, [
+			null,
+			undefined,
+		]);
 		return this.boardService.getBoard(input);
 	}
 
 	@Query(() => [Board!]!)
 	getBoards(@Arg("input") input: GetBoardsInput) {
-		return this.boardService.getBoards(input);
+		const cleanedInput = filterAttributes<GetBoardsInput>(input, [
+			null,
+			undefined,
+		]);
+		return this.boardService.getBoards(cleanedInput);
 	}
 
 	@Mutation(() => Board)
@@ -30,7 +39,15 @@ export default class BoardResolver {
 		@Arg("creatorDetails") creatorDetails: UserIdInput,
 		@Arg("input") input: CreateBoardInput
 	) {
-		return this.boardService.createBoard(creatorDetails, input);
+		const cleanedCreatorDetails = filterAttributes<UserIdInput>(
+			creatorDetails,
+			[null, undefined]
+		);
+		const cleanedInput = filterAttributes<CreateBoardInput>(input, [
+			null,
+			undefined,
+		]);
+		return this.boardService.createBoard(cleanedCreatorDetails, cleanedInput);
 	}
 
 	@Mutation(() => Board)
@@ -38,21 +55,41 @@ export default class BoardResolver {
 		@Arg("boardDetails") boardDetails: BoardIdInput,
 		@Arg("input") input: UpdateBoardInput
 	) {
-		return this.boardService.updateBoard(boardDetails, input);
+		const cleanedBoardDetails = filterAttributes<BoardIdInput>(boardDetails, [
+			null,
+			undefined,
+		]);
+		const cleanedInput = filterAttributes<UpdateBoardInput>(input, [
+			null,
+			undefined,
+		]);
+		return this.boardService.updateBoard(cleanedBoardDetails, cleanedInput);
 	}
 
 	@Mutation(() => Board)
 	removeBoard(@Arg("input") boardDetails: BoardIdInput) {
-		return this.boardService.removeBoard(boardDetails);
+		const cleanedBoardDetails = filterAttributes<BoardIdInput>(boardDetails, [
+			null,
+			undefined,
+		]);
+		return this.boardService.removeBoard(cleanedBoardDetails);
 	}
 
 	@Mutation(() => Board)
 	restoreBoard(@Arg("input") boardDetails: BoardIdInput) {
-		return this.boardService.restoreBoard(boardDetails);
+		const cleanedBoardDetails = filterAttributes<BoardIdInput>(boardDetails, [
+			null,
+			undefined,
+		]);
+		return this.boardService.restoreBoard(cleanedBoardDetails);
 	}
 
 	@Mutation(() => Board)
 	deleteBoard(@Arg("input") input: BoardIdInput) {
-		return this.boardService.deleteBoard(input);
+		const cleanedInput = filterAttributes<BoardIdInput>(input, [
+			null,
+			undefined,
+		]);
+		return this.boardService.deleteBoard(cleanedInput);
 	}
 }

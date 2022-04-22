@@ -11,6 +11,7 @@ import { UserIdInput } from "../inputs/user.inputs";
 import { Comment } from "../schema/comment.schema";
 import { Post } from "../schema/post.schema";
 import PostService from "../service/post.service";
+import { filterAttributes } from "../utils/misc";
 
 @Resolver()
 export default class PostResolver {
@@ -20,17 +21,29 @@ export default class PostResolver {
 
 	@Query(() => Post)
 	getPost(@Arg("input") input: PostIdInput) {
-		return this.postService.getPost(input);
+		const cleanedInput = filterAttributes<PostIdInput>(input, [
+			null,
+			undefined,
+		]);
+		return this.postService.getPost(cleanedInput);
 	}
 
 	@Query(() => [Post!]!)
 	getPosts(@Arg("input") input: GetPostsInput) {
-		return this.postService.getPosts(input);
+		const cleanedInput = filterAttributes<GetPostsInput>(input, [
+			null,
+			undefined,
+		]);
+		return this.postService.getPosts(cleanedInput);
 	}
 
 	@Query(() => [Comment!]!)
 	getPostComments(@Arg("input") input: PostIdInput) {
-		return this.postService.getPostComments(input);
+		const cleanedInput = filterAttributes<PostIdInput>(input, [
+			null,
+			undefined,
+		]);
+		return this.postService.getPostComments(cleanedInput);
 	}
 
 	@Mutation(() => Post)
@@ -39,7 +52,23 @@ export default class PostResolver {
 		@Arg("boardDetails") boardDetails: BoardIdInput,
 		@Arg("input") input: CreatePostInput
 	) {
-		return this.postService.createPost(creatorDetails, boardDetails, input);
+		const cleanedCreatorDetails = filterAttributes<UserIdInput>(
+			creatorDetails,
+			[null, undefined]
+		);
+		const cleanedBoardDetails = filterAttributes<BoardIdInput>(boardDetails, [
+			null,
+			undefined,
+		]);
+		const cleanedInput = filterAttributes<CreatePostInput>(input, [
+			null,
+			undefined,
+		]);
+		return this.postService.createPost(
+			cleanedCreatorDetails,
+			cleanedBoardDetails,
+			cleanedInput
+		);
 	}
 
 	@Mutation(() => Post)
@@ -47,21 +76,41 @@ export default class PostResolver {
 		@Arg("postDetails") postDetails: PostIdInput,
 		@Arg("input") input: UpdatePostInput
 	) {
-		return this.postService.updatePost(postDetails, input);
+		const cleanedPostDetails = filterAttributes<PostIdInput>(postDetails, [
+			null,
+			undefined,
+		]);
+		const cleanedInput = filterAttributes<UpdatePostInput>(input, [
+			null,
+			undefined,
+		]);
+		return this.postService.updatePost(cleanedPostDetails, cleanedInput);
 	}
 
 	@Mutation(() => Post)
 	removePost(@Arg("input") input: PostIdInput) {
-		return this.postService.removePost(input);
+		const cleanedInput = filterAttributes<PostIdInput>(input, [
+			null,
+			undefined,
+		]);
+		return this.postService.removePost(cleanedInput);
 	}
 
 	@Mutation(() => Post)
 	restorePost(@Arg("input") input: PostIdInput) {
-		return this.postService.restorePost(input);
+		const cleanedInput = filterAttributes<PostIdInput>(input, [
+			null,
+			undefined,
+		]);
+		return this.postService.restorePost(cleanedInput);
 	}
 
 	@Mutation(() => Post)
 	deletePost(@Arg("input") input: PostIdInput) {
-		return this.postService.deletePost(input);
+		const cleanedInput = filterAttributes<PostIdInput>(input, [
+			null,
+			undefined,
+		]);
+		return this.postService.deletePost(cleanedInput);
 	}
 }

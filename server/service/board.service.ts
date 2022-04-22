@@ -15,9 +15,7 @@ import {
 	UpdateBoardInput,
 } from "../inputs/board.inputs";
 import { UserIdInput } from "../inputs/user.inputs";
-import { types } from "@typegoose/typegoose";
-import { Board } from "../schema/board.schema";
-import { Post } from "../schema/post.schema";
+import { filterAttributes } from "../utils/misc";
 dotenv.config();
 
 export default class BoardService {
@@ -25,11 +23,8 @@ export default class BoardService {
 		if (Object.keys(userDetails).length === 0) {
 			throw new ApolloError("User details not provided");
 		}
-		const cleanedUserDetails = Object.fromEntries(
-			Object.entries(userDetails).filter(([_, v]) => v != null)
-		);
 		try {
-			await UserModel.findOneAndUpdate(cleanedUserDetails, {
+			await UserModel.findOneAndUpdate(userDetails, {
 				$push: { followedBoardsNames: input.name },
 			}).lean();
 		} catch (err) {
