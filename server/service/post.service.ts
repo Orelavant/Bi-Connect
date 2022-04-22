@@ -48,15 +48,13 @@ export default class PostService {
 				creatorName: user.username,
 				boardName: board.name,
 			});
-		} catch (postCreationError) {
-			console.log(postCreationError);
+		} catch {
 			throw new ApolloError("db error while creating post");
 		}
 		try {
 			user.postsIds.push(post._id);
 			await user.save();
-		} catch (postToUserError) {
-			console.log(postToUserError);
+		} catch {
 			throw new ApolloError("db error while adding post to user");
 		}
 		return post;
