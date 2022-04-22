@@ -5,12 +5,14 @@ public class Post {
     String content;
     String id;
     String creatorName;
+    String boardName;
 
-    public Post(String title, String content, String id, String creatorName) {
+    public Post(String title, String content, String id, String creatorName, String boardName) {
         this.title = title;
         this.content = content;
         this.id = id;
         this.creatorName = creatorName;
+        this.boardName = boardName;
     }
 
     public String getTitle() {

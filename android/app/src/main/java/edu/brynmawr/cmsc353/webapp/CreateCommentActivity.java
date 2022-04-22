@@ -1,8 +1,5 @@
 package edu.brynmawr.cmsc353.webapp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +7,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
@@ -20,79 +20,78 @@ import com.apollographql.apollo.exception.ApolloException;
 
 import java.util.List;
 
-public class CreatePostActivity extends AppCompatActivity {
-    public static final String TAG = "CreatePostActivity";
-    private EditText etPostTitle;
-    private EditText etPostContent;
+public class CreateCommentActivity extends AppCompatActivity {
+    public static final String TAG = "CreateCommentActivity";
+    private EditText etCommentContent;
     private Button btnCancel;
     private Button btnCreate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_post);
-        etPostTitle = findViewById(R.id.etPostTitle);
-        etPostContent = findViewById(R.id.etPostContent);
+        setContentView(R.layout.activity_create_comment);
+        etCommentContent = findViewById(R.id.etCommentContent);
         btnCancel = findViewById(R.id.btnCancel);
         btnCreate = findViewById(R.id.btnCreate);
-        String boardName = getIntent().getExtras().get("boardName").toString();
+        String postID = getIntent().getExtras().get("postID").toString();
         String email = getIntent().getExtras().get("email").toString();
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(TAG, "onClick cancel post button");
+                Log.i(TAG, "onClick cancel comment button");
                 // go back to post list screen
-                Intent i = new Intent(getApplicationContext(), BoardActivity.class);
+                Intent i = new Intent(getApplicationContext(), CommentActivity.class);
+                i.putExtra("postID", postID);
                 i.putExtra("email", email);
-                i.putExtra("boardname", boardName);
+                i.putExtra("boardName", getIntent().getExtras().get("boardName").toString());
                 startActivity(i);
             }
         });
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.v(TAG, "onClick create post button");
-                String postTitle = etPostTitle.getText().toString();
-                String postContent = etPostContent.getText().toString();
-                createPost(postTitle, postContent, boardName, email);
+                Log.v(TAG, "onClick create comment button");
+                String commentContent = etCommentContent.getText().toString();
+                createComment(commentContent, postID, email);
             }
         });
     }
 
-    private void createPost(String postTitle, String postContent, String boardName, String email) {
+    private void createComment(String commentContent, String postID, String email) {
         ApolloClient apolloClient = ApolloClient.builder()
                 .serverUrl("http://10.0.2.2:3001/graphql")
                 .build();
 
 
         Log.i(TAG, email);
-        apolloClient.mutate(new CreatePostMutation(new CreatePostInput(Input.fromNullable(postTitle), postContent), new BoardIdInput(Input.fromNullable(null), boardName),
-                new UserIdInput(Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(email))))
+        apolloClient.mutate(new CreateCommentMutation(new CreateCommentInput(commentContent, Input.fromNullable("")), new PostIdInput(postID), new UserIdInput(Input.fromNullable(null), Input.fromNullable(null), Input.fromNullable(email))))
 
-                .enqueue(new ApolloCall.Callback<CreatePostMutation.Data>() {
+                .enqueue(new ApolloCall.Callback<CreateCommentMutation.Data>() {
 
                     @Override
-                    public void onResponse(@NonNull Response<CreatePostMutation.Data> response) {
+                    public void onResponse(@NonNull Response<CreateCommentMutation.Data> response) {
                         List<Error> errors = response.getErrors();
                         if (errors != null && errors.size() > 0) {
-                            Log.i("checking for error create post", errors.get(0).toString());
+                            Log.i("checking for error create comment", errors.get(0).toString());
                             runOnUiThread(new Runnable() {
 
                                 @Override
                                 public void run() {
-                                    Toast.makeText(CreatePostActivity.this, "Create Post failed.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(CreateCommentActivity.this, "Create comment failed. Comment already exists.", Toast.LENGTH_SHORT).show();
                                 }
                             });
                             return;
                         }
-                        Log.i(TAG, "create post succeeded");
+                        Log.i(TAG, "create comment succeeded");
                         runOnUiThread(new Runnable() {
 
                             @Override
                             public void run() {
-                                String message = String.format("%s was successfully created!", postTitle);
-                                Toast.makeText(CreatePostActivity.this, message, Toast.LENGTH_SHORT).show();
-                                Intent i = new Intent(CreatePostActivity.this, BoardActivity.class);
+                                String message = String.format("%s was successfully created!");
+                                Toast.makeText(CreateCommentActivity.this, message, Toast.LENGTH_SHORT).show();
+                                Intent i = new Intent(CreateCommentActivity.this, CommentActivity.class);
+                                i.putExtra("boardname", getIntent().getExtras().get("boardName").toString());
+                                i.putExtra("email", getIntent().getExtras().get("email").toString());
                                 startActivity(i);
                             }
                         });
@@ -105,7 +104,7 @@ public class CreatePostActivity extends AppCompatActivity {
 
                             @Override
                             public void run() {
-                                Toast.makeText(CreatePostActivity.this, "Create post failed, network error", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(CreateCommentActivity.this, "Create post failed, network error", Toast.LENGTH_SHORT).show();
                             }
                         });
 

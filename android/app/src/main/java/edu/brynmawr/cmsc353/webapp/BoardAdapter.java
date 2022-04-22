@@ -69,7 +69,7 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.ViewHolder> 
                 @Override
                 public void onClick(View v) {
                     Intent i = new Intent(context, BoardActivity.class);
-                    i.putExtra("boardname",  tvName.getText().toString());
+                    i.putExtra("boardName",  tvName.getText().toString());
                     i.putExtra("email", email);
                     context.startActivity(i);
                 }

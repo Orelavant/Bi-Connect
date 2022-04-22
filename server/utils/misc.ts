@@ -13,9 +13,9 @@ export const applyMixins = (
 	});
 };
 
-export const filterAttributes = (obj: Object, values: any[] = []) => {
+export const filterAttributes = <T>(obj: Object, values: any[] = []): T => {
 	const o = Object.fromEntries(
-		Object.entries(obj).filter(([k, v]) => values.includes(v))
+		Object.entries(obj).filter(([k, v]) => !values.includes(v))
 	);
-	return o;
+	return o as T;
 };

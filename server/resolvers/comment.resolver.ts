@@ -11,6 +11,7 @@ import { PostIdInput } from "../inputs/post.inputs";
 import { UserIdInput } from "../inputs/user.inputs";
 import { Comment } from "../schema/comment.schema";
 import CommentService from "../service/comment.service";
+import { filterAttributes } from "../utils/misc";
 
 @Resolver()
 export default class CommentResolver {
@@ -20,12 +21,20 @@ export default class CommentResolver {
 
 	@Query(() => Comment)
 	getComment(@Arg("input") input: CommentIdInput) {
-		return this.commentService.getComment(input);
+		const cleanedInput = filterAttributes<CommentIdInput>(input, [
+			null,
+			undefined,
+		]);
+		return this.commentService.getComment(cleanedInput);
 	}
 
 	@Query(() => [Comment!]!)
 	getComments(@Arg("input") input: GetCommentsInput) {
-		return this.commentService.getComments(input);
+		const cleanedInput = filterAttributes<GetCommentsInput>(input, [
+			null,
+			undefined,
+		]);
+		return this.commentService.getComments(cleanedInput);
 	}
 
 	@Mutation(() => Comment)
@@ -34,10 +43,22 @@ export default class CommentResolver {
 		@Arg("postDetails") postDetails: PostIdInput,
 		@Arg("input") input: CreateCommentInput
 	) {
-		return this.commentService.createComment(
+		const cleanedCreatorDetails = filterAttributes<UserIdInput>(
 			creatorDetails,
-			postDetails,
-			input
+			[null, undefined]
+		);
+		const cleanedPostDetails = filterAttributes<PostIdInput>(postDetails, [
+			null,
+			undefined,
+		]);
+		const cleanedInput = filterAttributes<CreateCommentInput>(input, [
+			null,
+			undefined,
+		]);
+		return this.commentService.createComment(
+			cleanedCreatorDetails,
+			cleanedPostDetails,
+			cleanedInput
 		);
 	}
 
@@ -46,21 +67,44 @@ export default class CommentResolver {
 		@Arg("commentDetails") commentDetails: CommentIdInput,
 		@Arg("input") input: UpdateCommentInput
 	) {
-		return this.commentService.updateComment(commentDetails, input);
+		const cleanedCommentDetails = filterAttributes<CommentIdInput>(
+			commentDetails,
+			[null, undefined]
+		);
+		const cleanedInput = filterAttributes<UpdateCommentInput>(input, [
+			null,
+			undefined,
+		]);
+		return this.commentService.updateComment(
+			cleanedCommentDetails,
+			cleanedInput
+		);
 	}
 
 	@Mutation(() => Comment)
 	removeComment(@Arg("input") input: CommentIdInput) {
-		return this.commentService.removeComment(input);
+		const cleanedInput = filterAttributes<CommentIdInput>(input, [
+			null,
+			undefined,
+		]);
+		return this.commentService.removeComment(cleanedInput);
 	}
 
 	@Mutation(() => Comment)
 	restoreComment(@Arg("input") input: CommentIdInput) {
-		return this.commentService.restoreComment(input);
+		const cleanedInput = filterAttributes<CommentIdInput>(input, [
+			null,
+			undefined,
+		]);
+		return this.commentService.restoreComment(cleanedInput);
 	}
 
 	@Mutation(() => Comment)
 	deleteComment(@Arg("input") input: CommentIdInput) {
-		return this.commentService.deleteComment(input);
+		const cleanedInput = filterAttributes<CommentIdInput>(input, [
+			null,
+			undefined,
+		]);
+		return this.commentService.deleteComment(cleanedInput);
 	}
 }

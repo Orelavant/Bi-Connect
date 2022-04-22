@@ -30,6 +30,8 @@
         <activity android:name=".CreatePostActivity"></activity>
         <activity android:name=".RegisterActivity"></activity>
         <activity android:name=".BoardActivity"></activity>
+        <activity android:name=".CreateCommentActivity"></activity>
+
     </application>
 
 </manifest>

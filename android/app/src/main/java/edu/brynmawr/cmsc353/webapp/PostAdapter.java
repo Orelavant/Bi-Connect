@@ -1,6 +1,7 @@
 package edu.brynmawr.cmsc353.webapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +17,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     Context context;
     List<Post> posts;
+    String email;
 
-    public PostAdapter(Context context, List<Post> posts) {
+    public PostAdapter(Context context, List<Post> posts, String email) {
         this.context = context;
         this.posts = posts;
+        this.email = email;
     }
 
 
@@ -57,6 +60,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         public void bind(Post post) {
             tvName.setText(post.getTitle());
             tvDescription.setText(post.getContent());
+            container.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(context, CommentActivity.class);
+                    i.putExtra("postName",  post.title);
+                    i.putExtra("postContent",post.content);
+                    i.putExtra("postID", post.id);
+                    i.putExtra("boardName", post.boardName);
+                    i.putExtra("email", email);
+                    context.startActivity(i);
+                }
+            });
         }
     }
 }
