@@ -81,7 +81,7 @@ public class CreatePostActivity extends AppCompatActivity {
 
                                 @Override
                                 public void run() {
-                                    Toast.makeText(CreatePostActivity.this, "Create Post failed. Post already exists.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(CreatePostActivity.this, "Create Post failed.", Toast.LENGTH_SHORT).show();
                                 }
                             });
                             return;
